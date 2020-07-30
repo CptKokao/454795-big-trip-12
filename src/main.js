@@ -1,3 +1,5 @@
+'use strict';
+
 // Инфо
 const createInfoTemplate = () => {
   return (
