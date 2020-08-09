@@ -3,6 +3,9 @@ import {createFilterTemplate} from './view/filter.js';
 import {createFormTemplate} from './view/form.js';
 import {createSortTemplate} from './view/sort.js';
 import {createDayandPointsTemplate} from './view/day-point.js';
+import {generatePoint} from './mock/point.js';
+
+console.log(generatePoint());
 
 const render = (container, place, template) => {
   container.insertAdjacentHTML(place, template);
