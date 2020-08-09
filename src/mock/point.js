@@ -53,6 +53,15 @@ const generateDate = () => {
   return eventData;
 };
 
+// Генерирует доп. предложение
+const generateOffers = () => {
+  const countOffers = getRandomInteger(0, 5);
+  const titles = [`Order Uber`, `Add luggage`, `Rent a car`, `Add breakfast`, `Book tickets`, `Lunch in city`, `Switch to comfort`];
+  const offers = new Array(countOffers).fill().map(() => ({title: titles[getRandomInteger(0, titles.length - 1)], cost: getRandomInteger(5, 100)}));
+
+  return offers;
+};
+
 export const generatePoint = () => {
   const type = generateType();
   const city = generateCity();
@@ -64,39 +73,8 @@ export const generatePoint = () => {
     type,
     city,
     date,
-    cost: getRandomInteger(1, 3),
-    offers: [
-      {
-        type: `Taxi`,
-        options: [
-          {name: `Add luggage`, price: 30},
-          {name: `Switch to comfort class`, price: 100},
-          {name: `Add meal`, price: 15},
-          {name: `Choose seats`, price: 5},
-          {name: `Travel by train`, price: 40},
-        ]
-      },
-      {
-        type: `Bus`,
-        options: [
-          {name: `Add luggage`, price: 30},
-          {name: `Switch to comfort class`, price: 100},
-          {name: `Add meal`, price: 15},
-          {name: `Choose seats`, price: 5},
-          {name: `Travel by train`, price: 40},
-        ],
-      },
-      {
-        type: `Train`,
-        options: [
-          {name: `Add luggage`, price: 30},
-          {name: `Switch to comfort class`, price: 100},
-          {name: `Add meal`, price: 15},
-          {name: `Choose seats`, price: 5},
-          {name: `Travel by train`, price: 40},
-        ]
-      },
-    ],
+    cost: getRandomInteger(15, 200),
+    offers: generateOffers(),
     description,
     photo,
   };

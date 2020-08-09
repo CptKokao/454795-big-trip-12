@@ -17,6 +17,30 @@ export const getShortTime = (date) => {
   return shortTime.join(`:`);
 };
 
+// Форматирует время в формат AUG 09
+export const getFormatDate = (date) => {
+  const formatter = new Intl.DateTimeFormat(`en-US`, {
+    month: `short`,
+    day: `2-digit`
+  });
+
+  return formatter.format(date);
+};
+
+// Форматирует время в формат 2019-03-18
+export const getDateTime = (date) => {
+  const dateTime = [
+    `0${date.getMonth() + 1}`,
+    `0${date.getDate()}`
+  ].map((item) => item.slice(-2));
+
+  return `${date.getFullYear()}-${dateTime[0]}-${dateTime[1]}`;
+};
+
+export const getFullTime = (date) => {
+  return `${getDateTime(date)}T${getShortTime(date)}`;
+};
+
 // Вычисляет необходимое время для маршрута
 export const durationTime = (timeEnd, timeStart) => {
 
