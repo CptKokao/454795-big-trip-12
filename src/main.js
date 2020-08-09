@@ -5,7 +5,10 @@ import {createSortTemplate} from './view/sort.js';
 import {createDayandPointsTemplate} from './view/day-point.js';
 import {generatePoint} from './mock/point.js';
 
-console.log(generatePoint());
+
+const POINT_COUNT = 15;
+const points = new Array(POINT_COUNT).fill().map(generatePoint);
+console.log(points);
 
 const render = (container, place, template) => {
   container.insertAdjacentHTML(place, template);
@@ -13,12 +16,14 @@ const render = (container, place, template) => {
 
 const mainElement = document.querySelector(`.trip-main`);
 const eventElement = document.querySelector(`.trip-events`);
-const daysItemElement = eventElement.querySelector(`.trip-days__item`);
+const tripDays = eventElement.querySelector(`.trip-days`);
 
 render(mainElement, `afterbegin`, createFilterTemplate());
 render(mainElement, `afterbegin`, createInfoTemplate());
 render(eventElement, `afterbegin`, createFormTemplate());
 render(eventElement, `afterbegin`, createSortTemplate());
-render(daysItemElement, `afterbegin`, createDayandPointsTemplate());
 
 
+for (let i = 1; i < POINT_COUNT; i++) {
+  render(tripDays, `beforeend`, createDayandPointsTemplate(points[i], i));
+}

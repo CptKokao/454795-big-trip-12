@@ -8,7 +8,7 @@ const generateType = () => {
   return type[randomIndex];
 };
 
-// Генерирует случайный тип маршрута
+// Генерирует случайный пункт назанчения(город)
 const generateCity = () => {
   const city = [`Amsterdam`, `Geneva`, `Chamonix`, `Saint Petersburg`, `Moscow`];
   const randomIndex = getRandomInteger(0, city.length - 1);
@@ -39,15 +39,32 @@ const generatePhoto = () => {
   return arrPhoto;
 };
 
+// Генерирует время
+const maxDaysGap = 7;
+const daysGap = getRandomInteger(-maxDaysGap, maxDaysGap);
+let currentDate = +((new Date()).setSeconds(0, 0)) + daysGap * 24 * 3600 * 1000;
+
+const generateDate = () => {
+  const dataStart = currentDate + getRandomInteger(0, 2) * 3600 * 1000 + getRandomInteger(1, 60) * 60 * 1000;
+  const dataEnd = dataStart + getRandomInteger(1, 12) * 3600 * 1000 + getRandomInteger(1, 60) * 60 * 1000;
+  const eventData = [new Date(dataStart), new Date(dataEnd)];
+  currentDate = dataEnd;
+
+  return eventData;
+};
+
 export const generatePoint = () => {
   const type = generateType();
   const city = generateCity();
   const description = generateDescription();
   const photo = generatePhoto();
+  const date = generateDate();
 
   return {
     type,
     city,
+    date,
+    cost: getRandomInteger(1, 3),
     offers: [
       {
         type: `Taxi`,
