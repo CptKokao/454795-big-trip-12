@@ -18,7 +18,7 @@ export const getShortTime = (date) => {
 };
 
 // Форматирует время в формат AUG 09
-export const getFormatDate = (date) => {
+export const getFormatDate = (date) => {;
   const formatter = new Intl.DateTimeFormat(`en-US`, {
     month: `short`,
     day: `2-digit`

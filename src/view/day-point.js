@@ -4,7 +4,7 @@ import {getShortTime, getFormatDate, getDateTime, durationTime} from "../util.js
 const createDayTemplate = (day, date) => {
   return `<div class="day__info">
             <span class="day__counter">${day++}</span>
-            <time class="day__date" datetime="${getDateTime(date)}">${getFormatDate(date)}</time>
+            <time class="day__date" datetime="${getDateTime(date[0])}">${getFormatDate(date[0])}</time>
           </div>`;
 };
 
