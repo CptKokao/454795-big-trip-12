@@ -20,7 +20,10 @@ const tripDays = eventElement.querySelector(`.trip-days`);
 
 render(mainElement, `afterbegin`, createFilterTemplate());
 render(mainElement, `afterbegin`, createInfoTemplate());
-render(eventElement, `afterbegin`, createFormTemplate());
+
+render(eventElement, `afterbegin`, createFormTemplate(points[0]));
+
+
 render(eventElement, `afterbegin`, createSortTemplate());
 
 

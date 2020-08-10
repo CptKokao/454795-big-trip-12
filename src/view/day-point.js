@@ -35,7 +35,7 @@ const createPriceTemplate = (cost) => {
           </p>`;
 };
 
-// Шаблон для доп. предложений
+// Шаблон для доп.предложений
 const createOfferTemplate = (offers) => {
   return `<h4 class="visually-hidden">Offers:</h4>
           <ul class="event__selected-offers">
@@ -52,8 +52,8 @@ const createOfferTemplate = (offers) => {
           </button>`;
 };
 
-export const createDayandPointsTemplate = (point, day) => {
-  const {type, city, date, cost, offers} = point;
+export const createDayandPointsTemplate = (points, day) => {
+  const {type, city, date, cost, offers} = points;
 
   return `<li class="trip-days__item  day">
               ${createDayTemplate(day, date)}

@@ -20,7 +20,7 @@ const generateCity = () => {
 const generateDescription = () => {
   const text = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`;
   const arrText = text.split(`. `);
-  const randomIndex = getRandomInteger(0, arrText.length - 1);
+  const randomIndex = getRandomInteger(1, arrText.length - 1);
 
   return arrText.splice(0, randomIndex);
 };
@@ -33,7 +33,7 @@ const generatePhoto = () => {
 
   const randomIndex = getRandomInteger(min, max);
   for (let i = 0; i < randomIndex; i++) {
-    arrPhoto.push(`http://picsum.photos/248/152`);
+    arrPhoto.push(`http://picsum.photos/248/152?r=${Math.random()}`);
   }
 
   return arrPhoto;
@@ -57,7 +57,7 @@ const generateDate = () => {
 const generateOffers = () => {
   const countOffers = getRandomInteger(0, 5);
   const titles = [`Order Uber`, `Add luggage`, `Rent a car`, `Add breakfast`, `Book tickets`, `Lunch in city`, `Switch to comfort`];
-  const offers = new Array(countOffers).fill().map(() => ({title: titles[getRandomInteger(0, titles.length - 1)], cost: getRandomInteger(5, 100)}));
+  const offers = new Array(countOffers).fill().map(() => ({title: titles[getRandomInteger(0, titles.length - 1)], cost: getRandomInteger(5, 100), isChecked: getRandomInteger(0, 1)}));
 
   return offers;
 };
