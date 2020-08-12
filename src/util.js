@@ -7,6 +7,14 @@ export const getRandomInteger = (a = 1, b = 0) => {
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
 
+export const getDayMonthStamp = (event) => {
+  return event.toLocaleString(`en-GB`, {day: `2-digit`, month: `short`});
+};
+
+export const getYearMonthDayStamp = (event) => {
+  return event.toLocaleString(`fr-CA`, {year: `numeric`, month: `2-digit`, day: `2-digit`});
+};
+
 // Форматирует время в формат с начальным нулем = 01:01
 export const getShortTime = (date) => {
   const shortTime = [

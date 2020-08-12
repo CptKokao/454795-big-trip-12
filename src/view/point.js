@@ -1,12 +1,4 @@
-import {getShortTime, getFormatDate, getDateTime, durationTime} from "../util.js";
-
-// Шаблон для номера дня
-const createDayTemplate = (day, date) => {
-  return `<div class="day__info">
-            <span class="day__counter">${day++}</span>
-            <time class="day__date" datetime="${getDateTime(date[0])}">${getFormatDate(date[0])}</time>
-          </div>`;
-};
+import {getShortTime, durationTime} from "../util.js";
 
 // Шаблон для транспорта и города
 const createTypeTemplate = (type, city) => {
@@ -52,20 +44,17 @@ const createOfferTemplate = (offers) => {
           </button>`;
 };
 
-export const createDayandPointsTemplate = (points, day) => {
+export const createPointsTemplate = (points) => {
   const {type, city, date, cost, offers} = points;
 
-  return `<li class="trip-days__item  day">
-              ${createDayTemplate(day, date)}
-            <ul class="trip-events__list">
-              <li class="trip-events__item">
-                <div class="event">
-                  ${createTypeTemplate(type, city)}
-                  ${createDateTemplate(date)}
-                  ${createPriceTemplate(cost)}
-                  ${createOfferTemplate(offers)}
-                </div>
-              </li>
-            </ul>
-          </li>`;
+  return `<ul class="trip-events__list">
+            <li class="trip-events__item">
+              <div class="event">
+                ${createTypeTemplate(type, city)}
+                ${createDateTemplate(date)}
+                ${createPriceTemplate(cost)}
+                ${createOfferTemplate(offers)}
+              </div>
+            </li>
+          </ul>`;
 };
