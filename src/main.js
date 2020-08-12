@@ -19,7 +19,10 @@ const eventElement = document.querySelector(`.trip-events`);
 const tripDays = eventElement.querySelector(`.trip-days`);
 
 render(mainElement, `afterbegin`, createFilterTemplate());
-render(mainElement, `afterbegin`, createInfoTemplate());
+
+
+render(mainElement, `afterbegin`, createInfoTemplate(points));
+
 
 render(eventElement, `afterbegin`, createFormTemplate(points[0]));
 
@@ -30,3 +33,4 @@ render(eventElement, `afterbegin`, createSortTemplate());
 for (let i = 1; i < POINT_COUNT; i++) {
   render(tripDays, `beforeend`, createDayandPointsTemplate(points[i], i));
 }
+
