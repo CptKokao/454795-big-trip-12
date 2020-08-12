@@ -8,7 +8,7 @@ import {generatePoint} from './mock/point.js';
 
 const POINT_COUNT = 15;
 const points = new Array(POINT_COUNT).fill().map(generatePoint);
-console.log(new Date(points[0].date[0]));
+
 const render = (container, place, template) => {
   container.insertAdjacentHTML(place, template);
 };

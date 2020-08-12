@@ -95,8 +95,8 @@ const createOfferTemplate = (offers) => {
             <div class="event__available-offers">
 
             ${Object.values(offers).map((element) => `<div class="event__offer-selector">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-${(element.title).split(' ').pop()}-1" type="checkbox" name="event-offer-${(element.title).split(' ').pop()}" ${element.isChecked ? `checked` : ``}>
-                <label class="event__offer-label" for="event-offer-${(element.title).split(' ').pop()}-1">
+                <input class="event__offer-checkbox  visually-hidden" id="event-offer-${(element.title).split(`&nbsp;`).pop()}-1" type="checkbox" name="event-offer-${(element.title).split(`&nbsp;`).pop()}" ${element.isChecked ? `checked` : ``}>
+                <label class="event__offer-label" for="event-offer-${(element.title).split(`&nbsp;`).pop()}-1">
                   <span class="event__offer-title">${(element.title)}</span>
                   &plus;
                   &euro;&nbsp;<span class="event__offer-price">${element.cost}</span>
@@ -152,13 +152,8 @@ export const createFormTemplate = (points) => {
         <button class="event__reset-btn" type="reset">Cancel</button>
       </header>
       <section class="event__details">
-
         ${createOfferTemplate(offers)}
-
         ${createDestinationTemplate(photo, description)}
-
-
-
       </section>
     </form>`
   );
