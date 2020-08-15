@@ -1,4 +1,4 @@
-// import {getShortTime, getFormatDate, getDateTime, durationTime} from "../util.js";
+import {createElement} from "../utils.js";
 
 const createTypeTemplate = () => {
 
@@ -107,8 +107,9 @@ const createOfferTemplate = (offers) => {
 };
 
 
-export const createFormTemplate = (points) => {
-  const {offers, photo, description} = points;
+const createFormTemplate = (point) => {
+  debugger;
+  const {offers, photo, description} = point;
 
   return (
     `<form class="trip-events__item  event  event--edit" action="#" method="post">
@@ -158,3 +159,26 @@ export const createFormTemplate = (points) => {
     </form>`
   );
 };
+
+export default class Form {
+  constructor(point) {
+    this._point = point;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFormTemplate(this._point);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

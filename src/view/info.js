@@ -1,6 +1,5 @@
 import {getFormatDate, createElement} from "../utils.js";
 
-
 const createInfoTemplate = (points) => {
   const destinations = new Array(points.length).fill().map((element, index) => points[index].city).join(`,`).replace(/,/g, ` &mdash; `);
 

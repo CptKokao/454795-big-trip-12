@@ -1,6 +1,6 @@
 import InfoView from './view/info.js';
 import FilterView from './view/filter.js';
-import {createFormTemplate} from './view/form.js';
+import FormView from './view/form.js';
 import {createSortTemplate} from './view/sort.js';
 import {createListDays} from './view/list-day.js';
 import {createDayTemplate} from './view/day.js';
@@ -17,7 +17,7 @@ render(mainElement, new FilterView().getElement(), renderPosition.AFTERBEGIN);
 
 render(mainElement, new InfoView(points).getElement(), renderPosition.AFTERBEGIN);
 
-render(eventElement, `afterbegin`, createFormTemplate(points[0]));
+render(eventElement, new FormView(points[0]).getElement(), renderPosition.AFTERBEGIN);
 
 render(eventElement, `afterbegin`, createSortTemplate());
 
