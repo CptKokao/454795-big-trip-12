@@ -1,4 +1,4 @@
-import {getDayMonthStamp, getYearMonthDayStamp} from "../utils.js";
+import {createElement, getDayMonthStamp, getYearMonthDayStamp} from "../utils.js";
 import {createPointsTemplate} from "./point.js";
 
 const getEventsTemplate = (events, count, day) => {
@@ -21,7 +21,7 @@ const getSortDatesEndDaysForTemplate = (events) => {
   return {days, dates};
 };
 
-export const createDayTemplate = (events, count) => {
+const createDayTemplate = (events, count) => {
   const {days, dates} = getSortDatesEndDaysForTemplate(events);
 
   return new Array(days.length).fill().map((element, index) =>
@@ -35,3 +35,27 @@ export const createDayTemplate = (events, count) => {
       </ul>
     </li>`).join(` `);
 };
+
+export default class Day {
+  constructor(points, count) {
+    this._points = points;
+    this._count = count;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createDayTemplate(this._points, this._count);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

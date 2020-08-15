@@ -36,13 +36,12 @@ const createSortTemplate = () => {
 };
 
 export default class Sort {
-  constructor(point) {
-    this._point = point;
+  constructor() {
     this._element = null;
   }
 
   getTemplate() {
-    return createSortTemplate(this._point);
+    return createSortTemplate();
   }
 
   getElement() {
