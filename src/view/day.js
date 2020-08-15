@@ -33,7 +33,7 @@ const createDayTemplate = (events, count) => {
       <ul class="trip-events__list">
         ${getEventsTemplate(events, count, days[index])}
       </ul>
-    </li>`).join(` `);
+    </li>`);
 };
 
 export default class Day {

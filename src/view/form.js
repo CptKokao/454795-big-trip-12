@@ -108,7 +108,6 @@ const createOfferTemplate = (offers) => {
 
 
 const createFormTemplate = (point) => {
-  debugger;
   const {offers, photo, description} = point;
 
   return (
