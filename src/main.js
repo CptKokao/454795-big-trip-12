@@ -1,24 +1,21 @@
-import {createInfoTemplate} from './view/info.js';
-import {createFilterTemplate} from './view/filter.js';
+import InfoView from './view/info.js';
+import FilterView from './view/filter.js';
 import {createFormTemplate} from './view/form.js';
 import {createSortTemplate} from './view/sort.js';
 import {createListDays} from './view/list-day.js';
 import {createDayTemplate} from './view/day.js';
 import {generatePoint} from './mock/point.js';
+import {renderPosition, render} from './utils.js';
 
 const POINT_COUNT = 15;
 const points = new Array(POINT_COUNT).fill().map(generatePoint);
 
-const render = (container, place, template) => {
-  container.insertAdjacentHTML(place, template);
-};
-
 const mainElement = document.querySelector(`.trip-main`);
 const eventElement = document.querySelector(`.trip-events`);
 
-render(mainElement, `afterbegin`, createFilterTemplate());
+render(mainElement, new FilterView().getElement(), renderPosition.AFTERBEGIN);
 
-render(mainElement, `afterbegin`, createInfoTemplate(points));
+render(mainElement, new InfoView(points).getElement(), renderPosition.AFTERBEGIN);
 
 render(eventElement, `afterbegin`, createFormTemplate(points[0]));
 

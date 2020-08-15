@@ -1,7 +1,7 @@
-import {getFormatDate} from "../util.js";
+import {getFormatDate, createElement} from "../utils.js";
 
 
-export const createInfoTemplate = (points) => {
+const createInfoTemplate = (points) => {
   const destinations = new Array(points.length).fill().map((element, index) => points[index].city).join(`,`).replace(/,/g, ` &mdash; `);
 
   return (
@@ -18,4 +18,27 @@ export const createInfoTemplate = (points) => {
     </section>`
   );
 };
+
+export default class Info {
+  constructor(points) {
+    this._points = points;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createInfoTemplate(this._points);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
 

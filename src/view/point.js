@@ -1,4 +1,4 @@
-import {getShortTime, durationTime} from "../util.js";
+import {getShortTime, durationTime} from "../utils.js";
 
 // Шаблон для транспорта и города
 const createTypeTemplate = (type, city) => {

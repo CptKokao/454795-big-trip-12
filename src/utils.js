@@ -1,5 +1,32 @@
 import {DAY_IN_MS, HOUR_IN_MS, MINUTE_IN_MS} from "./const.js";
 
+export const renderPosition = {
+  AFTERBEGIN: `afterbegin`,
+  BEFOREEND: `beforeend`
+};
+
+export const render = (container, element, place) => {
+  switch (place) {
+    case renderPosition.AFTERBEGIN:
+      container.prepend(element);
+      break;
+    case renderPosition.BEFOREEND:
+      container.append(element);
+      break;
+  }
+};
+
+// export const renderTemplate = (container, template, place) => {
+//   container.insertAdjacentHTML(place, template);
+// };
+
+export const createElement = (template) => {
+  const newElement = document.createElement(`div`);
+  newElement.innerHTML = template;
+
+  return newElement.firstChild;
+};
+
 // Генерирует случайное число из диапазона
 export const getRandomInteger = (a = 1, b = 0) => {
   const lower = Math.ceil(Math.min(a, b));
@@ -7,10 +34,12 @@ export const getRandomInteger = (a = 1, b = 0) => {
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
 
+// ???
 export const getDayMonthStamp = (event) => {
   return event.toLocaleString(`en-GB`, {day: `2-digit`, month: `short`});
 };
 
+// ???
 export const getYearMonthDayStamp = (event) => {
   return event.toLocaleString(`fr-CA`, {year: `numeric`, month: `2-digit`, day: `2-digit`});
 };

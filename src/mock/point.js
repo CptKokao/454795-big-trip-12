@@ -1,4 +1,4 @@
-import {getRandomInteger} from "../util.js";
+import {getRandomInteger} from "../utils.js";
 
 // Генерирует случайный тип маршрута
 const generateType = () => {

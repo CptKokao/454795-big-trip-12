@@ -1,4 +1,4 @@
-import {getDayMonthStamp, getYearMonthDayStamp} from "../util.js";
+import {getDayMonthStamp, getYearMonthDayStamp} from "../utils.js";
 import {createPointsTemplate} from "./point.js";
 
 const getEventsTemplate = (events, count, day) => {
