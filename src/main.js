@@ -5,7 +5,7 @@ import SortView from './view/sort.js';
 import DayView from './view/day.js';
 import PointView from './view/point.js';
 import {generatePoint} from './mock/point.js';
-import {renderPosition, render, getYearMonthDayStamp} from './utils.js';
+import {renderPosition, render, getDateTime} from './utils.js';
 
 const POINT_COUNT = 15;
 const points = new Array(POINT_COUNT).fill().map(generatePoint);
@@ -53,7 +53,7 @@ const days = eventElement.querySelectorAll(`.trip-days__item`);
 
 for (let i = 0; i < days.length; i++) {
   for (let j = 0; j < points.length; j++) {
-    if (days[i].querySelector(`.day__date`).getAttribute(`datetime`) === getYearMonthDayStamp(points[j].date[0])) {
+    if (days[i].querySelector(`.day__date`).getAttribute(`datetime`) === getDateTime(points[j].date[0], `-`)) {
       renderPoint(days[i].querySelector(`.trip-events__list`), points[j]);
     }
   }

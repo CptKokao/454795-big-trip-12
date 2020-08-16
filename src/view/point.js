@@ -2,7 +2,6 @@ import {createElement, getShortTime, durationTime} from "../utils.js";
 
 // Шаблон для транспорта и города
 const createTypeTemplate = (type, city) => {
-  debugger
   return `<div class="event__type">
             <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
           </div>

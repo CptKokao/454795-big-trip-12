@@ -1,14 +1,15 @@
-import {createElement, getDayMonthStamp, getYearMonthDayStamp} from "../utils.js";
+import {createElement, getFormatDate, getDateTime} from "../utils.js";
 
 const getSortDatesEndDaysForTemplate = (events) => {
   const daysForTemplate = {};
   for (let i = 0; i < events.length; i++) {
-    let key = getDayMonthStamp(events[i].date[0]);
-    daysForTemplate[key] = getYearMonthDayStamp(events[i].date[0]);
+    let key = getFormatDate(events[i].date[0], true);
+    daysForTemplate[key] = getDateTime(events[i].date[0], `-`);
   }
 
   const days = Object.keys(daysForTemplate).sort();
   const dates = Object.values(daysForTemplate).sort();
+
 
   return {days, dates};
 };
