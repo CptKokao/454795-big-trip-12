@@ -18,12 +18,9 @@ render(mainElement, new FilterView().getElement(), renderPosition.AFTERBEGIN);
 
 render(mainElement, new InfoView(points).getElement(), renderPosition.AFTERBEGIN);
 
-// render(eventElement, new FormView(points[0]).getElement(), renderPosition.AFTERBEGIN);
-
 render(eventElement, new SortView().getElement(), renderPosition.AFTERBEGIN);
 
 render(siteListDays, new DayView(points).getElement(), renderPosition.BEFOREEND);
-
 
 const renderPoint = (pointListElement, point) => {
   const formComponent = new FormView(point);

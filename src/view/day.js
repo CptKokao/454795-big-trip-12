@@ -10,7 +10,6 @@ const getSortDatesEndDaysForTemplate = (events) => {
   const days = Object.keys(daysForTemplate).sort();
   const dates = Object.values(daysForTemplate).sort();
 
-
   return {days, dates};
 };
 
