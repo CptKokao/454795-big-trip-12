@@ -1,12 +1,4 @@
 import {createElement, getDayMonthStamp, getYearMonthDayStamp} from "../utils.js";
-import {createPointsTemplate} from "./point.js";
-
-const getEventsTemplate = (events, count, day) => {
-
-  return new Array(count).fill().map((element, index) => {
-    return day === getDayMonthStamp(events[index].date[0]) ? createPointsTemplate(events[index]) : ``;
-  }).join(` `);
-};
 
 const getSortDatesEndDaysForTemplate = (events) => {
   const daysForTemplate = {};
@@ -21,7 +13,7 @@ const getSortDatesEndDaysForTemplate = (events) => {
   return {days, dates};
 };
 
-const createDayTemplate = (events, count) => {
+const createDayTemplate = (events) => {
   const {days, dates} = getSortDatesEndDaysForTemplate(events);
 
   return new Array(days.length).fill().map((element, index) =>
@@ -30,21 +22,18 @@ const createDayTemplate = (events, count) => {
         <span class="day__counter">${index + 1}</span>
         <time class="day__date" datetime="${dates[index]}">${days[index].toUpperCase()}</time>
       </div>
-      <ul class="trip-events__list">
-        ${getEventsTemplate(events, count, days[index])}
-      </ul>
+      <ul class="trip-events__list"></ul>
     </li>`);
 };
 
 export default class Day {
-  constructor(points, count) {
+  constructor(points) {
     this._points = points;
-    this._count = count;
     this._element = null;
   }
 
   getTemplate() {
-    return createDayTemplate(this._points, this._count);
+    return createDayTemplate(this._points);
   }
 
   getElement() {

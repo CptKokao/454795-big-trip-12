@@ -1,7 +1,8 @@
-import {getShortTime, durationTime} from "../utils.js";
+import {createElement, getShortTime, durationTime} from "../utils.js";
 
 // Шаблон для транспорта и города
 const createTypeTemplate = (type, city) => {
+  debugger
   return `<div class="event__type">
             <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
           </div>
@@ -58,3 +59,27 @@ export const createPointsTemplate = (points) => {
             </li>
           </ul>`;
 };
+
+export default class Point {
+  constructor(points) {
+    this._points = points;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createPointsTemplate(this._points);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+

@@ -65,14 +65,14 @@ export const getFormatDate = (date) => {
   return formatter.format(date);
 };
 
-// Форматирует время в формат 2019-03-18
+// Форматирует время в формат dd/mm/year
 export const getDateTime = (date) => {
   const dateTime = [
     `0${date.getMonth() + 1}`,
     `0${date.getDate()}`
   ].map((item) => item.slice(-2));
 
-  return `${date.getFullYear()}-${dateTime[0]}-${dateTime[1]}`;
+  return `${dateTime[1]}/${dateTime[0]}/${(date.getFullYear() + '').slice(2)}`;
 };
 
 export const getFullTime = (date) => {
