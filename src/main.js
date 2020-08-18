@@ -30,17 +30,27 @@ const renderPoint = (pointListElement, point) => {
     pointListElement.replaceChild(formComponent.getElement(), pointComponent.getElement());
   };
 
-  const replaceFormToForm = () => {
+  const replaceFormToCard = () => {
     pointListElement.replaceChild(pointComponent.getElement(), formComponent.getElement());
+  };
+
+  const onEscKeyDown = (e) => {
+    if (e.key === `Escape` || EventTarget.key === `Esc`) {
+      e.preventDefault();
+      replaceFormToCard();
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    }
   };
 
   pointComponent.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
     replaceCardToForm();
+    document.addEventListener(`keydown`, onEscKeyDown);
   });
 
   formComponent.getElement().querySelector(`form`).addEventListener(`submit`, (e) => {
     e.preventDefault();
-    replaceFormToForm();
+    replaceFormToCard();
+    document.addEventListener(`keydown`, onEscKeyDown);
   });
 
   render(pointListElement, pointComponent.getElement(), renderPosition.BEFOREEND);
