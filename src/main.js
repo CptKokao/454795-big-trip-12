@@ -4,10 +4,11 @@ import FormView from './view/form.js';
 import SortView from './view/sort.js';
 import DayView from './view/day.js';
 import PointView from './view/point.js';
+import NoPointsView from './view/no-points.js';
 import {generatePoint} from './mock/point.js';
 import {renderPosition, render, getDateTime} from './utils.js';
 
-const POINT_COUNT = 15;
+const POINT_COUNT = 0;
 const points = new Array(POINT_COUNT).fill().map(generatePoint);
 
 const mainElement = document.querySelector(`.trip-main`);
@@ -15,12 +16,8 @@ const eventElement = document.querySelector(`.trip-events`);
 const siteListDays = eventElement.querySelector(`.trip-days`);
 
 render(mainElement, new FilterView().getElement(), renderPosition.AFTERBEGIN);
-
 render(mainElement, new InfoView(points).getElement(), renderPosition.AFTERBEGIN);
-
 render(eventElement, new SortView().getElement(), renderPosition.AFTERBEGIN);
-
-render(siteListDays, new DayView(points).getElement(), renderPosition.BEFOREEND);
 
 const renderPoint = (pointListElement, point) => {
   const formComponent = new FormView(point);
@@ -56,12 +53,22 @@ const renderPoint = (pointListElement, point) => {
   render(pointListElement, pointComponent.getElement(), renderPosition.BEFOREEND);
 };
 
-const days = eventElement.querySelectorAll(`.trip-days__item`);
+const renderListEvents = (pointsList) => {
+  if (pointsList.length === 0) {
+    render(eventElement, new NoPointsView().getElement(), renderPosition.BEFOREEND);
+    return;
+  }
 
-for (let i = 0; i < days.length; i++) {
-  for (let j = 0; j < points.length; j++) {
-    if (days[i].querySelector(`.day__date`).getAttribute(`datetime`) === getDateTime(points[j].date[0], `-`)) {
-      renderPoint(days[i].querySelector(`.trip-events__list`), points[j]);
+  render(siteListDays, new DayView(pointsList).getElement(), renderPosition.BEFOREEND);
+  const days = eventElement.querySelectorAll(`.trip-days__item`);
+
+  for (let i = 0; i < days.length; i++) {
+    for (let j = 0; j < pointsList.length; j++) {
+      if (days[i].querySelector(`.day__date`).getAttribute(`datetime`) === getDateTime(pointsList[j].date[0], `-`)) {
+        renderPoint(days[i].querySelector(`.trip-events__list`), pointsList[j]);
+      }
     }
   }
-}
+};
+
+renderListEvents(points);
