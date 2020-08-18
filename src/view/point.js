@@ -1,4 +1,4 @@
-import {getShortTime, durationTime} from "../util.js";
+import {createElement, getShortTime, durationTime} from "../utils.js";
 
 // Шаблон для транспорта и города
 const createTypeTemplate = (type, city) => {
@@ -58,3 +58,27 @@ export const createPointsTemplate = (points) => {
             </li>
           </ul>`;
 };
+
+export default class Point {
+  constructor(points) {
+    this._points = points;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createPointsTemplate(this._points);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+

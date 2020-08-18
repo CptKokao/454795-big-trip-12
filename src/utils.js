@@ -1,5 +1,32 @@
 import {DAY_IN_MS, HOUR_IN_MS, MINUTE_IN_MS} from "./const.js";
 
+export const renderPosition = {
+  AFTERBEGIN: `afterbegin`,
+  BEFOREEND: `beforeend`
+};
+
+export const render = (container, element, place) => {
+  switch (place) {
+    case renderPosition.AFTERBEGIN:
+      container.prepend(element);
+      break;
+    case renderPosition.BEFOREEND:
+      container.append(element);
+      break;
+  }
+};
+
+// export const renderTemplate = (container, template, place) => {
+//   container.insertAdjacentHTML(place, template);
+// };
+
+export const createElement = (template) => {
+  const newElement = document.createElement(`div`);
+  newElement.innerHTML = template;
+
+  return newElement;
+};
+
 // Генерирует случайное число из диапазона
 export const getRandomInteger = (a = 1, b = 0) => {
   const lower = Math.ceil(Math.min(a, b));
@@ -7,12 +34,9 @@ export const getRandomInteger = (a = 1, b = 0) => {
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
 
+// 11 Aug
 export const getDayMonthStamp = (event) => {
   return event.toLocaleString(`en-GB`, {day: `2-digit`, month: `short`});
-};
-
-export const getYearMonthDayStamp = (event) => {
-  return event.toLocaleString(`fr-CA`, {year: `numeric`, month: `2-digit`, day: `2-digit`});
 };
 
 // Форматирует время в формат с начальным нулем = 01:01
@@ -25,28 +49,24 @@ export const getShortTime = (date) => {
   return shortTime.join(`:`);
 };
 
-// Форматирует время в формат AUG 09
-export const getFormatDate = (date) => {
+// Форматирует время в формат AUG 09 или 09 AUG, если reverse = true
+export const getFormatDate = (date, reverse) => {
   const formatter = new Intl.DateTimeFormat(`en-US`, {
     month: `short`,
     day: `2-digit`
   });
 
-  return formatter.format(date);
+  return reverse ? formatter.format(date).split(` `).reverse().join(` `) : formatter.format(date);
 };
 
-// Форматирует время в формат 2019-03-18
-export const getDateTime = (date) => {
+// Форматирует время в формат dd mm year = 12/08/20 или 12-08-20
+export const getDateTime = (date, separator) => {
   const dateTime = [
     `0${date.getMonth() + 1}`,
     `0${date.getDate()}`
   ].map((item) => item.slice(-2));
 
-  return `${date.getFullYear()}-${dateTime[0]}-${dateTime[1]}`;
-};
-
-export const getFullTime = (date) => {
-  return `${getDateTime(date)}T${getShortTime(date)}`;
+  return `${dateTime[1]}${separator}${dateTime[0]}${separator}${(date.getFullYear() + ``).slice(2)}`;
 };
 
 // Вычисляет необходимое время для маршрута
