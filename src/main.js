@@ -8,7 +8,7 @@ import NoPointsView from './view/no-points.js';
 import {generatePoint} from './mock/point.js';
 import {renderPosition, render, getDateTime} from './utils.js';
 
-const POINT_COUNT = 0;
+const POINT_COUNT = 20;
 const points = new Array(POINT_COUNT).fill().map(generatePoint);
 
 const mainElement = document.querySelector(`.trip-main`);
