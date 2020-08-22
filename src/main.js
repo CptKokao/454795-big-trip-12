@@ -32,7 +32,7 @@ const renderPoint = (pointListElement, point) => {
   };
 
   const onEscKeyDown = (e) => {
-    if (e.key === `Escape` || EventTarget.key === `Esc`) {
+    if (e.key === `Escape` || e.key === `Esc`) {
       e.preventDefault();
       replaceFormToCard();
       document.removeEventListener(`keydown`, onEscKeyDown);
