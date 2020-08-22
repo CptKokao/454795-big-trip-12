@@ -1,4 +1,5 @@
-import {createElement, getDateTime, getShortTime} from "../utils.js";
+import {getDateTime, getShortTime} from "../utils.js";
+import Abstract from './abstract.js';
 
 const createTypeTemplate = (type) => {
 
@@ -159,25 +160,13 @@ const createFormTemplate = (point) => {
   );
 };
 
-export default class Form {
+export default class Form extends Abstract {
   constructor(point) {
+    super();
     this._point = point;
-    this._element = null;
   }
 
   getTemplate() {
     return createFormTemplate(this._point);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

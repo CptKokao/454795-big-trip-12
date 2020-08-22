@@ -1,4 +1,6 @@
-import {createElement, getShortTime, durationTime} from "../utils.js";
+import {getShortTime, durationTime} from "../utils.js";
+import Abstract from './abstract.js';
+
 
 // Шаблон для транспорта и города
 const createTypeTemplate = (type, city) => {
@@ -59,26 +61,14 @@ export const createPointsTemplate = (points) => {
           </ul>`;
 };
 
-export default class Point {
+export default class Point extends Abstract {
   constructor(points) {
+    super();
     this._points = points;
-    this._element = null;
   }
 
   getTemplate() {
     return createPointsTemplate(this._points);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 

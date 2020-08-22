@@ -1,4 +1,5 @@
-import {getFormatDate, createElement} from "../utils.js";
+import {getFormatDate} from "../utils.js";
+import Abstract from './abstract.js';
 
 const createInfoTemplate = (points) => {
   if (points.length === 0) {
@@ -26,29 +27,16 @@ const createInfoTemplate = (points) => {
       </section>`
     );
   }
-
 };
 
-export default class Info {
+export default class Info extends Abstract {
   constructor(points) {
+    super();
     this._points = points;
-    this._element = null;
   }
 
   getTemplate() {
     return createInfoTemplate(this._points);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 
