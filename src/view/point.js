@@ -65,10 +65,21 @@ export default class Point extends Abstract {
   constructor(points) {
     super();
     this._points = points;
+    this._clickHandler = this._clickHandler.bind(this);
   }
 
   getTemplate() {
     return createPointsTemplate(this._points);
+  }
+
+  _clickHandler(e) {
+    e.preventDefault();
+    this._callback.formSubmit();
+  }
+
+  setClickHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._clickHandler);
   }
 }
 

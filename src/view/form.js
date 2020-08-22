@@ -164,9 +164,20 @@ export default class Form extends Abstract {
   constructor(point) {
     super();
     this._point = point;
+    this._formSubmitHandler = this._formSubmitHandler.bind(this);
   }
 
   getTemplate() {
     return createFormTemplate(this._point);
+  }
+
+  _formSubmitHandler(e) {
+    e.preventDefault();
+    this._callback.formSubmit();
+  }
+
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
   }
 }

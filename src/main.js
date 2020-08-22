@@ -39,13 +39,14 @@ const renderPoint = (pointListElement, point) => {
     }
   };
 
-  pointComponent.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
+  // Событие клик по кнопки маршрута
+  pointComponent.setClickHandler(() => {
     replaceCardToForm();
     document.addEventListener(`keydown`, onEscKeyDown);
   });
 
-  formComponent.getElement().querySelector(`form`).addEventListener(`submit`, (e) => {
-    e.preventDefault();
+  // Событие submit на кнопки Save в форме редактирования
+  formComponent.setFormSubmitHandler(() => {
     replaceFormToCard();
     document.addEventListener(`keydown`, onEscKeyDown);
   });
