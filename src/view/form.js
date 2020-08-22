@@ -1,4 +1,4 @@
-import {getDateTime, getShortTime} from "../utils.js";
+import {getDateTime, getShortTime} from "../utils/date.js";
 import Abstract from './abstract.js';
 
 const createTypeTemplate = (type) => {

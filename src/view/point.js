@@ -1,4 +1,4 @@
-import {getShortTime, durationTime} from "../utils.js";
+import {getShortTime, durationTime} from "../utils/date.js";
 import Abstract from './abstract.js';
 
 

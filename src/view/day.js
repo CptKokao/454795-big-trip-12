@@ -1,4 +1,4 @@
-import {getFormatDate, getDateTime} from "../utils.js";
+import {getFormatDate, getDateTime} from "../utils/date.js";
 import Abstract from './abstract.js';
 
 const getSortDatesEndDaysForTemplate = (events) => {

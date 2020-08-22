@@ -6,7 +6,8 @@ import DayView from './view/day.js';
 import PointView from './view/point.js';
 import NoPointsView from './view/no-points.js';
 import {generatePoint} from './mock/point.js';
-import {renderPosition, render, getDateTime} from './utils.js';
+import {renderPosition, render} from "./utils/render.js";
+import {getDateTime} from "./utils/date.js";
 
 const POINT_COUNT = 20;
 const points = new Array(POINT_COUNT).fill().map(generatePoint);

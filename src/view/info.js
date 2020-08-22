@@ -1,4 +1,4 @@
-import {getFormatDate} from "../utils.js";
+import {getFormatDate} from "../utils/date.js";
 import Abstract from './abstract.js';
 
 const createInfoTemplate = (points) => {
