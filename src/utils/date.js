@@ -1,39 +1,5 @@
 import {DAY_IN_MS, HOUR_IN_MS, MINUTE_IN_MS} from "./const.js";
 
-export const renderPosition = {
-  AFTERBEGIN: `afterbegin`,
-  BEFOREEND: `beforeend`
-};
-
-export const render = (container, element, place) => {
-  switch (place) {
-    case renderPosition.AFTERBEGIN:
-      container.prepend(element);
-      break;
-    case renderPosition.BEFOREEND:
-      container.append(element);
-      break;
-  }
-};
-
-// export const renderTemplate = (container, template, place) => {
-//   container.insertAdjacentHTML(place, template);
-// };
-
-export const createElement = (template) => {
-  const newElement = document.createElement(`div`);
-  newElement.innerHTML = template;
-
-  return newElement;
-};
-
-// Генерирует случайное число из диапазона
-export const getRandomInteger = (a = 1, b = 0) => {
-  const lower = Math.ceil(Math.min(a, b));
-  const upper = Math.floor(Math.max(a, b));
-  return Math.floor(lower + Math.random() * (upper - lower + 1));
-};
-
 // 11 Aug
 export const getDayMonthStamp = (event) => {
   return event.toLocaleString(`en-GB`, {day: `2-digit`, month: `short`});

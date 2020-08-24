@@ -1,4 +1,5 @@
-import {createElement, getFormatDate, getDateTime} from "../utils.js";
+import {getFormatDate, getDateTime} from "../utils/date.js";
+import Abstract from './abstract.js';
 
 const getSortDatesEndDaysForTemplate = (events) => {
   const daysForTemplate = {};
@@ -26,25 +27,13 @@ const createDayTemplate = (events) => {
     </li>`);
 };
 
-export default class Day {
+export default class Day extends Abstract {
   constructor(points) {
+    super();
     this._points = points;
-    this._element = null;
   }
 
   getTemplate() {
     return createDayTemplate(this._points);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

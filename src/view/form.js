@@ -1,4 +1,5 @@
-import {createElement, getDateTime, getShortTime} from "../utils.js";
+import {getDateTime, getShortTime} from "../utils/date.js";
+import Abstract from './abstract.js';
 
 const createTypeTemplate = (type) => {
 
@@ -159,25 +160,24 @@ const createFormTemplate = (point) => {
   );
 };
 
-export default class Form {
+export default class Form extends Abstract {
   constructor(point) {
+    super();
     this._point = point;
-    this._element = null;
+    this._formSubmitHandler = this._formSubmitHandler.bind(this);
   }
 
   getTemplate() {
     return createFormTemplate(this._point);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _formSubmitHandler(e) {
+    e.preventDefault();
+    this._callback.formSubmit();
   }
 
-  removeElement() {
-    this._element = null;
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
   }
 }

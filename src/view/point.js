@@ -1,4 +1,6 @@
-import {createElement, getShortTime, durationTime} from "../utils.js";
+import {getShortTime, durationTime} from "../utils/date.js";
+import Abstract from './abstract.js';
+
 
 // Шаблон для транспорта и города
 const createTypeTemplate = (type, city) => {
@@ -59,26 +61,25 @@ export const createPointsTemplate = (points) => {
           </ul>`;
 };
 
-export default class Point {
+export default class Point extends Abstract {
   constructor(points) {
+    super();
     this._points = points;
-    this._element = null;
+    this._clickHandler = this._clickHandler.bind(this);
   }
 
   getTemplate() {
     return createPointsTemplate(this._points);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _clickHandler(e) {
+    e.preventDefault();
+    this._callback.formSubmit();
   }
 
-  removeElement() {
-    this._element = null;
+  setClickHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._clickHandler);
   }
 }
 
