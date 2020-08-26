@@ -178,6 +178,6 @@ export default class Form extends Abstract {
 
   setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
-    this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
+    // this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
   }
 }

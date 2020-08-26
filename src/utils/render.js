@@ -13,7 +13,7 @@ export const render = (container, element, place) => {
   if (element instanceof Abstract) {
     element = element.getElement();
   }
-
+  debugger
   switch (place) {
     case renderPosition.AFTERBEGIN:
       container.prepend(element);
@@ -21,6 +21,8 @@ export const render = (container, element, place) => {
     case renderPosition.BEFOREEND:
       container.append(element);
       break;
+    default:
+      container.innerHTML = ``;
   }
 };
 
@@ -47,5 +49,5 @@ export const createElement = (template) => {
   const newElement = document.createElement(`div`);
   newElement.innerHTML = template;
 
-  return newElement;
+  return newElement.firstChild;
 };
