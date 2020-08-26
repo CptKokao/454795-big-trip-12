@@ -48,7 +48,7 @@ const createOfferTemplate = (offers) => {
 };
 
 export const createPointsTemplate = (points) => {
-  const {type, city, date, cost, offers} = points;
+  const {type, city, date, offers} = points;
 
   return `<ul class="trip-events__list">
             <li class="trip-events__item">

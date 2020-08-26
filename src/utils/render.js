@@ -13,7 +13,7 @@ export const render = (container, element, place) => {
   if (element instanceof Abstract) {
     element = element.getElement();
   }
-  debugger
+
   switch (place) {
     case renderPosition.AFTERBEGIN:
       container.prepend(element);

@@ -1,23 +1,17 @@
 import Abstract from './abstract.js';
 
-const createOneDayTemplate = (points) => {
-  return new Array(points.length).fill().map(() =>
+const createNoDayTemplate =
     `<li class="trip-days__item  day">
       <div class="day__info">
         <span class="day__counter"></span>
         <time class="day__date" datetime=""></time>
       </div>
       <ul class="trip-events__list"></ul>
-    </li>`).join(``);
-};
+    </li>`;
 
-export default class OneDay extends Abstract {
-  constructor(points) {
-    super();
-    this._points = points;
-  }
+export default class NoDay extends Abstract {
 
   getTemplate() {
-    return createOneDayTemplate(this._points);
+    return createNoDayTemplate;
   }
 }

@@ -9,16 +9,12 @@ const POINT_COUNT = 20;
 const points = new Array(POINT_COUNT).fill().map(generatePoint);
 
 const mainElement = document.querySelector(`.trip-main`);
-// const eventElement = document.querySelector(`.trip-events`);
 
 const filterComponent = new FilterView();
 const infoComponent = new InfoView(points);
 
-
 render(mainElement, filterComponent, renderPosition.AFTERBEGIN);
 render(mainElement, infoComponent, renderPosition.AFTERBEGIN);
-// render(eventElement, sortComponent, renderPosition.AFTERBEGIN);
 
 const tripPresenter = new TripPresenter(points);
 tripPresenter.init(points);
-tripPresenter._renderSort();
