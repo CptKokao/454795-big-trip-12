@@ -50,13 +50,13 @@ export default class Trip {
   _sortTasks(sortType) {
     switch (sortType) {
       case SortType.TIME:
-        this._arrPoints.sort((a, b) => sortTime(a, b));
+        this._arrPoints.sort(sortTime);
         break;
       case SortType.PRICE:
-        this._arrPoints.sort((a, b) => sortPrice(a, b));
+        this._arrPoints.sort(sortPrice);
         break;
       case SortType.DEFAULT:
-        this._arrPoints = this._sourcedArrPoints;
+        this._arrPoints = this._sourcedArrPoints.slice();
         break;
     }
   }
