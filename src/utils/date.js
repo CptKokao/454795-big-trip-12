@@ -35,7 +35,6 @@ export const getDateTime = (date, separator) => {
   return `${dateTime[1]}${separator}${dateTime[0]}${separator}${(date.getFullYear() + ``).slice(2)}`;
 };
 
-// Вычисляет необходимое время для маршрута
 export const durationTime = (timeEnd, timeStart) => {
 
   const duration = (timeEnd - timeStart);

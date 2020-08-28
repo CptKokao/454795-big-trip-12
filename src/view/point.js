@@ -1,4 +1,5 @@
 import {getShortTime, durationTime} from "../utils/date.js";
+import {getSumPoint} from "../utils/sort.js";
 import Abstract from './abstract.js';
 
 
@@ -23,9 +24,9 @@ const createDateTemplate = (date) => {
 };
 
 // Шаблон для цены
-const createPriceTemplate = (cost) => {
+const createPriceTemplate = (points) => {
   return `<p class="event__price">
-            &euro;&nbsp;<span class="event__price-value">${cost}</span>
+            &euro;&nbsp;<span class="event__price-value">${getSumPoint(points)}</span>
           </p>`;
 };
 
@@ -47,14 +48,14 @@ const createOfferTemplate = (offers) => {
 };
 
 export const createPointsTemplate = (points) => {
-  const {type, city, date, cost, offers} = points;
+  const {type, city, date, offers} = points;
 
   return `<ul class="trip-events__list">
             <li class="trip-events__item">
               <div class="event">
                 ${createTypeTemplate(type, city)}
                 ${createDateTemplate(date)}
-                ${createPriceTemplate(cost)}
+                ${createPriceTemplate(points)}
                 ${createOfferTemplate(offers)}
               </div>
             </li>
@@ -82,4 +83,3 @@ export default class Point extends Abstract {
     this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._clickHandler);
   }
 }
-
