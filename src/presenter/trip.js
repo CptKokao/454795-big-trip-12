@@ -10,6 +10,7 @@ import PointPresenter from "./point.js";
 import {renderPosition, render, replace, remove} from "../utils/render.js";
 import {getDateTime} from "../utils/date.js";
 import {sortTime, sortPrice} from "../utils/sort.js";
+import {updateItem} from "../utils/common.js";
 import {SortType} from '../utils/const.js';
 
 const eventElement = document.querySelector(`.trip-events`);
@@ -31,6 +32,8 @@ export default class Trip {
     this._daysObserver = {};
 
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
+    this._handlePointChange = this._handleTaskChange.bind(this);
+    // ^^^^^^^^^
   }
 
   init(points) {
@@ -48,6 +51,16 @@ export default class Trip {
 
     // Копия исходного массива маршрутов, используется для сортировки
     this._arrPoints = points.slice();
+  }
+
+  // Событие при изменеии данных в маршруте
+  _handlePointChange(updatedPoint) {
+    // Обновляет массив
+    this._arrPoints = updateItem(this._boardTasks, updatedPoint);
+    // Обновляет исходный массив
+    this._sourcedArrPoints = updateItem(this._sourcedBoardTasks, updatedPoint);
+    // ^^^^^^^
+    this._pointsObserver[updatedPoint.id].init(updatedPoint);
   }
 
   _clearTaskList() {
