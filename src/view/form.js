@@ -194,6 +194,33 @@ export default class Form extends Abstract {
     this._callback.favotiteClick();
   }
 
+  // Обновляет данные в свойстве _data, а потом вызывает обновление шаблона
+  updateData(update) {
+    if (!update) {
+      return;
+    }
+
+    this._data = Object.assign(
+        {},
+        this._data,
+        update
+    );
+
+    this.updateElement();
+  }
+
+  // Удаляет старый DOM элемент, вызывет генерацию нового и заменяет один на другой
+  updateElement() {
+    let prevElement = this.getElement();
+    const parent = prevElement.parentElement;
+    this.removeElement();
+
+    const newElement = this.getElement();
+
+    parent.replaceChild(newElement, prevElement);
+    prevElement = null; // Чтобы окончательно "убить" ссылку на prevElement
+  }
+
   setFormSubmitHandler(callback) {
     // callback - эта функция которая записывается в объект this._callback
     // для того чтобы осталась ссылка на нее, это дает возможность удалить addEventListener
