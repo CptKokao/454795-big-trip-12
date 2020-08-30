@@ -4,23 +4,47 @@ import PointView from '../view/point.js';
 import {renderPosition, render, replace, remove} from "../utils/render.js";
 
 export default class Point {
-  constructor(pointListElement, point, changeData) {
-    this._formComponent = new FormView(point);
-    this._pointComponent = new PointView(point);
+  constructor(pointListElement, changeData, listDaysComponent) {
+
+    this._formComponent = null;
+    this._pointComponent = null;
 
     this._changeData = changeData;
-    // ^^^^^^^^^
-
+    this.listDaysComponent = listDaysComponent;
     this._pointListElement = pointListElement;
-    this._point = point;
 
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
   }
 
   // Запуск метода для отрисовки всех маршрутов
-  init() {
-    this._renderPoint(this._pointListElement, this._point);
-    this._formComponent.setFavoriteClcikHandler(this._handleFavoriteClick);
+  init(point) {
+    this._point = point;
+
+    const prevFormComponent = this._formComponent;
+    const prevPointEditComponent = this._pointComponent;
+
+    this._formComponent = new FormView(point);
+    this._pointComponent = new PointView(point);
+
+
+
+    if (prevFormComponent === null || prevPointEditComponent === null) {
+      this._renderPoint(this._pointListElement, point);
+      return;
+    }
+
+    // Проверка на наличие в DOM необходима,
+    // чтобы не пытаться заменить то, что не было отрисовано
+    if (this.listDaysComponent.getElement().contains(prevFormComponent.getElement())) {
+      replace(this._formComponent, prevFormComponent);
+    }
+
+    if (this.listDaysComponent.getElement().contains(prevPointEditComponent.getElement())) {
+      replace(this._pointComponent, prevPointEditComponent);
+    }
+
+    remove(prevFormComponent);
+    remove(prevPointEditComponent);
   }
 
 
@@ -51,7 +75,7 @@ export default class Point {
 
     // Событие submit на кнопки Save в форме редактирования
     this._formComponent.setFormSubmitHandler((point) => {
-      // Вызывает
+      // Вызывает this.init(), для отрисовки изменения
       this._changeData(point);
 
       replaceFormToCard();

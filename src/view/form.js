@@ -199,7 +199,7 @@ export default class Form extends Abstract {
     this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
   }
 
-  setFavoriteClcikHandler(callback) {
+  setFavoriteClickHandler(callback) {
     this._callback.favotiteClick = callback;
     this.getElement().querySelector(`#event-favorite`).addEventListener(`click`, this._favoriteClickHandler);
   }

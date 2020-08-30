@@ -1,13 +1,10 @@
 
-import FormView from '../view/form.js';
 import DayView from '../view/day.js';
-import NoDayView from '../view/no-day.js';
-import PointView from '../view/point.js';
 import SortView from '../view/sort.js';
 import ListDays from '../view/list-days.js';
 import NoPointsView from '../view/no-points.js';
 import PointPresenter from "./point.js";
-import {renderPosition, render, replace, remove} from "../utils/render.js";
+import {renderPosition, render} from "../utils/render.js";
 import {getDateTime} from "../utils/date.js";
 import {sortTime, sortPrice} from "../utils/sort.js";
 import {updateItem} from "../utils/common.js";
@@ -126,8 +123,8 @@ export default class Trip {
 
   // Метод отрисовки одного маршрутов
   _renderPoint(pointListElement, point) {
-    const pointPresenter = new PointPresenter(pointListElement, point, this._handlePointChange);
-    pointPresenter.init();
+    const pointPresenter = new PointPresenter(pointListElement, this._handlePointChange, this._listDaysComponent);
+    pointPresenter.init(point);
     this._pointsObserver[point.id] = pointPresenter;
   }
 
