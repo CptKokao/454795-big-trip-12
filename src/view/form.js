@@ -151,7 +151,15 @@ const createFormTemplate = (point) => {
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">Cancel</button>
+          <button class="event__reset-btn" type="reset">Delete</button>
+
+          <input id="event-favorite" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" checked>
+          <label class="event__favorite-btn" for="event-favorite">
+            <span class="visually-hidden">Add to favorite</span>
+            <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
+              <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"/>
+            </svg>
+          </label>
         </header>
         <section class="event__details">
           ${createOfferTemplate(offers)}
@@ -167,6 +175,7 @@ export default class Form extends Abstract {
     super();
     this._point = point;
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
   }
 
   getTemplate() {
@@ -178,8 +187,20 @@ export default class Form extends Abstract {
     this._callback.formSubmit();
   }
 
+  _favoriteClickHandler(e) {
+    e.preventDefault();
+    this._callback.favotiteClick();
+  }
+
   setFormSubmitHandler(callback) {
+    // callback - эта функция которая записывается в объект this._callback
+    // для того чтобы осталась ссылка на нее, это дает возможность удалить addEventListener
     this._callback.formSubmit = callback;
     this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
+  }
+
+  setFavoriteClcikHandler(callback) {
+    this._callback.favotiteClick = callback;
+    this.getElement().querySelector(`#event-favorite`).addEventListener(`click`, this._favoriteClickHandler);
   }
 }

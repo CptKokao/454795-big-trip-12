@@ -1,5 +1,11 @@
 import {getRandomInteger} from "../utils/common.js";
 
+// Date.now() и Math.random() - плохие решения для генерации id
+// в "продуктовом" коде, а для моков самое то.
+// Для "продуктового" кода используйте что-то понадежнее,
+// вроде nanoid - https://github.com/ai/nanoid
+const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
+
 // Генерирует случайный тип маршрута
 const generateType = () => {
   const type = [`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Drive`, `Flight`, `Check`, `Sightseeing`, `Restaurant`];
@@ -70,6 +76,7 @@ export const generatePoint = () => {
   const date = generateDate();
 
   return {
+    id: generateId(),
     type,
     city,
     date,

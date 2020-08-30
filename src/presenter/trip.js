@@ -7,7 +7,7 @@ import SortView from '../view/sort.js';
 import ListDays from '../view/list-days.js';
 import NoPointsView from '../view/no-points.js';
 import PointPresenter from "./point.js";
-import {renderPosition, render, replace} from "../utils/render.js";
+import {renderPosition, render, replace, remove} from "../utils/render.js";
 import {getDateTime} from "../utils/date.js";
 import {sortTime, sortPrice} from "../utils/sort.js";
 import {SortType} from '../utils/const.js';
@@ -20,7 +20,15 @@ export default class Trip {
     this._sortComponent = new SortView();
     this._listDaysComponent = new ListDays();
     this._noPointsComponent = new NoPointsView(points);
+    this._dayComponent = new DayView();
+
     this._currentSortType = SortType.DEFAULT;
+
+    // Observer, содержит объект всех созданных new PointPresenter
+    // для того чтобы была ссылка на них, это дает возможность всех их удалить
+    // Формат id : {new PointPresenter}
+    this._pointsObserver = {};
+    this._daysObserver = {};
 
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
@@ -43,7 +51,17 @@ export default class Trip {
   }
 
   _clearTaskList() {
-    this._listDaysComponent.getElement().innerHTML = ``;
+    // Очищает маршруты
+    Object
+      .values(this._pointsObserver)
+      .forEach((point) => point.destroy());
+    this._pointsObserver = {};
+
+    // Очищает дни
+    Object
+      .values(this._daysObserver)
+      .forEach((point) => point.destroy());
+    this._daysObserver = {};
   }
 
   // Сортировка, принимает аргумент который сообщает какая сортировка выбрана
@@ -96,6 +114,7 @@ export default class Trip {
   _renderPoint(pointListElement, point) {
     const pointPresenter = new PointPresenter(pointListElement, point);
     pointPresenter.init();
+    this._pointsObserver[point.id] = pointPresenter;
   }
 
   // Метод отрисовки дней и всех маршрутов
@@ -118,7 +137,11 @@ export default class Trip {
     // Отрисовка дней
     newArr.forEach((el, index) => {
       const siteListDays = document.querySelector(`.trip-days`);
-      render(siteListDays, new DayView(el, index), renderPosition.BEFOREEND);
+      const dayComponent = new DayView(el, index);
+
+      render(siteListDays, dayComponent, renderPosition.BEFOREEND);
+      // Запмсывает все компоненты в _daysObserver, для возможности их удаления
+      this._daysObserver[el.id] = dayComponent;
     });
 
     // Отрисовка маршрутов для каждого дня
@@ -136,9 +159,14 @@ export default class Trip {
   _renderSortEvents(pointsList) {
 
     // Отрисовка дней
-    pointsList.forEach(() => {
+    pointsList.forEach((el) => {
+
       const siteListDays = document.querySelector(`.trip-days`);
-      render(siteListDays, new NoDayView(), renderPosition.BEFOREEND);
+      const dayComponent = new DayView();
+
+      render(siteListDays, dayComponent, renderPosition.BEFOREEND);
+      // Запмсывает все компоненты в _daysObserver, для возможности их удаления
+      this._daysObserver[el.id] = dayComponent;
     });
 
     // Для каждого дня добавляет маршруты

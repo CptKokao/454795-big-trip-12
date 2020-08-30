@@ -1,12 +1,13 @@
 import {getFormatDate, getDateTime} from "../utils/date.js";
+import {remove} from "../utils/render.js";
 import Abstract from './abstract.js';
 
 const createDayTemplate = (events, index) => {
   return (
     `<li class="trip-days__item  day">
       <div class="day__info">
-        <span class="day__counter">${index + 1}</span>
-        <time class="day__date" datetime="${getDateTime(events.date[0], `-`)}">${getFormatDate(events.date[0], true)}</time>
+        <span class="day__counter">${events ? index + 1 : ``}</span>
+        <time class="day__date" datetime="${events ? getDateTime(events.date[0], `-`) : ``}">${events ? getFormatDate(events.date[0], true) : ``}</time>
       </div>
       <ul class="trip-events__list"></ul>
     </li>`);
@@ -22,4 +23,9 @@ export default class Day extends Abstract {
   getTemplate() {
     return createDayTemplate(this._points, this.index);
   }
+
+  destroy() {
+    remove(this);
+  }
+
 }
