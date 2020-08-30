@@ -173,18 +173,20 @@ const createFormTemplate = (point) => {
 export default class Form extends Abstract {
   constructor(point) {
     super();
-    this._point = point;
+    this._data = Form.parsePointToData(point);
+
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
   }
 
   getTemplate() {
-    return createFormTemplate(this._point);
+    return createFormTemplate(this._data);
   }
 
   _formSubmitHandler(e) {
     e.preventDefault();
-    this._callback.formSubmit(this._point);
+    this._callback.formSubmit(this._data);
+    this._callback.formSubmit(Form.parseDataToPoint(this._data));
   }
 
   _favoriteClickHandler(e) {
@@ -202,5 +204,27 @@ export default class Form extends Abstract {
   setFavoriteClickHandler(callback) {
     this._callback.favotiteClick = callback;
     this.getElement().querySelector(`#event-favorite`).addEventListener(`click`, this._favoriteClickHandler);
+  }
+
+  static parsePointToData(point) {
+    return Object.assign(
+        {},
+        point,
+        {
+          isFavorite: point.isFavorite !== null,
+        }
+    );
+  }
+
+  static parseDataToPoint(data) {
+    data = Object.assign({}, data);
+
+    if (!data.isFavorite) {
+      data.isFavorite = null;
+    }
+
+    delete data.isFavorite;
+
+    return data;
   }
 }
