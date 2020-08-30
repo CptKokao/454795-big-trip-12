@@ -18,3 +18,4 @@ render(mainElement, infoComponent, renderPosition.AFTERBEGIN);
 
 const tripPresenter = new TripPresenter(points);
 tripPresenter.init(points);
+console.log(points);

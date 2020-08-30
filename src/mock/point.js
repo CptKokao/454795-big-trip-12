@@ -84,5 +84,6 @@ export const generatePoint = () => {
     offers: generateOffers(),
     description,
     photo,
+    isFavorite: Boolean(getRandomInteger(0, 1))
   };
 };
