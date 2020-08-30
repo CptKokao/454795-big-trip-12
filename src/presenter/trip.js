@@ -6,6 +6,7 @@ import PointView from '../view/point.js';
 import SortView from '../view/sort.js';
 import ListDays from '../view/list-days.js';
 import NoPointsView from '../view/no-points.js';
+import PointPresenter from "./point.js";
 import {renderPosition, render, replace} from "../utils/render.js";
 import {getDateTime} from "../utils/date.js";
 import {sortTime, sortPrice} from "../utils/sort.js";
@@ -93,38 +94,8 @@ export default class Trip {
 
   // Метод отрисовки одного маршрутов
   _renderPoint(pointListElement, point) {
-    const formComponent = new FormView(point);
-    const pointComponent = new PointView(point);
-
-    const replaceCardToForm = () => {
-      replace(formComponent, pointComponent);
-    };
-
-    const replaceFormToCard = () => {
-      replace(pointComponent, formComponent);
-    };
-
-    const onEscKeyDown = (e) => {
-      if (e.key === `Escape` || e.key === `Esc`) {
-        e.preventDefault();
-        replaceFormToCard();
-        document.removeEventListener(`keydown`, onEscKeyDown);
-      }
-    };
-
-    // Событие клик по кнопки маршрута
-    pointComponent.setClickHandler(() => {
-      replaceCardToForm();
-      document.addEventListener(`keydown`, onEscKeyDown);
-    });
-
-    // Событие submit на кнопки Save в форме редактирования
-    formComponent.setFormSubmitHandler(() => {
-      replaceFormToCard();
-      document.addEventListener(`keydown`, onEscKeyDown);
-    });
-
-    render(pointListElement, pointComponent, renderPosition.BEFOREEND);
+    const pointPresenter = new PointPresenter(pointListElement, point);
+    pointPresenter.init();
   }
 
   // Метод отрисовки дней и всех маршрутов
