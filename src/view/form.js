@@ -184,7 +184,7 @@ export default class Form extends Abstract {
 
   _formSubmitHandler(e) {
     e.preventDefault();
-    this._callback.formSubmit();
+    this._callback.formSubmit(this._point);
   }
 
   _favoriteClickHandler(e) {

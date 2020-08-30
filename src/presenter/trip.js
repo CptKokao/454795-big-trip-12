@@ -31,9 +31,10 @@ export default class Trip {
     this._pointsObserver = {};
     this._daysObserver = {};
 
+    // Обработчик сортировки
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
-    this._handlePointChange = this._handleTaskChange.bind(this);
-    // ^^^^^^^^^
+    // Обработчик изменения маршрута
+    this._handlePointChange = this._handlePointChange.bind(this);
   }
 
   init(points) {
@@ -56,10 +57,10 @@ export default class Trip {
   // Событие при изменеии данных в маршруте
   _handlePointChange(updatedPoint) {
     // Обновляет массив
-    this._arrPoints = updateItem(this._boardTasks, updatedPoint);
+    this._arrPoints = updateItem(this._arrPoints, updatedPoint);
     // Обновляет исходный массив
-    this._sourcedArrPoints = updateItem(this._sourcedBoardTasks, updatedPoint);
-    // ^^^^^^^
+    this._sourcedArrPoints = updateItem(this._sourcedArrPoints, updatedPoint);
+
     this._pointsObserver[updatedPoint.id].init(updatedPoint);
   }
 
@@ -125,7 +126,7 @@ export default class Trip {
 
   // Метод отрисовки одного маршрутов
   _renderPoint(pointListElement, point) {
-    const pointPresenter = new PointPresenter(pointListElement, point);
+    const pointPresenter = new PointPresenter(pointListElement, point, this._handlePointChange);
     pointPresenter.init();
     this._pointsObserver[point.id] = pointPresenter;
   }

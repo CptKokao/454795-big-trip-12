@@ -4,21 +4,25 @@ import PointView from '../view/point.js';
 import {renderPosition, render, replace, remove} from "../utils/render.js";
 
 export default class Point {
-  constructor(pointListElement, point) {
+  constructor(pointListElement, point, changeData) {
     this._formComponent = new FormView(point);
     this._pointComponent = new PointView(point);
+
+    this._changeData = changeData;
+    // ^^^^^^^^^
 
     this._pointListElement = pointListElement;
     this._point = point;
 
-    this._handleFavoriteChange = this._handleFavoriteChange.bind(this);
+    this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
   }
 
   // Запуск метода для отрисовки всех маршрутов
   init() {
     this._renderPoint(this._pointListElement, this._point);
-    this._formComponent.setFavoriteClcikHandler(this._handleFavoriteChange);
+    this._formComponent.setFavoriteClcikHandler(this._handleFavoriteClick);
   }
+
 
   // Метод отрисовки одного маршрутов
   _renderPoint() {
@@ -46,7 +50,10 @@ export default class Point {
     });
 
     // Событие submit на кнопки Save в форме редактирования
-    this._formComponent.setFormSubmitHandler(() => {
+    this._formComponent.setFormSubmitHandler((point) => {
+      // Вызывает
+      this._changeData(point);
+
       replaceFormToCard();
       document.addEventListener(`keydown`, onEscKeyDown);
     });
@@ -59,9 +66,15 @@ export default class Point {
     remove(this._pointComponent);
   }
 
-  // Метод при событие favorite
-  _handleFavoriteChange() {
-    console.log('123');
-
+  _handleFavoriteClick() {
+    this._changeData(
+        Object.assign(
+            {},
+            this._point,
+            {
+              isFavorite: !this._point.isFavorite
+            }
+        )
+    );
   }
 }
