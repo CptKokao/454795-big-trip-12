@@ -1,4 +1,5 @@
 import {getDateTime, getShortTime} from "../utils/date.js";
+import {generateOffers} from "../mock/point.js";
 import Abstract from './abstract.js';
 
 const createTypeTemplate = (type) => {
@@ -160,6 +161,9 @@ const createFormTemplate = (point) => {
               <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"/>
             </svg>
           </label>
+          <button class="event__rollup-btn" type="button">
+            <span class="visually-hidden">Open event</span>
+          </button>
         </header>
         <section class="event__details">
           ${createOfferTemplate(offers)}
@@ -177,21 +181,91 @@ export default class Form extends Abstract {
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
+
+    this._typeChangeHandler = this._typeChangeHandler.bind(this);
+
+    this._setInnerHandlers();
   }
 
   getTemplate() {
     return createFormTemplate(this._data);
   }
 
+  // Метод вызывается при нажатии submit в форме
   _formSubmitHandler(e) {
     e.preventDefault();
     this._callback.formSubmit(this._data);
     this._callback.formSubmit(Form.parseDataToPoint(this._data));
   }
 
+  _clickCloseHandler(evt) {
+    evt.preventDefault();
+    console.log('123');
+    this._replaceFormToCard();
+  }
+
+  setFormSubmitHandler(callback) {
+    // callback - эта функция которая записывается в объект this._callback
+    // для того чтобы осталась ссылка на нее, это дает возможность удалить addEventListener
+    this._callback.formSubmit = callback;
+    this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
+  }
+
+  // ?????????????
+  setClickCloseHandler(callback) {
+    this._callback.close = callback;
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._clickCloseHandler);
+  }
+
+  // Метод вызывается при изменения типа транспорта
+  _typeChangeHandler(e) {
+    e.preventDefault();
+    this.updateData({
+      type: e.target.value,
+      offers: generateOffers(),
+      // description: generateDescription()
+    });
+  }
+
+  // Метод вызывается при изменения favorite
   _favoriteClickHandler(e) {
     e.preventDefault();
-    this._callback.favotiteClick();
+    this.updateData({
+      isFavorite: !this._data.isFavorite
+    });
+  }
+
+  // Метод вызывается при изменения destination(city)
+  _destinationInputHandler(e) {
+    e.preventDefault();
+    this.updateData({
+      city: e.target.value
+    }, true);
+  }
+
+  // Хранятся локальные обработчики
+  _setInnerHandlers() {
+    // Обработчик на favorite
+    this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, this._favoriteClickHandler);
+
+    // Обработчик на close
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._clickCloseHandler);
+
+    // Обработчик на destination(city)
+    this.getElement().querySelector(`.event__input--destination`).addEventListener(`input`, this._destinationInputHandler);
+
+    // Обработчик на type(тип транспорта)
+    const typeContainers = this.getElement().querySelectorAll(`.event__type-input`);
+    for (const container of typeContainers) {
+      container.addEventListener(`input`, this._typeChangeHandler);
+    }
+  }
+
+  // Восстанавливает обработчики
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setClickCloseHandler(this._callback.close);
   }
 
   // Обновляет данные в свойстве _data, а потом вызывает обновление шаблона
@@ -221,36 +295,24 @@ export default class Form extends Abstract {
     prevElement = null; // Чтобы окончательно "убить" ссылку на prevElement
   }
 
-  setFormSubmitHandler(callback) {
-    // callback - эта функция которая записывается в объект this._callback
-    // для того чтобы осталась ссылка на нее, это дает возможность удалить addEventListener
-    this._callback.formSubmit = callback;
-    this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
-  }
-
-  setFavoriteClickHandler(callback) {
-    this._callback.favotiteClick = callback;
-    this.getElement().querySelector(`#event-favorite`).addEventListener(`click`, this._favoriteClickHandler);
-  }
-
   static parsePointToData(point) {
     return Object.assign(
         {},
-        point,
-        {
-          isFavorite: point.isFavorite !== null,
-        }
+        point
+        // {
+        //   isFavorite: point.isFavorite !== null,
+        // }
     );
   }
 
   static parseDataToPoint(data) {
     data = Object.assign({}, data);
 
-    if (!data.isFavorite) {
-      data.isFavorite = null;
-    }
+    // if (!data.isFavorite) {
+    //   data.isFavorite = null;
+    // }
 
-    delete data.isFavorite;
+    // delete data.isFavorite;
 
     return data;
   }

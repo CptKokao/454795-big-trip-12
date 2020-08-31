@@ -60,7 +60,7 @@ const generateDate = () => {
 };
 
 // Генерирует доп. предложение
-const generateOffers = () => {
+export const generateOffers = () => {
   const countOffers = getRandomInteger(0, 5);
   const titles = [`Order Uber`, `Add luggage`, `Rent a car`, `Add breakfast`, `Book tickets`, `Lunch in city`, `Switch to comfort`];
   const offers = new Array(countOffers).fill().map(() => ({title: titles[getRandomInteger(0, titles.length - 1)], cost: getRandomInteger(5, 100), isChecked: getRandomInteger(0, 1)}));

@@ -13,7 +13,6 @@ export default class Point {
     this.listDaysComponent = listDaysComponent;
     this._pointListElement = pointListElement;
 
-    this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
   }
 
   // Запуск метода для отрисовки всех маршрутов
@@ -25,8 +24,6 @@ export default class Point {
 
     this._formComponent = new FormView(point);
     this._pointComponent = new PointView(point);
-
-
 
     if (prevFormComponent === null || prevPointEditComponent === null) {
       this._renderPoint(this._pointListElement, point);
@@ -46,7 +43,6 @@ export default class Point {
     remove(prevFormComponent);
     remove(prevPointEditComponent);
   }
-
 
   // Метод отрисовки одного маршрутов
   _renderPoint() {
@@ -82,23 +78,13 @@ export default class Point {
       document.addEventListener(`keydown`, onEscKeyDown);
     });
 
+    this._formComponent.setClickCloseHandler(this._handleCloseClick);
+
     render(this._pointListElement, this._pointComponent, renderPosition.BEFOREEND);
   }
 
   destroy() {
     remove(this._formComponent);
     remove(this._pointComponent);
-  }
-
-  _handleFavoriteClick() {
-    this._changeData(
-        Object.assign(
-            {},
-            this._point,
-            {
-              isFavorite: !this._point.isFavorite
-            }
-        )
-    );
   }
 }
