@@ -78,7 +78,10 @@ export default class Point {
       document.addEventListener(`keydown`, onEscKeyDown);
     });
 
-    this._formComponent.setClickCloseHandler(this._handleCloseClick);
+    // Событие ckick на кнопки ^ в форме редактирования
+    this._formComponent.setFormClickCloseHandler(() => {
+      replaceFormToCard();
+    });
 
     render(this._pointListElement, this._pointComponent, renderPosition.BEFOREEND);
   }

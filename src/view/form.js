@@ -1,5 +1,5 @@
 import {getDateTime, getShortTime} from "../utils/date.js";
-import {generateOffers} from "../mock/point.js";
+import {generateOffers, generateDescription} from "../mock/point.js";
 import Abstract from './abstract.js';
 
 const createTypeTemplate = (type) => {
@@ -180,8 +180,8 @@ export default class Form extends Abstract {
     this._data = Form.parsePointToData(point);
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._clickCloseHandlerHandler = this._clickCloseHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
-
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
 
     this._setInnerHandlers();
@@ -198,12 +198,13 @@ export default class Form extends Abstract {
     this._callback.formSubmit(Form.parseDataToPoint(this._data));
   }
 
-  _clickCloseHandler(evt) {
-    evt.preventDefault();
-    console.log('123');
-    this._replaceFormToCard();
+  // Метод вызывается при нажатии ^ в форме
+  _clickCloseHandler(e) {
+    e.preventDefault();
+    this._callback.close();
   }
 
+  // Вызывыется из point.js при нажатии на submit в форме
   setFormSubmitHandler(callback) {
     // callback - эта функция которая записывается в объект this._callback
     // для того чтобы осталась ссылка на нее, это дает возможность удалить addEventListener
@@ -211,8 +212,8 @@ export default class Form extends Abstract {
     this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
   }
 
-  // ?????????????
-  setClickCloseHandler(callback) {
+  // Вызывыется из point.js при нажатии на ^ в форме
+  setFormClickCloseHandler(callback) {
     this._callback.close = callback;
     this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._clickCloseHandler);
   }
@@ -223,7 +224,7 @@ export default class Form extends Abstract {
     this.updateData({
       type: e.target.value,
       offers: generateOffers(),
-      // description: generateDescription()
+      description: generateDescription()
     });
   }
 
@@ -249,7 +250,7 @@ export default class Form extends Abstract {
     this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, this._favoriteClickHandler);
 
     // Обработчик на close
-    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._clickCloseHandler);
+    // this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._clickCloseHandler);
 
     // Обработчик на destination(city)
     this.getElement().querySelector(`.event__input--destination`).addEventListener(`input`, this._destinationInputHandler);
@@ -265,7 +266,7 @@ export default class Form extends Abstract {
   restoreHandlers() {
     this._setInnerHandlers();
     this.setFormSubmitHandler(this._callback.formSubmit);
-    this.setClickCloseHandler(this._callback.close);
+    this.setFormClickCloseHandler(this._callback.close);
   }
 
   // Обновляет данные в свойстве _data, а потом вызывает обновление шаблона
@@ -293,6 +294,8 @@ export default class Form extends Abstract {
 
     parent.replaceChild(newElement, prevElement);
     prevElement = null; // Чтобы окончательно "убить" ссылку на prevElement
+
+    this.restoreHandlers();
   }
 
   static parsePointToData(point) {
