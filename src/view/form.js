@@ -182,6 +182,7 @@ export default class Form extends Abstract {
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._clickCloseHandlerHandler = this._clickCloseHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
+    this._destinationInputHandler = this._destinationInputHandler.bind(this);
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
 
     this._setInnerHandlers();
@@ -239,6 +240,7 @@ export default class Form extends Abstract {
   // Метод вызывается при изменения destination(city)
   _destinationInputHandler(e) {
     e.preventDefault();
+    console.log('123');
     this.updateData({
       city: e.target.value
     }, true);
@@ -249,8 +251,6 @@ export default class Form extends Abstract {
     // Обработчик на favorite
     this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, this._favoriteClickHandler);
 
-    // Обработчик на close
-    // this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._clickCloseHandler);
 
     // Обработчик на destination(city)
     this.getElement().querySelector(`.event__input--destination`).addEventListener(`input`, this._destinationInputHandler);
@@ -270,7 +270,7 @@ export default class Form extends Abstract {
   }
 
   // Обновляет данные в свойстве _data, а потом вызывает обновление шаблона
-  updateData(update) {
+  updateData(update, justDataUpdating) {
     if (!update) {
       return;
     }
@@ -280,6 +280,10 @@ export default class Form extends Abstract {
         this._data,
         update
     );
+
+    if (justDataUpdating) {
+      return;
+    }
 
     this.updateElement();
   }
