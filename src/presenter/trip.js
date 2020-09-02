@@ -35,6 +35,12 @@ export default class Trip {
   }
 
   init(points) {
+    // Исходный массив маршрутов, используется для восстановления исходного порядка
+    this._sourcedArrPoints = points.slice();
+
+    // Копия исходного массива маршрутов, используется для сортировки
+    this._arrPoints = points.slice();
+
     // Отрисовка эл-т sort в верстку
     this._renderSort();
 
@@ -43,18 +49,13 @@ export default class Trip {
 
     // Отрисовка дней и маршрутов
     this._renderListEvents(points);
-
-    // Исходный массив маршрутов, используется для восстановления исходного порядка
-    this._sourcedArrPoints = points.slice();
-
-    // Копия исходного массива маршрутов, используется для сортировки
-    this._arrPoints = points.slice();
   }
 
   // Событие при изменеии данных в маршруте
   _handlePointChange(updatedPoint) {
     // Обновляет массив
     this._arrPoints = updateItem(this._arrPoints, updatedPoint);
+
     // Обновляет исходный массив
     this._sourcedArrPoints = updateItem(this._sourcedArrPoints, updatedPoint);
 

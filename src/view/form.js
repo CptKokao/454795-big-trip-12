@@ -186,6 +186,8 @@ export default class Form extends Abstract {
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
 
     this._setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setFormClickCloseHandler(this._callback.close);
   }
 
   getTemplate() {
@@ -195,7 +197,7 @@ export default class Form extends Abstract {
   // Метод вызывается при нажатии submit в форме
   _formSubmitHandler(e) {
     e.preventDefault();
-    this._callback.formSubmit(this._data);
+    // this._callback.formSubmit(this._data);
     this._callback.formSubmit(Form.parseDataToPoint(this._data));
   }
 
@@ -240,7 +242,6 @@ export default class Form extends Abstract {
   // Метод вызывается при изменения destination(city)
   _destinationInputHandler(e) {
     e.preventDefault();
-    console.log('123');
     this.updateData({
       city: e.target.value
     }, true);
@@ -251,7 +252,6 @@ export default class Form extends Abstract {
     // Обработчик на favorite
     this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, this._favoriteClickHandler);
 
-
     // Обработчик на destination(city)
     this.getElement().querySelector(`.event__input--destination`).addEventListener(`input`, this._destinationInputHandler);
 
@@ -260,13 +260,6 @@ export default class Form extends Abstract {
     for (const container of typeContainers) {
       container.addEventListener(`input`, this._typeChangeHandler);
     }
-  }
-
-  // Восстанавливает обработчики
-  restoreHandlers() {
-    this._setInnerHandlers();
-    this.setFormSubmitHandler(this._callback.formSubmit);
-    this.setFormClickCloseHandler(this._callback.close);
   }
 
   // Обновляет данные в свойстве _data, а потом вызывает обновление шаблона
@@ -282,6 +275,7 @@ export default class Form extends Abstract {
     );
 
     if (justDataUpdating) {
+      debugger
       return;
     }
 
@@ -299,28 +293,17 @@ export default class Form extends Abstract {
     parent.replaceChild(newElement, prevElement);
     prevElement = null; // Чтобы окончательно "убить" ссылку на prevElement
 
-    this.restoreHandlers();
+    this._setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+    // this.setFormClickCloseHandler(this._callback.close);
   }
 
   static parsePointToData(point) {
-    return Object.assign(
-        {},
-        point
-        // {
-        //   isFavorite: point.isFavorite !== null,
-        // }
-    );
+    return Object.assign({}, point);
   }
 
   static parseDataToPoint(data) {
     data = Object.assign({}, data);
-
-    // if (!data.isFavorite) {
-    //   data.isFavorite = null;
-    // }
-
-    // delete data.isFavorite;
-
     return data;
   }
 }

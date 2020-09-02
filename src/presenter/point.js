@@ -13,11 +13,15 @@ export default class Point {
     this.listDaysComponent = listDaysComponent;
     this._pointListElement = pointListElement;
 
+    this._onEscKeyDown = this._onEscKeyDown.bind(this);
+    this._setClickHandler = this._setClickHandler.bind(this);
+    this._setSubmitHandler = this._setSubmitHandler.bind(this);
+
   }
 
   // Запуск метода для отрисовки всех маршрутов
   init(point) {
-    this._point = point;
+    // this._point = point;
 
     const prevFormComponent = this._formComponent;
     const prevPointEditComponent = this._pointComponent;
@@ -25,8 +29,17 @@ export default class Point {
     this._formComponent = new FormView(point);
     this._pointComponent = new PointView(point);
 
+    // Событие клик по кнопки маршрута
+    this._pointComponent.setClickHandler(this._setClickHandler);
+
+    // Событие click на кнопки ^ в форме редактирования
+    this._formComponent.setFormClickCloseHandler();
+
+    // Событие submit на кнопки Save в форме редактирования
+    this._formComponent.setFormSubmitHandler(this._setSubmitHandler);
+
     if (prevFormComponent === null || prevPointEditComponent === null) {
-      this._renderPoint(this._pointListElement, point);
+      this._renderPoint(point);
       return;
     }
 
@@ -47,41 +60,14 @@ export default class Point {
   // Метод отрисовки одного маршрутов
   _renderPoint() {
 
-    const replaceCardToForm = () => {
-      replace(this._formComponent, this._pointComponent);
-    };
-
-    const replaceFormToCard = () => {
-      replace(this._pointComponent, this._formComponent);
-    };
-
-    const onEscKeyDown = (e) => {
-      if (e.key === `Escape` || e.key === `Esc`) {
-        e.preventDefault();
-        replaceFormToCard();
-        document.removeEventListener(`keydown`, onEscKeyDown);
-      }
-    };
-
     // Событие клик по кнопки маршрута
-    this._pointComponent.setClickHandler(() => {
-      replaceCardToForm();
-      document.addEventListener(`keydown`, onEscKeyDown);
-    });
+    this._pointComponent.setClickHandler(this._setClickHandler);
 
-    // Событие submit на кнопки Save в форме редактирования
-    this._formComponent.setFormSubmitHandler((point) => {
-      // Вызывает this.init(), для отрисовки изменения
-      this._changeData(point);
+    // // Событие submit на кнопки Save в форме редактирования
+    // this._formComponent.setFormSubmitHandler(this._setSubmitHandler);
 
-      replaceFormToCard();
-      document.addEventListener(`keydown`, onEscKeyDown);
-    });
-
-    // Событие ckick на кнопки ^ в форме редактирования
-    this._formComponent.setFormClickCloseHandler(() => {
-      replaceFormToCard();
-    });
+    // // Событие click на кнопки ^ в форме редактирования
+    // this._formComponent.setFormClickCloseHandler();
 
     render(this._pointListElement, this._pointComponent, renderPosition.BEFOREEND);
   }
@@ -90,4 +76,40 @@ export default class Point {
     remove(this._formComponent);
     remove(this._pointComponent);
   }
+
+  _replaceCardToForm() {
+    replace(this._formComponent, this._pointComponent);
+  }
+
+  _replaceFormToCard() {
+    replace(this._pointComponent, this._formComponent);
+  }
+
+  _setClickHandler() {
+    this._replaceCardToForm();
+    document.addEventListener(`keydown`, this._onEscKeyDown);
+  }
+
+  _setSubmitHandler(point) {
+    // Вызывает this.init(), для отрисовки изменения
+    this._changeData(point);
+
+    this._replaceFormToCard();
+    document.addEventListener(`keydown`, this._onEscKeyDown);
+  }
+
+  _onEscKeyDown(e) {
+    if (e.key === `Escape` || e.key === `Esc`) {
+      e.preventDefault();
+      this._replaceFormToCard();
+      document.removeEventListener(`keydown`, this._onEscKeyDown);
+    }
+  }
+
+  // Восстанавливает обработчики
+  // restoreHandlers() {
+  //   this._setFormSubmitHandler();
+  //   this._setClickHandler(this._callback.formSubmit);
+  // }
+
 }

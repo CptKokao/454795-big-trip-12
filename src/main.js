@@ -17,4 +17,5 @@ render(mainElement, filterComponent, renderPosition.AFTERBEGIN);
 render(mainElement, infoComponent, renderPosition.AFTERBEGIN);
 
 const tripPresenter = new TripPresenter(points);
+debugger
 tripPresenter.init(points);
