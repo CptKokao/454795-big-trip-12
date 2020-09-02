@@ -21,13 +21,13 @@ export default class Point {
 
   // Запуск метода для отрисовки всех маршрутов
   init(point) {
-    // this._point = point;
+    this._point = point;
 
     const prevFormComponent = this._formComponent;
     const prevPointEditComponent = this._pointComponent;
 
-    this._formComponent = new FormView(point);
-    this._pointComponent = new PointView(point);
+    this._formComponent = new FormView(this._point);
+    this._pointComponent = new PointView(this._point);
 
     // Событие клик по кнопки маршрута
     this._pointComponent.setClickHandler(this._setClickHandler);
@@ -63,12 +63,6 @@ export default class Point {
     // Событие клик по кнопки маршрута
     this._pointComponent.setClickHandler(this._setClickHandler);
 
-    // // Событие submit на кнопки Save в форме редактирования
-    // this._formComponent.setFormSubmitHandler(this._setSubmitHandler);
-
-    // // Событие click на кнопки ^ в форме редактирования
-    // this._formComponent.setFormClickCloseHandler();
-
     render(this._pointListElement, this._pointComponent, renderPosition.BEFOREEND);
   }
 
@@ -102,14 +96,10 @@ export default class Point {
     if (e.key === `Escape` || e.key === `Esc`) {
       e.preventDefault();
       this._replaceFormToCard();
+
+      // Сброс при выходе
+      this._formComponent.reset(this._point);
       document.removeEventListener(`keydown`, this._onEscKeyDown);
     }
   }
-
-  // Восстанавливает обработчики
-  // restoreHandlers() {
-  //   this._setFormSubmitHandler();
-  //   this._setClickHandler(this._callback.formSubmit);
-  // }
-
 }

@@ -192,6 +192,12 @@ export default class Form extends SmartView {
     return createFormTemplate(this._data);
   }
 
+  reset() {
+    this.updateData(
+        Form.parsePointToData(this._data)
+    );
+  }
+
   // Метод вызывается при нажатии submit в форме
   _formSubmitHandler(e) {
     e.preventDefault();

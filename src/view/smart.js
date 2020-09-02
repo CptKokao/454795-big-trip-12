@@ -8,6 +8,7 @@ export default class Smart extends Abstract {
 
   // Обновляет данные в свойстве _data, а потом вызывает обновление шаблона
   updateData(update, justDataUpdating) {
+
     if (!update) {
       return;
     }
@@ -27,6 +28,7 @@ export default class Smart extends Abstract {
 
   // Удаляет старый DOM элемент, вызывет генерацию нового и заменяет один на другой
   updateElement() {
+    debugger
     let prevElement = this.getElement();
     const parent = prevElement.parentElement;
     this.removeElement();
