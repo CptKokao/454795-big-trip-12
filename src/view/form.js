@@ -1,6 +1,6 @@
 import {getDateTime, getShortTime} from "../utils/date.js";
 import {generateOffers, generateDescription} from "../mock/point.js";
-import Abstract from './abstract.js';
+import SmartView from "./smart.js";
 
 const createTypeTemplate = (type) => {
 
@@ -174,7 +174,7 @@ const createFormTemplate = (point) => {
   );
 };
 
-export default class Form extends Abstract {
+export default class Form extends SmartView {
   constructor(point) {
     super();
     this._data = Form.parsePointToData(point);
@@ -186,8 +186,6 @@ export default class Form extends Abstract {
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
 
     this._setInnerHandlers();
-    this.setFormSubmitHandler(this._callback.formSubmit);
-    this.setFormClickCloseHandler(this._callback.close);
   }
 
   getTemplate() {
@@ -262,40 +260,10 @@ export default class Form extends Abstract {
     }
   }
 
-  // Обновляет данные в свойстве _data, а потом вызывает обновление шаблона
-  updateData(update, justDataUpdating) {
-    if (!update) {
-      return;
-    }
-
-    this._data = Object.assign(
-        {},
-        this._data,
-        update
-    );
-
-    if (justDataUpdating) {
-      debugger
-      return;
-    }
-
-    this.updateElement();
-  }
-
-  // Удаляет старый DOM элемент, вызывет генерацию нового и заменяет один на другой
-  updateElement() {
-    let prevElement = this.getElement();
-    const parent = prevElement.parentElement;
-    this.removeElement();
-
-    const newElement = this.getElement();
-
-    parent.replaceChild(newElement, prevElement);
-    prevElement = null; // Чтобы окончательно "убить" ссылку на prevElement
-
+  restoreHandlers() {
     this._setInnerHandlers();
     this.setFormSubmitHandler(this._callback.formSubmit);
-    // this.setFormClickCloseHandler(this._callback.close);
+    this.setFormClickCloseHandler(this._callback.close);
   }
 
   static parsePointToData(point) {
