@@ -3,13 +3,21 @@ import FormView from '../view/form.js';
 import PointView from '../view/point.js';
 import {renderPosition, render, replace, remove} from "../utils/render.js";
 
+const Mode = {
+  DEFAULT: `DEFAULT`,
+  EDITING: `EDITING`
+};
+
 export default class Point {
-  constructor(pointListElement, changeData, listDaysComponent) {
+  constructor(pointListElement, changeData, listDaysComponent, changeMode) {
+
+    this._changeData = changeData;
+    this._changeMode = changeMode;
 
     this._formComponent = null;
     this._pointComponent = null;
+    this._mode = Mode.DEFAULT;
 
-    this._changeData = changeData;
     this.listDaysComponent = listDaysComponent;
     this._pointListElement = pointListElement;
 
@@ -45,16 +53,22 @@ export default class Point {
 
     // Проверка на наличие в DOM необходима,
     // чтобы не пытаться заменить то, что не было отрисовано
-    if (this.listDaysComponent.getElement().contains(prevFormComponent.getElement())) {
+    if (this._mode === Mode.DEFAULT) {
       replace(this._formComponent, prevFormComponent);
     }
 
-    if (this.listDaysComponent.getElement().contains(prevPointEditComponent.getElement())) {
+    if (this._mode === Mode.EDITING) {
       replace(this._pointComponent, prevPointEditComponent);
     }
 
     remove(prevFormComponent);
     remove(prevPointEditComponent);
+  }
+
+  resetView() {
+    if (this._mode !== Mode.DEFAULT) {
+      this._replaceFormToCard();
+    }
   }
 
   // Метод отрисовки одного маршрутов
@@ -73,10 +87,15 @@ export default class Point {
 
   _replaceCardToForm() {
     replace(this._formComponent, this._pointComponent);
+    this._changeMode();
+    this._mode = Mode.EDITING;
+    document.addEventListener(`keydown`, this._onEscKeyDown);
   }
 
   _replaceFormToCard() {
     replace(this._pointComponent, this._formComponent);
+    this._mode = Mode.DEFAULT;
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
   }
 
   _setClickHandler() {
@@ -89,7 +108,7 @@ export default class Point {
     this._changeData(point);
 
     this._replaceFormToCard();
-    document.addEventListener(`keydown`, this._onEscKeyDown);
+    // document.addEventListener(`keydown`, this._onEscKeyDown);
   }
 
   _onEscKeyDown(e) {
@@ -99,7 +118,7 @@ export default class Point {
 
       // Сброс при выходе
       this._formComponent.reset(this._point);
-      document.removeEventListener(`keydown`, this._onEscKeyDown);
+      // document.removeEventListener(`keydown`, this._onEscKeyDown);
     }
   }
 }

@@ -32,6 +32,8 @@ export default class Trip {
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
     // Обработчик изменения маршрута
     this._handlePointChange = this._handlePointChange.bind(this);
+
+    this._handleModeChange = this._handleModeChange.bind(this);
   }
 
   init(points) {
@@ -49,6 +51,12 @@ export default class Trip {
 
     // Отрисовка дней и маршрутов
     this._renderListEvents(points);
+  }
+
+  _handleModeChange() {
+    Object
+      .values(this._pointsObserver)
+      .forEach((pointObserver) => pointObserver.resetView());
   }
 
   // Событие при изменеии данных в маршруте
@@ -124,7 +132,7 @@ export default class Trip {
 
   // Метод отрисовки одного маршрутов
   _renderPoint(pointListElement, point) {
-    const pointPresenter = new PointPresenter(pointListElement, this._handlePointChange, this._listDaysComponent);
+    const pointPresenter = new PointPresenter(pointListElement, this._handlePointChange, this._listDaysComponent, this._handleModeChange);
     pointPresenter.init(point);
     this._pointsObserver[point.id] = pointPresenter;
   }
