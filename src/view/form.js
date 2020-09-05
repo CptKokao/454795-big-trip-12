@@ -113,8 +113,7 @@ const createFormTemplate = (point) => {
   const {type, city, date, cost, offers, photo, description, isFavorite} = point;
 
   return (
-    `<div>
-      <form class="trip-events__item  event  event--edit" action="#" method="post">
+    `<form class="trip-events__item  event  event--edit" action="#" method="post">
         <header class="event__header">
           ${createTypeTemplate(type)}
 
@@ -168,9 +167,7 @@ const createFormTemplate = (point) => {
         <section class="event__details">
           ${createOfferTemplate(offers)}
           ${createDestinationTemplate(photo, description)}
-        </section>
-      </form>
-    </div>`
+        </section>`
   );
 };
 
@@ -178,9 +175,10 @@ export default class Form extends SmartView {
   constructor(point) {
     super();
     this._data = Form.parsePointToData(point);
+    this._callback = {};
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
-    this._clickCloseHandlerHandler = this._clickCloseHandler.bind(this);
+    this._clickCloseHandler = this._clickCloseHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
     this._destinationInputHandler = this._destinationInputHandler.bind(this);
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
@@ -201,8 +199,8 @@ export default class Form extends SmartView {
   // Метод вызывается при нажатии submit в форме
   _formSubmitHandler(e) {
     e.preventDefault();
-    // this._callback.formSubmit(this._data);
-    this._callback.formSubmit(Form.parseDataToPoint(this._data));
+    this._callback.formSubmit(this._data);
+    // this._callback.formSubmit(Form.parseDataToPoint(this._data));
   }
 
   // Метод вызывается при нажатии ^ в форме
@@ -216,7 +214,7 @@ export default class Form extends SmartView {
     // callback - эта функция которая записывается в объект this._callback
     // для того чтобы осталась ссылка на нее, это дает возможность удалить addEventListener
     this._callback.formSubmit = callback;
-    this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
+    this.getElement().addEventListener(`submit`, this._formSubmitHandler);
   }
 
   // Вызывыется из point.js при нажатии на ^ в форме

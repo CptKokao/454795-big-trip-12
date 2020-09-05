@@ -28,7 +28,6 @@ export default class Smart extends Abstract {
 
   // Удаляет старый DOM элемент, вызывет генерацию нового и заменяет один на другой
   updateElement() {
-    debugger
     let prevElement = this.getElement();
     const parent = prevElement.parentElement;
     this.removeElement();

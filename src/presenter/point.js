@@ -22,6 +22,7 @@ export default class Point {
     this._pointListElement = pointListElement;
 
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
+    this._onCloseForm = this._onCloseForm.bind(this);
     this._setClickHandler = this._setClickHandler.bind(this);
     this._setSubmitHandler = this._setSubmitHandler.bind(this);
 
@@ -41,7 +42,7 @@ export default class Point {
     this._pointComponent.setClickHandler(this._setClickHandler);
 
     // Событие click на кнопки ^ в форме редактирования
-    this._formComponent.setFormClickCloseHandler();
+    this._formComponent.setFormClickCloseHandler(this._onCloseForm);
 
     // Событие submit на кнопки Save в форме редактирования
     this._formComponent.setFormSubmitHandler(this._setSubmitHandler);
@@ -54,11 +55,11 @@ export default class Point {
     // Проверка на наличие в DOM необходима,
     // чтобы не пытаться заменить то, что не было отрисовано
     if (this._mode === Mode.DEFAULT) {
-      replace(this._formComponent, prevFormComponent);
+      replace(this._pointComponent, prevPointEditComponent);
     }
 
     if (this._mode === Mode.EDITING) {
-      replace(this._pointComponent, prevPointEditComponent);
+      replace(this._formComponent, prevFormComponent);
     }
 
     remove(prevFormComponent);
@@ -111,14 +112,18 @@ export default class Point {
     // document.addEventListener(`keydown`, this._onEscKeyDown);
   }
 
+  // Метод закрытие формы по нажатию Esc
   _onEscKeyDown(e) {
     if (e.key === `Escape` || e.key === `Esc`) {
       e.preventDefault();
-      this._replaceFormToCard();
-
       // Сброс при выходе
       this._formComponent.reset(this._point);
-      // document.removeEventListener(`keydown`, this._onEscKeyDown);
+      this._replaceFormToCard();
     }
+  }
+
+  // Метод закрытие формы по нажатию кнопку закрытия ^
+  _onCloseForm() {
+    this._replaceFormToCard();
   }
 }
