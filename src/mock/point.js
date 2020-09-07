@@ -49,14 +49,17 @@ const generatePhoto = () => {
 const maxDaysGap = 7;
 const daysGap = getRandomInteger(-maxDaysGap, maxDaysGap);
 let currentDate = +((new Date()).setSeconds(0, 0)) + daysGap * 24 * 3600 * 1000;
+let dateStart;
 
-const generateDate = () => {
-  const dataStart = currentDate + getRandomInteger(0, 2) * 3600 * 1000 + getRandomInteger(1, 60) * 60 * 1000;
-  const dataEnd = dataStart + getRandomInteger(1, 12) * 3600 * 1000 + getRandomInteger(1, 60) * 60 * 1000;
-  const eventData = [new Date(dataStart), new Date(dataEnd)];
+const generateStartDate = () => {
+  dateStart = currentDate + getRandomInteger(0, 2) * 3600 * 1000 + getRandomInteger(1, 60) * 60 * 1000;
+  return new Date(dateStart);
+};
+
+const generateEndDate = (date) => {
+  const dataEnd = date + getRandomInteger(1, 12) * 3600 * 1000 + getRandomInteger(1, 60) * 60 * 1000;
   currentDate = dataEnd;
-
-  return eventData;
+  return new Date(dataEnd);
 };
 
 // Генерирует доп. предложение
@@ -73,13 +76,13 @@ export const generatePoint = () => {
   const city = generateCity();
   const description = generateDescription();
   const photo = generatePhoto();
-  const date = generateDate();
 
   return {
     id: generateId(),
     type,
     city,
-    date,
+    startDate: generateStartDate(),
+    endDate: generateEndDate(dateStart),
     cost: getRandomInteger(15, 200),
     offers: generateOffers(),
     description,
