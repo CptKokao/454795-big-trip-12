@@ -113,7 +113,7 @@ const createOfferTemplate = (offers) => {
 
 
 const createFormTemplate = (point) => {
-  const {type, city, startDate, endDate, cost, offers, photo, description, isFavorite} = point;
+  const {type, city, date, cost, offers, photo, description, isFavorite} = point;
 
   return (
     `<form class="trip-events__item  event  event--edit" action="#" method="post">
@@ -137,12 +137,12 @@ const createFormTemplate = (point) => {
             <label class="visually-hidden" for="event-start-time-1">
               From
             </label>
-            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${getDateTime(startDate, `/`)} ${getShortTime(startDate)}">
+            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${getDateTime(date[0], `/`)} ${getShortTime(date[0])}">
             &mdash;
             <label class="visually-hidden" for="event-end-time-1">
               To
             </label>
-            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${getDateTime(endDate, `/`)} ${getShortTime(endDate)}">
+            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${getDateTime(date[1], `/`)} ${getShortTime(date[1])}">
           </div>
 
           <div class="event__field-group  event__field-group--price">
@@ -221,7 +221,7 @@ export default class Form extends SmartView {
           dateFormat: `d/m/y H:i`,
           enableTime: true,
           time24hr: true,
-          defaultDate: this._data.startDate,
+          defaultDate: this._data.date[0],
           onChange: this._startDateChangeHandler
         }
     );
@@ -239,7 +239,7 @@ export default class Form extends SmartView {
           enableTime: true,
           time24hr: true,
           defaultDate: this._data.endDate,
-          minDate: this._data.startDate,
+          minDate: this._data.date[0],
           onChange: this._endDateChangeHandler
         }
     );
