@@ -1,14 +1,13 @@
 
-import FormView from '../view/form.js';
 import DayView from '../view/day.js';
-import NoDayView from '../view/no-day.js';
-import PointView from '../view/point.js';
 import SortView from '../view/sort.js';
 import ListDays from '../view/list-days.js';
 import NoPointsView from '../view/no-points.js';
-import {renderPosition, render, replace} from "../utils/render.js";
+import PointPresenter from "./point.js";
+import {renderPosition, render} from "../utils/render.js";
 import {getDateTime} from "../utils/date.js";
 import {sortTime, sortPrice} from "../utils/sort.js";
+import {updateItem} from "../utils/common.js";
 import {SortType} from '../utils/const.js';
 
 const eventElement = document.querySelector(`.trip-events`);
@@ -19,12 +18,31 @@ export default class Trip {
     this._sortComponent = new SortView();
     this._listDaysComponent = new ListDays();
     this._noPointsComponent = new NoPointsView(points);
+    this._dayComponent = new DayView();
+
     this._currentSortType = SortType.DEFAULT;
 
+    // Observer, содержит объект всех созданных new PointPresenter
+    // для того чтобы была ссылка на них, это дает возможность всех их удалить
+    // Формат id : {new PointPresenter}
+    this._pointsObserver = {};
+    this._daysObserver = {};
+
+    // Обработчик сортировки
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
+    // Обработчик изменения маршрута
+    this._handlePointChange = this._handlePointChange.bind(this);
+
+    this._handleModeChange = this._handleModeChange.bind(this);
   }
 
   init(points) {
+    // Исходный массив маршрутов, используется для восстановления исходного порядка
+    this._sourcedArrPoints = points.slice();
+
+    // Копия исходного массива маршрутов, используется для сортировки
+    this._arrPoints = points.slice();
+
     // Отрисовка эл-т sort в верстку
     this._renderSort();
 
@@ -33,16 +51,37 @@ export default class Trip {
 
     // Отрисовка дней и маршрутов
     this._renderListEvents(points);
+  }
 
-    // Исходный массив маршрутов, используется для восстановления исходного порядка
-    this._sourcedArrPoints = points.slice();
+  _handleModeChange() {
+    Object
+      .values(this._pointsObserver)
+      .forEach((pointObserver) => pointObserver.resetView());
+  }
 
-    // Копия исходного массива маршрутов, используется для сортировки
-    this._arrPoints = points.slice();
+  // Событие при изменеии данных в маршруте
+  _handlePointChange(updatedPoint) {
+    // Обновляет массив
+    this._arrPoints = updateItem(this._arrPoints, updatedPoint);
+
+    // Обновляет исходный массив
+    this._sourcedArrPoints = updateItem(this._sourcedArrPoints, updatedPoint);
+
+    this._pointsObserver[updatedPoint.id].init(updatedPoint);
   }
 
   _clearTaskList() {
-    this._listDaysComponent.getElement().innerHTML = ``;
+    // Очищает маршруты
+    Object
+      .values(this._pointsObserver)
+      .forEach((point) => point.destroy());
+    this._pointsObserver = {};
+
+    // Очищает дни
+    Object
+      .values(this._daysObserver)
+      .forEach((point) => point.destroy());
+    this._daysObserver = {};
   }
 
   // Сортировка, принимает аргумент который сообщает какая сортировка выбрана
@@ -93,38 +132,9 @@ export default class Trip {
 
   // Метод отрисовки одного маршрутов
   _renderPoint(pointListElement, point) {
-    const formComponent = new FormView(point);
-    const pointComponent = new PointView(point);
-
-    const replaceCardToForm = () => {
-      replace(formComponent, pointComponent);
-    };
-
-    const replaceFormToCard = () => {
-      replace(pointComponent, formComponent);
-    };
-
-    const onEscKeyDown = (e) => {
-      if (e.key === `Escape` || e.key === `Esc`) {
-        e.preventDefault();
-        replaceFormToCard();
-        document.removeEventListener(`keydown`, onEscKeyDown);
-      }
-    };
-
-    // Событие клик по кнопки маршрута
-    pointComponent.setClickHandler(() => {
-      replaceCardToForm();
-      document.addEventListener(`keydown`, onEscKeyDown);
-    });
-
-    // Событие submit на кнопки Save в форме редактирования
-    formComponent.setFormSubmitHandler(() => {
-      replaceFormToCard();
-      document.addEventListener(`keydown`, onEscKeyDown);
-    });
-
-    render(pointListElement, pointComponent, renderPosition.BEFOREEND);
+    const pointPresenter = new PointPresenter(pointListElement, this._handlePointChange, this._listDaysComponent, this._handleModeChange);
+    pointPresenter.init(point);
+    this._pointsObserver[point.id] = pointPresenter;
   }
 
   // Метод отрисовки дней и всех маршрутов
@@ -147,7 +157,11 @@ export default class Trip {
     // Отрисовка дней
     newArr.forEach((el, index) => {
       const siteListDays = document.querySelector(`.trip-days`);
-      render(siteListDays, new DayView(el, index), renderPosition.BEFOREEND);
+      const dayComponent = new DayView(el, index);
+
+      render(siteListDays, dayComponent, renderPosition.BEFOREEND);
+      // Запмсывает все компоненты в _daysObserver, для возможности их удаления
+      this._daysObserver[el.id] = dayComponent;
     });
 
     // Отрисовка маршрутов для каждого дня
@@ -165,9 +179,14 @@ export default class Trip {
   _renderSortEvents(pointsList) {
 
     // Отрисовка дней
-    pointsList.forEach(() => {
+    pointsList.forEach((el) => {
+
       const siteListDays = document.querySelector(`.trip-days`);
-      render(siteListDays, new NoDayView(), renderPosition.BEFOREEND);
+      const dayComponent = new DayView();
+
+      render(siteListDays, dayComponent, renderPosition.BEFOREEND);
+      // Запмсывает все компоненты в _daysObserver, для возможности их удаления
+      this._daysObserver[el.id] = dayComponent;
     });
 
     // Для каждого дня добавляет маршруты

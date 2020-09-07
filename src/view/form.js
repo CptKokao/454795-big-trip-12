@@ -1,5 +1,6 @@
 import {getDateTime, getShortTime} from "../utils/date.js";
-import Abstract from './abstract.js';
+import {generateOffers, generateDescription} from "../mock/point.js";
+import SmartView from "./smart.js";
 
 const createTypeTemplate = (type) => {
 
@@ -109,11 +110,10 @@ const createOfferTemplate = (offers) => {
 
 
 const createFormTemplate = (point) => {
-  const {type, city, date, cost, offers, photo, description} = point;
+  const {type, city, date, cost, offers, photo, description, isFavorite} = point;
 
   return (
-    `<div>
-      <form class="trip-events__item  event  event--edit" action="#" method="post">
+    `<form class="trip-events__item  event  event--edit" action="#" method="post">
         <header class="event__header">
           ${createTypeTemplate(type)}
 
@@ -151,35 +151,131 @@ const createFormTemplate = (point) => {
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">Cancel</button>
+          <button class="event__reset-btn" type="reset">Delete</button>
+
+          <input id="event-favorite" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
+          <label class="event__favorite-btn" for="event-favorite">
+            <span class="visually-hidden">Add to favorite</span>
+            <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
+              <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"/>
+            </svg>
+          </label>
+          <button class="event__rollup-btn" type="button">
+            <span class="visually-hidden">Open event</span>
+          </button>
         </header>
         <section class="event__details">
           ${createOfferTemplate(offers)}
           ${createDestinationTemplate(photo, description)}
-        </section>
-      </form>
-    </div>`
+        </section>`
   );
 };
 
-export default class Form extends Abstract {
+export default class Form extends SmartView {
   constructor(point) {
     super();
-    this._point = point;
+    this._data = Form.parsePointToData(point);
+    this._callback = {};
+
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._clickCloseHandler = this._clickCloseHandler.bind(this);
+    this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
+    this._destinationInputHandler = this._destinationInputHandler.bind(this);
+    this._typeChangeHandler = this._typeChangeHandler.bind(this);
+
+    this._setInnerHandlers();
   }
 
   getTemplate() {
-    return createFormTemplate(this._point);
+    return createFormTemplate(this._data);
   }
 
+  reset() {
+    this.updateData(
+        Form.parsePointToData(this._data)
+    );
+  }
+
+  // Метод вызывается при нажатии submit в форме
   _formSubmitHandler(e) {
     e.preventDefault();
-    this._callback.formSubmit();
+    this._callback.formSubmit(this._data);
+    // this._callback.formSubmit(Form.parseDataToPoint(this._data));
   }
 
+  // Метод вызывается при нажатии ^ в форме
+  _clickCloseHandler(e) {
+    e.preventDefault();
+    this._callback.close();
+  }
+
+  // Вызывыется из point.js при нажатии на submit в форме
   setFormSubmitHandler(callback) {
+    // callback - эта функция которая записывается в объект this._callback
+    // для того чтобы осталась ссылка на нее, это дает возможность удалить addEventListener
     this._callback.formSubmit = callback;
-    this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
+    this.getElement().addEventListener(`submit`, this._formSubmitHandler);
+  }
+
+  // Вызывыется из point.js при нажатии на ^ в форме
+  setFormClickCloseHandler(callback) {
+    this._callback.close = callback;
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._clickCloseHandler);
+  }
+
+  // Метод вызывается при изменения типа транспорта
+  _typeChangeHandler(e) {
+    e.preventDefault();
+    this.updateData({
+      type: e.target.value,
+      offers: generateOffers(),
+      description: generateDescription()
+    });
+  }
+
+  // Метод вызывается при изменения favorite
+  _favoriteClickHandler(e) {
+    e.preventDefault();
+    this.updateData({
+      isFavorite: !this._data.isFavorite
+    });
+  }
+
+  // Метод вызывается при изменения destination(city)
+  _destinationInputHandler(e) {
+    e.preventDefault();
+    this.updateData({
+      city: e.target.value
+    }, true);
+  }
+
+  // Хранятся локальные обработчики
+  _setInnerHandlers() {
+    // Обработчик на favorite
+    this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, this._favoriteClickHandler);
+
+    // Обработчик на destination(city)
+    this.getElement().querySelector(`.event__input--destination`).addEventListener(`input`, this._destinationInputHandler);
+
+    // Обработчик на type(тип транспорта)
+    const typeContainers = this.getElement().querySelectorAll(`.event__type-input`);
+    for (const container of typeContainers) {
+      container.addEventListener(`input`, this._typeChangeHandler);
+    }
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setFormClickCloseHandler(this._callback.close);
+  }
+
+  static parsePointToData(point) {
+    return Object.assign({}, point);
+  }
+
+  static parseDataToPoint(data) {
+    data = Object.assign({}, data);
+    return data;
   }
 }
