@@ -113,7 +113,7 @@ const createOfferTemplate = (offers) => {
 
 
 const createFormTemplate = (point) => {
-  const {type, city, date, cost, offers, photo, description, isFavorite} = point;
+  const {type, city, dateStart, dateEnd, cost, offers, photo, description, isFavorite} = point;
 
   return (
     `<form class="trip-events__item  event  event--edit" action="#" method="post">
@@ -137,12 +137,12 @@ const createFormTemplate = (point) => {
             <label class="visually-hidden" for="event-start-time-1">
               From
             </label>
-            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${getDateTime(date[0])} ${getShortTime(date[0])}">
+            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${getDateTime(dateStart)} ${getShortTime(dateStart)}">
             &mdash;
             <label class="visually-hidden" for="event-end-time-1">
               To
             </label>
-            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${getDateTime(date[1])} ${getShortTime(date[1])}">
+            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${getDateTime(dateEnd)} ${getShortTime(dateEnd)}">
           </div>
 
           <div class="event__field-group  event__field-group--price">
@@ -221,7 +221,7 @@ export default class Form extends SmartView {
           dateFormat: `d/m/y H:i`,
           enableTime: true,
           time24hr: true,
-          defaultDate: this._data.date[0],
+          defaultDate: this._data.dateStart,
           onChange: this._startDateChangeHandler
         }
     );
@@ -238,26 +238,23 @@ export default class Form extends SmartView {
           dateFormat: `d/m/y H:i`,
           enableTime: true,
           time24hr: true,
-          defaultDate: this._data.date[1],
-          minDate: this._data.date[0],
+          defaultDate: this._data.dateEnd,
+          minDate: this._data.dateStart,
           onChange: this._endDateChangeHandler
         }
     );
   }
 
   _startDateChangeHandler(selectedDates) {
-    debugger
-    const date0 = this._data.date[0];
     this.updateData({
 
-      date0: new Date(selectedDates[0])
+      dateStart: new Date(selectedDates[0])
     }, true);
   }
 
   _endDateChangeHandler(selectedDates) {
-    const date1 = this._data.date[1];
     this.updateData({
-      date1: new Date(selectedDates[0])
+      dateEnd: new Date(selectedDates[0])
     }, true);
   }
 

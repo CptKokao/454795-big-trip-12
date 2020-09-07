@@ -18,7 +18,7 @@ const createInfoTemplate = (points) => {
         <div class="trip-info__main">
           <h1 class="trip-info__title">${destinations}</h1>
 
-          <p class="trip-info__dates">${getFormatDate(points[1].date[0])}&nbsp;&mdash;&nbsp;${getFormatDate(points[points.length - 1].date[1])}</p>
+          <p class="trip-info__dates">${getFormatDate(points[1].dateStart)}&nbsp;&mdash;&nbsp;${getFormatDate(points[points.length - 1].dateEnd)}</p>
         </div>
 
         <p class="trip-info__cost">
