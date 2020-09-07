@@ -73,12 +73,13 @@ export const generatePoint = () => {
   const city = generateCity();
   const description = generateDescription();
   const photo = generatePhoto();
+  const date = generateDate();
 
   return {
     id: generateId(),
     type,
     city,
-    date: generateDate(),
+    date,
     cost: getRandomInteger(15, 200),
     offers: generateOffers(),
     description,

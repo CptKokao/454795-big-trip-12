@@ -137,12 +137,12 @@ const createFormTemplate = (point) => {
             <label class="visually-hidden" for="event-start-time-1">
               From
             </label>
-            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${getDateTime(date[0], `/`)} ${getShortTime(date[0])}">
+            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${getDateTime(date[0])} ${getShortTime(date[0])}">
             &mdash;
             <label class="visually-hidden" for="event-end-time-1">
               To
             </label>
-            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${getDateTime(date[1], `/`)} ${getShortTime(date[1])}">
+            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${getDateTime(date[1])} ${getShortTime(date[1])}">
           </div>
 
           <div class="event__field-group  event__field-group--price">
@@ -238,7 +238,7 @@ export default class Form extends SmartView {
           dateFormat: `d/m/y H:i`,
           enableTime: true,
           time24hr: true,
-          defaultDate: this._data.endDate,
+          defaultDate: this._data.date[1],
           minDate: this._data.date[0],
           onChange: this._endDateChangeHandler
         }
@@ -246,15 +246,18 @@ export default class Form extends SmartView {
   }
 
   _startDateChangeHandler(selectedDates) {
-
+    debugger
+    const date0 = this._data.date[0];
     this.updateData({
-      startDate: new Date(selectedDates[0])
+
+      date0: new Date(selectedDates[0])
     }, true);
   }
 
   _endDateChangeHandler(selectedDates) {
+    const date1 = this._data.date[1];
     this.updateData({
-      endDate: new Date(selectedDates[0])
+      date1: new Date(selectedDates[0])
     }, true);
   }
 
