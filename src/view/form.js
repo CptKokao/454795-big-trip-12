@@ -1,6 +1,9 @@
 import {getDateTime, getShortTime} from "../utils/date.js";
 import {generateOffers, generateDescription} from "../mock/point.js";
 import SmartView from "./smart.js";
+import flatpickr from "flatpickr";
+
+import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 
 const createTypeTemplate = (type) => {
 
@@ -110,7 +113,7 @@ const createOfferTemplate = (offers) => {
 
 
 const createFormTemplate = (point) => {
-  const {type, city, date, cost, offers, photo, description, isFavorite} = point;
+  const {type, city, dateStart, dateEnd, cost, offers, photo, description, isFavorite} = point;
 
   return (
     `<form class="trip-events__item  event  event--edit" action="#" method="post">
@@ -134,12 +137,12 @@ const createFormTemplate = (point) => {
             <label class="visually-hidden" for="event-start-time-1">
               From
             </label>
-            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${getDateTime(date[0], `/`)} ${getShortTime(date[0])}">
+            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${getDateTime(dateStart)} ${getShortTime(dateStart)}">
             &mdash;
             <label class="visually-hidden" for="event-end-time-1">
               To
             </label>
-            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${getDateTime(date[1], `/`)} ${getShortTime(date[1])}">
+            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${getDateTime(dateEnd)} ${getShortTime(dateEnd)}">
           </div>
 
           <div class="event__field-group  event__field-group--price">
@@ -177,13 +180,20 @@ export default class Form extends SmartView {
     this._data = Form.parsePointToData(point);
     this._callback = {};
 
+    this._startDatepicker = null;
+    this._endDatepicker = null;
+
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._clickCloseHandler = this._clickCloseHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
     this._destinationInputHandler = this._destinationInputHandler.bind(this);
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
+    this._startDateChangeHandler = this._startDateChangeHandler.bind(this);
+    this._endDateChangeHandler = this._endDateChangeHandler.bind(this);
 
     this._setInnerHandlers();
+    this._setStartDatepicker();
+    this._setEndDatepicker();
   }
 
   getTemplate() {
@@ -194,6 +204,58 @@ export default class Form extends SmartView {
     this.updateData(
         Form.parsePointToData(this._data)
     );
+  }
+
+  _setStartDatepicker() {
+    if (this._datepicker) {
+      // В случае обновления компонента удаляем вспомогательные DOM-элементы,
+      // которые создает flatpickr при инициализации
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
+
+    // flatpickr есть смысл инициализировать только в случае,
+    // если поле выбора даты доступно для заполнения
+    this._startDatepicker = flatpickr(this.getElement().querySelector(`#event-start-time-1`),
+        {
+          dateFormat: `d/m/y H:i`,
+          enableTime: true,
+          time24hr: true,
+          defaultDate: this._data.dateStart,
+          onChange: this._startDateChangeHandler
+        }
+    );
+  }
+
+  _setEndDatepicker() {
+    if (this._endDatepicker) {
+      this._endDatepicker.destroy();
+      this._endDatepicker = null;
+    }
+
+    this._endDatepicker = flatpickr(this.getElement().querySelector(`#event-end-time-1`),
+        {
+          dateFormat: `d/m/y H:i`,
+          enableTime: true,
+          time24hr: true,
+          defaultDate: this._data.dateEnd,
+          minDate: this._data.dateStart,
+          onChange: this._endDateChangeHandler
+        }
+    );
+  }
+
+  _startDateChangeHandler(selectedDates) {
+    this.updateData({
+
+      dateStart: new Date(selectedDates[0])
+    }, true);
+  }
+
+  _endDateChangeHandler(selectedDates) {
+    this.updateData({
+      dateEnd: new Date(selectedDates[0])
+    }, true);
   }
 
   // Метод вызывается при нажатии submit в форме
@@ -266,6 +328,8 @@ export default class Form extends SmartView {
 
   restoreHandlers() {
     this._setInnerHandlers();
+    this._setStartDatepicker();
+    this._setEndDatepicker();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setFormClickCloseHandler(this._callback.close);
   }

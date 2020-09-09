@@ -7,7 +7,7 @@ const createDayTemplate = (events, index) => {
     `<li class="trip-days__item  day">
       <div class="day__info">
         <span class="day__counter">${events ? index + 1 : ``}</span>
-        <time class="day__date" datetime="${events ? getDateTime(events.date[0], `-`) : ``}">${events ? getFormatDate(events.date[0], true) : ``}</time>
+        <time class="day__date" datetime="${events ? getDateTime(events.dateStart) : ``}">${events ? getFormatDate(events.dateStart, true) : ``}</time>
       </div>
       <ul class="trip-events__list"></ul>
     </li>`);
