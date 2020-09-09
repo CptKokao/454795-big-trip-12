@@ -14,7 +14,9 @@ const eventElement = document.querySelector(`.trip-events`);
 
 export default class Trip {
   // Запуск метода для отрисовки всех маршрутов
-  constructor(points) {
+  constructor(points, pointsModel) {
+    this._pointsModel = pointsModel;
+
     this._sortComponent = new SortView();
     this._listDaysComponent = new ListDays();
     this._noPointsComponent = new NoPointsView(points);
@@ -51,6 +53,10 @@ export default class Trip {
 
     // Отрисовка дней и маршрутов
     this._renderListEvents(points);
+  }
+
+  _getPoints() {
+    return this._pointsModel.getPoints();
   }
 
   _handleModeChange() {
