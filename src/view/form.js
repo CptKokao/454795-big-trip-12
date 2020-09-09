@@ -290,7 +290,7 @@ export default class Form extends SmartView {
     e.preventDefault();
     this.updateData({
       type: e.target.value,
-      offers: generateOffers(),
+      offers: generateOffers(this._data.type),
       description: generateDescription()
     });
   }

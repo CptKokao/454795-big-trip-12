@@ -7,6 +7,7 @@ import TripPresenter from "./presenter/trip.js";
 
 const POINT_COUNT = 20;
 const points = new Array(POINT_COUNT).fill().map(generatePoint);
+console.log(points);
 
 const mainElement = document.querySelector(`.trip-main`);
 
