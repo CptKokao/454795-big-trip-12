@@ -10,9 +10,9 @@ const Mode = {
 };
 
 export default class Point {
-  constructor(pointListElement, changeData, listDaysComponent, changeMode) {
+  constructor(pointListElement, viewAction, listDaysComponent, changeMode) {
 
-    this._changeData = changeData;
+    this._viewAction = viewAction;
     this._changeMode = changeMode;
 
     this._formComponent = null;
@@ -26,6 +26,7 @@ export default class Point {
     this._onCloseForm = this._onCloseForm.bind(this);
     this._setClickHandler = this._setClickHandler.bind(this);
     this._setSubmitHandler = this._setSubmitHandler.bind(this);
+    this._handleDeleteClick = this._handleDeleteClick.bind(this);
 
   }
 
@@ -47,6 +48,9 @@ export default class Point {
 
     // Событие submit на кнопки Save в форме редактирования
     this._formComponent.setFormSubmitHandler(this._setSubmitHandler);
+
+    // Событие click на кнопки Delete в форме редактирования
+    this._formComponent.setDeleteClickHandler(this._handleDeleteClick);
 
     if (prevFormComponent === null || prevPointEditComponent === null) {
       this._renderPoint(point);
@@ -71,6 +75,14 @@ export default class Point {
     if (this._mode !== Mode.DEFAULT) {
       this._replaceFormToCard();
     }
+  }
+
+  _handleDeleteClick(point) {
+    this._viewAction(
+        UserAction.DELETE_POINT,
+        UpdateType.MAJOR,
+        point
+    );
   }
 
   // Метод отрисовки одного маршрутов
@@ -107,8 +119,8 @@ export default class Point {
 
   _setSubmitHandler(point) {
     // Вызывает this.init(), для отрисовки изменения
-    // this._changeData(point);
-    this._changeData(
+    // this._viewAction(point);
+    this._viewAction(
         UserAction.UPDATE_POINT,
         UpdateType.MINOR,
         point

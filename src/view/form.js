@@ -190,6 +190,7 @@ export default class Form extends SmartView {
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
     this._startDateChangeHandler = this._startDateChangeHandler.bind(this);
     this._endDateChangeHandler = this._endDateChangeHandler.bind(this);
+    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
 
     this._setInnerHandlers();
     this._setStartDatepicker();
@@ -205,6 +206,17 @@ export default class Form extends SmartView {
         Form.parsePointToData(this._data)
     );
   }
+
+  _formDeleteClickHandler(e) {
+    e.preventDefault();
+    this._callback.deleteClick(Form.parseDataToPoint(this._data));
+  }
+
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, this._formDeleteClickHandler);
+  }
+
 
   _setStartDatepicker() {
     if (this._datepicker) {
@@ -332,6 +344,7 @@ export default class Form extends SmartView {
     this._setEndDatepicker();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setFormClickCloseHandler(this._callback.close);
+    this.setDeleteClickHandler(this._callback.deleteClick);
   }
 
   static parsePointToData(point) {
@@ -340,6 +353,7 @@ export default class Form extends SmartView {
 
   static parseDataToPoint(data) {
     data = Object.assign({}, data);
+
     return data;
   }
 }

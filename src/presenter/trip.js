@@ -7,7 +7,7 @@ import PointPresenter from "./point.js";
 import {renderPosition, render} from "../utils/render.js";
 import {getDateTime} from "../utils/date.js";
 import {sortTime, sortPrice} from "../utils/sort.js";
-import {SortType} from '../utils/const.js';
+import {SortType, UpdateType, UserAction} from '../utils/const.js';
 
 const eventElement = document.querySelector(`.trip-events`);
 
@@ -36,9 +36,11 @@ export default class Trip {
 
     // Обработчик изменения View
     this._handleViewAction = this._handleViewAction.bind(this);
+
     // Обработчик изменения Model
     this._handleModelEvent = this._handleModelEvent.bind(this);
 
+    this._pointsModel.addObserver(this._handleModelEvent);
   }
 
   init() {
@@ -74,19 +76,43 @@ export default class Trip {
   // }
 
   _handleViewAction(actionType, updateType, update) {
-    console.log(actionType, updateType, update);
     // Здесь будем вызывать обновление модели.
     // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
     // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
     // update - обновленные данные
+
+    switch (actionType) {
+      case UserAction.UPDATE_POINT:
+        this._pointsModel.updatePoint(updateType, update);
+        break;
+      case UserAction.ADD_POINT:
+        this._pointsModel.addPoint(updateType, update);
+        break;
+      case UserAction.DELETE_POINT:
+        this._pointsModel.deletePoint(updateType, update);
+        break;
+    }
   }
 
   _handleModelEvent(updateType, data) {
-    console.log(updateType, data);
     // В зависимости от типа изменений решаем, что делать:
     // - обновить часть списка (например, когда поменялось описание)
     // - обновить список (например, когда задача ушла в архив)
     // - обновить всю доску (например, при переключении фильтра)
+
+    switch (updateType) {
+      case UpdateType.MINOR:
+        console.log('MINOR');
+        // - обновить часть списка (например, когда поменялось описание)
+        this._pointsObserver[data.id].init(data);
+        break;
+      case UpdateType.MAJOR:
+        console.log('MAJOR');
+        // - обновить список (например, когда задача ушла в архив)
+        this._clearTaskList();
+        this._renderListEvents(this._getPoints());
+        break;
+    }
   }
 
   _clearTaskList() {
@@ -102,6 +128,25 @@ export default class Trip {
       .forEach((point) => point.destroy());
     this._daysObserver = {};
   }
+
+  // _clearBoard({resetRenderedTaskCount = false, resetSortType = false} = {}) {
+  //   const taskCount = this._getTasks().length;
+
+  //   Object
+  //     .values(this._taskPresenter)
+  //     .forEach((presenter) => presenter.destroy());
+  //   this._taskPresenter = {};
+
+  //   remove(this._sortComponent);
+  //   remove(this._noTaskComponent);
+  //   remove(this._loadMoreButtonComponent);
+
+
+
+  //   if (resetSortType) {
+  //     this._currentSortType = SortType.DEFAULT;
+  //   }
+  // }
 
   _handleSortTypeChange(sortType) {
     // Если событие происходит на том же элементе
