@@ -2,6 +2,7 @@
 import FormView from '../view/form.js';
 import PointView from '../view/point.js';
 import {renderPosition, render, replace, remove} from "../utils/render.js";
+import {UserAction, UpdateType} from "../utils/const.js";
 
 const Mode = {
   DEFAULT: `DEFAULT`,
@@ -106,7 +107,12 @@ export default class Point {
 
   _setSubmitHandler(point) {
     // Вызывает this.init(), для отрисовки изменения
-    this._changeData(point);
+    // this._changeData(point);
+    this._changeData(
+        UserAction.UPDATE_POINT,
+        UpdateType.MINOR,
+        point
+    );
 
     this._replaceFormToCard();
     // document.addEventListener(`keydown`, this._onEscKeyDown);

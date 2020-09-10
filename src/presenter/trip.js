@@ -31,10 +31,14 @@ export default class Trip {
 
     // Обработчик сортировки
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
-    // Обработчик изменения маршрута
-    this._handlePointChange = this._handlePointChange.bind(this);
 
     this._handleModeChange = this._handleModeChange.bind(this);
+
+    // Обработчик изменения View
+    this._handleViewAction = this._handleViewAction.bind(this);
+    // Обработчик изменения Model
+    this._handleModelEvent = this._handleModelEvent.bind(this);
+
   }
 
   init() {
@@ -65,8 +69,24 @@ export default class Trip {
   }
 
   // Событие при изменеии данных в маршруте
-  _handlePointChange(updatedPoint) {
-    this._pointsObserver[updatedPoint.id].init(updatedPoint);
+  // _handlePointChange(updatedPoint) {
+  //   this._pointsObserver[updatedPoint.id].init(updatedPoint);
+  // }
+
+  _handleViewAction(actionType, updateType, update) {
+    console.log(actionType, updateType, update);
+    // Здесь будем вызывать обновление модели.
+    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
+    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
+    // update - обновленные данные
+  }
+
+  _handleModelEvent(updateType, data) {
+    console.log(updateType, data);
+    // В зависимости от типа изменений решаем, что делать:
+    // - обновить часть списка (например, когда поменялось описание)
+    // - обновить список (например, когда задача ушла в архив)
+    // - обновить всю доску (например, при переключении фильтра)
   }
 
   _clearTaskList() {
@@ -94,9 +114,6 @@ export default class Trip {
     // Смотри условие выше
     this._currentSortType = sortType;
 
-    // В метод передаем выбранный тип сортировки
-    // this._sortTasks(sortType);
-
     // Очищаем верстку перед новой отрисовкой маршрутов
     this._clearTaskList();
 
@@ -115,7 +132,7 @@ export default class Trip {
 
   // Метод отрисовки одного маршрутов
   _renderPoint(pointListElement, point) {
-    const pointPresenter = new PointPresenter(pointListElement, this._handlePointChange, this._listDaysComponent, this._handleModeChange);
+    const pointPresenter = new PointPresenter(pointListElement, this._handleViewAction, this._listDaysComponent, this._handleModeChange);
     pointPresenter.init(point);
     this._pointsObserver[point.id] = pointPresenter;
   }
