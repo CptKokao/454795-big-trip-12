@@ -10,7 +10,7 @@ const POINT_COUNT = 20;
 const points = new Array(POINT_COUNT).fill().map(generatePoint);
 
 const pointsModel = new PointsModel();
-pointsModel.setTasks(points);
+pointsModel.setPoints(points);
 
 const mainElement = document.querySelector(`.trip-main`);
 
@@ -20,5 +20,5 @@ const infoComponent = new InfoView(points);
 render(mainElement, filterComponent, renderPosition.AFTERBEGIN);
 render(mainElement, infoComponent, renderPosition.AFTERBEGIN);
 
-const tripPresenter = new TripPresenter(points, pointsModel);
-tripPresenter.init(points);
+const tripPresenter = new TripPresenter(pointsModel);
+tripPresenter.init();

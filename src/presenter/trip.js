@@ -7,19 +7,18 @@ import PointPresenter from "./point.js";
 import {renderPosition, render} from "../utils/render.js";
 import {getDateTime} from "../utils/date.js";
 import {sortTime, sortPrice} from "../utils/sort.js";
-import {updateItem} from "../utils/common.js";
 import {SortType} from '../utils/const.js';
 
 const eventElement = document.querySelector(`.trip-events`);
 
 export default class Trip {
   // Запуск метода для отрисовки всех маршрутов
-  constructor(points, pointsModel) {
+  constructor(pointsModel) {
     this._pointsModel = pointsModel;
 
     this._sortComponent = new SortView();
     this._listDaysComponent = new ListDays();
-    this._noPointsComponent = new NoPointsView(points);
+    this._noPointsComponent = new NoPointsView();
     this._dayComponent = new DayView();
 
     this._currentSortType = SortType.DEFAULT;
@@ -38,13 +37,7 @@ export default class Trip {
     this._handleModeChange = this._handleModeChange.bind(this);
   }
 
-  init(points) {
-    // Исходный массив маршрутов, используется для восстановления исходного порядка
-    this._sourcedArrPoints = points.slice();
-
-    // Копия исходного массива маршрутов, используется для сортировки
-    this._arrPoints = points.slice();
-
+  init() {
     // Отрисовка эл-т sort в верстку
     this._renderSort();
 
@@ -52,10 +45,16 @@ export default class Trip {
     render(eventElement, this._listDaysComponent, renderPosition.BEFOREEND);
 
     // Отрисовка дней и маршрутов
-    this._renderListEvents(points);
+    this._renderListEvents(this._getPoints());
   }
 
   _getPoints() {
+    switch (this._currentSortType) {
+      case SortType.TIME:
+        return this._pointsModel.getPoints().slice().sort(sortTime);
+      case SortType.PRICE:
+        return this._pointsModel.getPoints().slice().sort(sortPrice);
+    }
     return this._pointsModel.getPoints();
   }
 
@@ -67,12 +66,6 @@ export default class Trip {
 
   // Событие при изменеии данных в маршруте
   _handlePointChange(updatedPoint) {
-    // Обновляет массив
-    this._arrPoints = updateItem(this._arrPoints, updatedPoint);
-
-    // Обновляет исходный массив
-    this._sourcedArrPoints = updateItem(this._sourcedArrPoints, updatedPoint);
-
     this._pointsObserver[updatedPoint.id].init(updatedPoint);
   }
 
@@ -90,22 +83,6 @@ export default class Trip {
     this._daysObserver = {};
   }
 
-  // Сортировка, принимает аргумент который сообщает какая сортировка выбрана
-  // после сортировки возвращает массив отсортированных маршрутов
-  _sortTasks(sortType) {
-    switch (sortType) {
-      case SortType.TIME:
-        this._arrPoints.sort(sortTime);
-        break;
-      case SortType.PRICE:
-        this._arrPoints.sort(sortPrice);
-        break;
-      case SortType.DEFAULT:
-        this._arrPoints = this._sourcedArrPoints.slice();
-        break;
-    }
-  }
-
   _handleSortTypeChange(sortType) {
     // Если событие происходит на том же элементе
     if (this._currentSortType === sortType) {
@@ -118,16 +95,16 @@ export default class Trip {
     this._currentSortType = sortType;
 
     // В метод передаем выбранный тип сортировки
-    this._sortTasks(sortType);
+    // this._sortTasks(sortType);
 
     // Очищаем верстку перед новой отрисовкой маршрутов
     this._clearTaskList();
 
     // Условие позволяет выбрать метод для отрисовки маршрутов
     if (sortType === `default`) {
-      this._renderListEvents(this._arrPoints);
+      this._renderListEvents(this._getPoints());
     } else {
-      this._renderSortEvents(this._arrPoints);
+      this._renderSortEvents(this._getPoints());
     }
   }
 
