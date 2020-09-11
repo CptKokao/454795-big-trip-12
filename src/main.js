@@ -1,9 +1,9 @@
 import InfoView from './view/info.js';
-import FilterView from './view/filter.js';
 
 import {generatePoint} from './mock/point.js';
 import {renderPosition, render} from "./utils/render.js";
 import TripPresenter from "./presenter/trip.js";
+import FilterPresenter from "./presenter/filter.js";
 import PointsModel from "./model/points.js";
 import FilterModel from "./model/filter.js";
 
@@ -17,11 +17,12 @@ const mainElement = document.querySelector(`.trip-main`);
 
 const filterModel = new FilterModel();
 
-const filterComponent = new FilterView();
+const filterPresenter = new FilterPresenter(mainElement, filterModel, pointsModel);
+filterPresenter.init();
 const infoComponent = new InfoView(points);
 
-render(mainElement, filterComponent, renderPosition.AFTERBEGIN);
+// render(mainElement, filterComponent, renderPosition.AFTERBEGIN);
 render(mainElement, infoComponent, renderPosition.AFTERBEGIN);
 
-const tripPresenter = new TripPresenter(pointsModel);
+const tripPresenter = new TripPresenter(pointsModel, filterModel);
 tripPresenter.init();

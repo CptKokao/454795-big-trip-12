@@ -7,14 +7,16 @@ import PointPresenter from "./point.js";
 import {renderPosition, render} from "../utils/render.js";
 import {getDateTime} from "../utils/date.js";
 import {sortTime, sortPrice} from "../utils/sort.js";
+import {filter} from "../utils/filter.js";
 import {SortType, UpdateType, UserAction} from '../utils/const.js';
 
 const eventElement = document.querySelector(`.trip-events`);
 
 export default class Trip {
   // Запуск метода для отрисовки всех маршрутов
-  constructor(pointsModel) {
+  constructor(pointsModel, filterModel) {
     this._pointsModel = pointsModel;
+    this._filterModel = filterModel;
 
     this._sortComponent = new SortView();
     this._listDaysComponent = new ListDays();
@@ -40,10 +42,15 @@ export default class Trip {
     // Обработчик изменения Model
     this._handleModelEvent = this._handleModelEvent.bind(this);
 
-    this._pointsModel.addObserver(this._handleModelEvent);
+    // this._pointsModel.addObserver(this._handleModelEvent);
+    // this._filterModel.addObserver(this._handleModelEvent);
   }
 
   init() {
+
+    this._pointsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
+
     // Отрисовка эл-т sort в верстку
     this._renderSort();
 
@@ -55,13 +62,18 @@ export default class Trip {
   }
 
   _getPoints() {
+    const filterType = this._filterModel.getFilter();
+    const points = this._pointsModel.getPoints();
+    debugger
+    const filtredTasks = filter[filterType](points);
+
     switch (this._currentSortType) {
       case SortType.TIME:
-        return this._pointsModel.getPoints().slice().sort(sortTime);
+        return filtredTasks.sort(sortTime);
       case SortType.PRICE:
-        return this._pointsModel.getPoints().slice().sort(sortPrice);
+        return filtredTasks.sort(sortPrice);
     }
-    return this._pointsModel.getPoints();
+    return filtredTasks;
   }
 
   _handleModeChange() {
