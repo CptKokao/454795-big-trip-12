@@ -5,6 +5,7 @@ import {generatePoint} from './mock/point.js';
 import {renderPosition, render} from "./utils/render.js";
 import TripPresenter from "./presenter/trip.js";
 import PointsModel from "./model/points.js";
+import FilterModel from "./model/filter.js";
 
 const POINT_COUNT = 20;
 const points = new Array(POINT_COUNT).fill().map(generatePoint);
@@ -13,6 +14,8 @@ const pointsModel = new PointsModel();
 pointsModel.setPoints(points);
 
 const mainElement = document.querySelector(`.trip-main`);
+
+const filterModel = new FilterModel();
 
 const filterComponent = new FilterView();
 const infoComponent = new InfoView(points);
