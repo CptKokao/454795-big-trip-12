@@ -4,11 +4,12 @@ import SortView from '../view/sort.js';
 import ListDays from '../view/list-days.js';
 import NoPointsView from '../view/no-points.js';
 import PointPresenter from "./point.js";
+import NewPointPresenter from "./new-point.js";
 import {renderPosition, render} from "../utils/render.js";
 import {getDateTime} from "../utils/date.js";
 import {sortTime, sortPrice} from "../utils/sort.js";
 import {filter} from "../utils/filter.js";
-import {SortType, UpdateType, UserAction} from '../utils/const.js';
+import {SortType, UpdateType, UserAction, FilterType} from '../utils/const.js';
 
 const eventElement = document.querySelector(`.trip-events`);
 
@@ -44,6 +45,8 @@ export default class Trip {
 
     // this._pointsModel.addObserver(this._handleModelEvent);
     // this._filterModel.addObserver(this._handleModelEvent);
+
+    this._newPointPresenter = new NewPointPresenter(this._listDaysComponent, this._handleViewAction);
   }
 
   init() {
@@ -61,10 +64,18 @@ export default class Trip {
     this._renderListEvents(this._getPoints());
   }
 
+  // Создает новый маршрут
+  createPoint() {
+    // сброс сортировки
+    this._currentSortType = SortType.DEFAULT;
+    // сброс фильтрации
+    this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this._newPointPresenter.init();
+  }
+
   _getPoints() {
     const filterType = this._filterModel.getFilter();
     const points = this._pointsModel.getPoints();
-    debugger
     const filtredTasks = filter[filterType](points);
 
     switch (this._currentSortType) {

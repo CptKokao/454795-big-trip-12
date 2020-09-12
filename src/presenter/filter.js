@@ -10,8 +10,6 @@ export default class Filter {
     this._filterModel = filterModel;
     this._pointsModel = pointsModel;
 
-    this._tabsComponent = null;
-
     this._currentFilter = null;
     this._filterComponent = null;
 
@@ -26,12 +24,6 @@ export default class Filter {
     this._currentFilter = this._filterModel.getFilter();
     const filters = this._getFilters();
     const prevFilterComponent = this._filterComponent;
-
-    // Временно здесь рендеринг верстки статистики
-    if (this._tabsComponent === null) {
-      this._tabsComponent = new TabsView();
-      render(this._filterContainer, this._tabsComponent, renderPosition.BEFOREEND);
-    }
 
     this._filterComponent = new FilterView(filters, this._currentFilter);
     this._filterComponent.setFilterTypeChangeHandler(this._handleFilterTypeChange);

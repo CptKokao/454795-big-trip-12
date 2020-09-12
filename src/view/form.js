@@ -5,6 +5,18 @@ import flatpickr from "flatpickr";
 
 import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 
+const EMPTY_POINT = {
+  type: `Taxi`,
+  city: ``,
+  cost: 0,
+  offers: generateOffers(`Taxi`),
+  description: generateDescription(),
+  photo: [],
+  dateStart: new Date(),
+  dateEnd: new Date(),
+  isFavorite: false
+};
+
 const createTypeTemplate = (type) => {
 
   return `<div class="event__type-wrapper">
@@ -124,7 +136,7 @@ const createFormTemplate = (point) => {
             <label class="event__label  event__type-output" for="event-destination-1">
               ${type} to
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city}" list="destination-list-1">
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city}" list="destination-list-1" required>
             <datalist id="destination-list-1">
               <option value="Amsterdam"></option>
               <option value="Geneva"></option>
@@ -150,7 +162,7 @@ const createFormTemplate = (point) => {
               <span class="visually-hidden">${cost}</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${cost}">
+            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${cost}" required>
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -175,7 +187,7 @@ const createFormTemplate = (point) => {
 };
 
 export default class Form extends SmartView {
-  constructor(point) {
+  constructor(point = EMPTY_POINT) {
     super();
     this._data = Form.parsePointToData(point);
     this._callback = {};
@@ -186,6 +198,7 @@ export default class Form extends SmartView {
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._clickCloseHandler = this._clickCloseHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
+    this._costClickHandler = this._costClickHandler.bind(this);
     this._destinationInputHandler = this._destinationInputHandler.bind(this);
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
     this._startDateChangeHandler = this._startDateChangeHandler.bind(this);
@@ -315,6 +328,14 @@ export default class Form extends SmartView {
     });
   }
 
+  // Метод вызывается при изменения price
+  _costClickHandler(e) {
+    e.preventDefault();
+    this.updateData({
+      cost: Number(e.target.value)
+    }, true);
+  }
+
   // Метод вызывается при изменения destination(city)
   _destinationInputHandler(e) {
     e.preventDefault();
@@ -327,6 +348,9 @@ export default class Form extends SmartView {
   _setInnerHandlers() {
     // Обработчик на favorite
     this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, this._favoriteClickHandler);
+
+    // Обработчик на price
+    this.getElement().querySelector(`.event__input--price`).addEventListener(`input`, this._costClickHandler);
 
     // Обработчик на destination(city)
     this.getElement().querySelector(`.event__input--destination`).addEventListener(`input`, this._destinationInputHandler);
