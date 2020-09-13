@@ -5,7 +5,7 @@ import ListDays from '../view/list-days.js';
 import NoPointsView from '../view/no-points.js';
 import PointPresenter from "./point.js";
 import NewPointPresenter from "./new-point.js";
-import {renderPosition, render} from "../utils/render.js";
+import {renderPosition, render, remove} from "../utils/render.js";
 import {getDateTime} from "../utils/date.js";
 import {sortTime, sortPrice} from "../utils/sort.js";
 import {filter} from "../utils/filter.js";
@@ -19,7 +19,7 @@ export default class Trip {
     this._pointsModel = pointsModel;
     this._filterModel = filterModel;
 
-    this._sortComponent = new SortView();
+    // this._sortComponent = new SortView();
     this._listDaysComponent = new ListDays();
     this._noPointsComponent = new NoPointsView();
     this._dayComponent = new DayView();
@@ -43,9 +43,6 @@ export default class Trip {
     // Обработчик изменения Model
     this._handleModelEvent = this._handleModelEvent.bind(this);
 
-    // this._pointsModel.addObserver(this._handleModelEvent);
-    // this._filterModel.addObserver(this._handleModelEvent);
-
     this._newPointPresenter = new NewPointPresenter(this._listDaysComponent, this._handleViewAction);
   }
 
@@ -53,9 +50,6 @@ export default class Trip {
 
     this._pointsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
-
-    // Отрисовка эл-т sort в верстку
-    this._renderSort();
 
     // Отрисовка эл-т trip-days в верстку
     render(eventElement, this._listDaysComponent, renderPosition.BEFOREEND);
@@ -88,15 +82,11 @@ export default class Trip {
   }
 
   _handleModeChange() {
+    this._newPointPresenter.destroy();
     Object
       .values(this._pointsObserver)
       .forEach((pointObserver) => pointObserver.resetView());
   }
-
-  // Событие при изменеии данных в маршруте
-  // _handlePointChange(updatedPoint) {
-  //   this._pointsObserver[updatedPoint.id].init(updatedPoint);
-  // }
 
   _handleViewAction(actionType, updateType, update) {
     // Здесь будем вызывать обновление модели.
@@ -132,13 +122,14 @@ export default class Trip {
       case UpdateType.MAJOR:
         console.log('MAJOR');
         // - обновить список (например, когда задача ушла в архив)
-        this._clearTaskList();
+        this._clearTaskList(true);
         this._renderListEvents(this._getPoints());
         break;
     }
   }
 
   _clearTaskList() {
+    this._newPointPresenter.destroy();
     // Очищает маршруты
     Object
       .values(this._pointsObserver)
@@ -150,26 +141,10 @@ export default class Trip {
       .values(this._daysObserver)
       .forEach((point) => point.destroy());
     this._daysObserver = {};
+
+    remove(this._sortComponent);
+
   }
-
-  // _clearBoard({resetRenderedTaskCount = false, resetSortType = false} = {}) {
-  //   const taskCount = this._getTasks().length;
-
-  //   Object
-  //     .values(this._taskPresenter)
-  //     .forEach((presenter) => presenter.destroy());
-  //   this._taskPresenter = {};
-
-  //   remove(this._sortComponent);
-  //   remove(this._noTaskComponent);
-  //   remove(this._loadMoreButtonComponent);
-
-
-
-  //   if (resetSortType) {
-  //     this._currentSortType = SortType.DEFAULT;
-  //   }
-  // }
 
   _handleSortTypeChange(sortType) {
     // Если событие происходит на том же элементе
@@ -194,8 +169,13 @@ export default class Trip {
   }
 
   _renderSort() {
-    render(eventElement, this._sortComponent, renderPosition.AFTERBEGIN);
+    if (this._tripSortComponent !== null) {
+      this._tripSortComponent = null;
+    }
+
+    this._sortComponent = new SortView(this._currentSortType);
     this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
+    render(eventElement, this._sortComponent, renderPosition.AFTERBEGIN);
   }
 
   // Метод отрисовки одного маршрутов
@@ -207,6 +187,9 @@ export default class Trip {
 
   // Метод отрисовки дней и всех маршрутов
   _renderListEvents(pointsList) {
+
+    // Отрисовка эл-т sort в верстку
+    this._renderSort();
 
     // Если маршрутов нет, то отрисовывает компонент NoPointsView
     if (pointsList.length === 0) {
@@ -221,6 +204,9 @@ export default class Trip {
         t.dateStart.getDate() === el.dateStart.getDate()
       ))
     );
+
+    // Сортирует массив дней по возрастанию
+    newArr.sort((a, b) => a.dateStart.getDate() - b.dateStart.getDate());
 
     // Отрисовка дней
     newArr.forEach((el, index) => {
@@ -245,6 +231,9 @@ export default class Trip {
 
   // Метод отрисовки маршрутов для сортировки, без отрисовки дней
   _renderSortEvents(pointsList) {
+
+    // Отрисовка эл-т sort в верстку
+    this._renderSort();
 
     // Отрисовка дней
     pointsList.forEach((el) => {

@@ -19,12 +19,12 @@ export default class NewPoint {
     if (this._formComponent !== null) {
       return;
     }
-
-    this._formComponent = new FormView();
+    this._formComponent = new FormView(true);
     this._formComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._formComponent.setDeleteClickHandler(this._handleDeleteClick);
 
     render(this._listDaysComponent, this._formComponent, renderPosition.AFTERBEGIN);
+    document.querySelector(`.trip-main__event-add-btn`).disabled = true;
 
     document.addEventListener(`keydown`, this._escKeyDownHandler);
   }
@@ -59,6 +59,7 @@ export default class NewPoint {
     if (evt.key === `Escape` || evt.key === `Esc`) {
       evt.preventDefault();
       this.destroy();
+      document.querySelector(`.trip-main__event-add-btn`).disabled = false;
     }
   }
 }

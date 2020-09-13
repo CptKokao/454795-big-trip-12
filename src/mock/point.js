@@ -32,7 +32,7 @@ export const generateDescription = () => {
 };
 
 // Генерирует случайное фото
-const generatePhoto = () => {
+export const generatePhoto = () => {
   const min = 1;
   const max = 5;
   const arrPhoto = [];
@@ -65,7 +65,12 @@ export const Offer = {
       title: `Order Uber`,
       cost: getRandomInteger(5, 100),
       isChecked: getRandomInteger(0, 1)
-    }
+    },
+    {
+      title: `Switch to comfort`,
+      cost: getRandomInteger(5, 100),
+      isChecked: getRandomInteger(0, 1)
+    },
   ],
   flight: [
     {
@@ -157,7 +162,7 @@ export const generateOffers = (type) => {
   type = type.toLowerCase().split(`-`)[0];
 
   if (Offer[type]) {
-    const quantity = getRandomInteger(0, Offer[type].length);
+    const quantity = getRandomInteger(1, Offer[type].length);
 
     for (let i = 0; i < quantity; i++) {
       offers.push(Offer[type][i]);

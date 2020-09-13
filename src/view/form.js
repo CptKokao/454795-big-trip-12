@@ -1,5 +1,5 @@
 import {getDateTime, getShortTime} from "../utils/date.js";
-import {generateOffers, generateDescription} from "../mock/point.js";
+import {generateOffers, generateDescription, generatePhoto} from "../mock/point.js";
 import SmartView from "./smart.js";
 import flatpickr from "flatpickr";
 
@@ -8,10 +8,10 @@ import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 const EMPTY_POINT = {
   type: `Taxi`,
   city: ``,
-  cost: 0,
+  cost: ``,
   offers: generateOffers(`Taxi`),
   description: generateDescription(),
-  photo: [],
+  photo: generatePhoto(),
   dateStart: new Date(),
   dateEnd: new Date(),
   isFavorite: false
@@ -124,7 +124,7 @@ const createOfferTemplate = (offers) => {
 };
 
 
-const createFormTemplate = (point) => {
+const createFormTemplate = (point, isNew) => {
   const {type, city, dateStart, dateEnd, cost, offers, photo, description, isFavorite} = point;
 
   return (
@@ -166,7 +166,7 @@ const createFormTemplate = (point) => {
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">Delete</button>
+          <button class="event__reset-btn" type="reset">${!isNew ? `Delete` : `Cancel`}</button>
 
           <input id="event-favorite" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
           <label class="event__favorite-btn" for="event-favorite">
@@ -175,22 +175,23 @@ const createFormTemplate = (point) => {
               <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"/>
             </svg>
           </label>
-          <button class="event__rollup-btn" type="button">
+          ${!isNew ? `<button class="event__rollup-btn" type="button">` : ``}
             <span class="visually-hidden">Open event</span>
           </button>
         </header>
         <section class="event__details">
           ${createOfferTemplate(offers)}
-          ${createDestinationTemplate(photo, description)}
+          ${!isNew ? createDestinationTemplate(photo, description) : ``}
         </section>`
   );
 };
 
 export default class Form extends SmartView {
-  constructor(point = EMPTY_POINT) {
+  constructor(isNew, point = EMPTY_POINT) {
     super();
     this._data = Form.parsePointToData(point);
     this._callback = {};
+    this._isNew = isNew;
 
     this._startDatepicker = null;
     this._endDatepicker = null;
@@ -211,7 +212,7 @@ export default class Form extends SmartView {
   }
 
   getTemplate() {
-    return createFormTemplate(this._data);
+    return createFormTemplate(this._data, this._isNew);
   }
 
   reset() {
@@ -223,6 +224,7 @@ export default class Form extends SmartView {
   _formDeleteClickHandler(e) {
     e.preventDefault();
     this._callback.deleteClick(Form.parseDataToPoint(this._data));
+    document.querySelector(`.trip-main__event-add-btn`).disabled = false;
   }
 
   setDeleteClickHandler(callback) {
@@ -288,6 +290,7 @@ export default class Form extends SmartView {
     e.preventDefault();
     this._callback.formSubmit(this._data);
     // this._callback.formSubmit(Form.parseDataToPoint(this._data));
+    document.querySelector(`.trip-main__event-add-btn`).disabled = false;
   }
 
   // Метод вызывается при нажатии ^ в форме

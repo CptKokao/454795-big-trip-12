@@ -37,7 +37,7 @@ export default class Point {
     const prevFormComponent = this._formComponent;
     const prevPointEditComponent = this._pointComponent;
 
-    this._formComponent = new FormView(this._point);
+    this._formComponent = new FormView(false, this._point);
     this._pointComponent = new PointView(this._point);
 
     // Событие клик по кнопки маршрута
@@ -127,6 +127,7 @@ export default class Point {
     );
 
     this._replaceFormToCard();
+
     // document.addEventListener(`keydown`, this._onEscKeyDown);
   }
 
