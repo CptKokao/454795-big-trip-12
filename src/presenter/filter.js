@@ -1,5 +1,4 @@
 import FilterView from '../view/filters.js';
-import TabsView from '../view/tabs.js';
 import {render, renderPosition, replace, remove} from '../utils/render.js';
 import {filter} from '../utils/filter.js';
 import {FilterType, UpdateType} from '../utils/const.js';
@@ -47,7 +46,6 @@ export default class Filter {
       return;
     }
 
-    debugger
     this._filterModel.setFilter(UpdateType.MAJOR, filterType);
   }
 

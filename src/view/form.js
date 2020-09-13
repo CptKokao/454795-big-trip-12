@@ -1,3 +1,4 @@
+import he from "he";
 import {getDateTime, getShortTime} from "../utils/date.js";
 import {generateOffers, generateDescription, generatePhoto} from "../mock/point.js";
 import SmartView from "./smart.js";
@@ -93,7 +94,7 @@ const createDestinationTemplate = (photo, description) => {
 
   return `<section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-            <p class="event__destination-description">${description}</p>
+            <p class="event__destination-description">${he.encode(description.join(`&nbsp;`))}</p>
 
             <div class="event__photos-container">
               <div class="event__photos-tape">
@@ -162,7 +163,7 @@ const createFormTemplate = (point, isNew) => {
               <span class="visually-hidden">${cost}</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${cost}" required>
+            <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${he.encode(cost.toString())}" required>
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>

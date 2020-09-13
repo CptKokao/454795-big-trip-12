@@ -1,3 +1,4 @@
+import he from "he";
 import {getShortTime, durationTime} from "../utils/date.js";
 import {getSumPoint} from "../utils/sort.js";
 import Abstract from './abstract.js';
@@ -8,7 +9,7 @@ const createTypeTemplate = (type, city) => {
   return `<div class="event__type">
             <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
           </div>
-          <h3 class="event__title">${type} to ${city}</h3>`;
+          <h3 class="event__title">${type} to ${he.encode(city)}</h3>`;
 };
 
 // Шаблон для даты

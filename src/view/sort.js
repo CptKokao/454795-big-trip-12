@@ -2,10 +2,10 @@ import Abstract from './abstract.js';
 import {SortType} from '../utils/const.js';
 
 const createSortTemplate = (sortType) => {
-  debugger
   const checkedDefault = sortType === SortType.DEFAULT ? `checked` : ``;
   const checkedTime = sortType === SortType.TIME ? `checked` : ``;
   const checkedPrice = sortType === SortType.PRICE ? `checked` : ``;
+
   return (
     `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
       <span class="trip-sort__item  trip-sort__item--day">Day</span>
@@ -48,7 +48,6 @@ export default class Sort extends Abstract {
   }
 
   getTemplate() {
-    debugger
     return createSortTemplate(this._sortType);
   }
 

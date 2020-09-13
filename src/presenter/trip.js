@@ -89,10 +89,6 @@ export default class Trip {
   }
 
   _handleViewAction(actionType, updateType, update) {
-    // Здесь будем вызывать обновление модели.
-    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
-    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
-    // update - обновленные данные
 
     switch (actionType) {
       case UserAction.UPDATE_POINT:
@@ -108,21 +104,15 @@ export default class Trip {
   }
 
   _handleModelEvent(updateType, data) {
-    // В зависимости от типа изменений решаем, что делать:
-    // - обновить часть списка (например, когда поменялось описание)
-    // - обновить список (например, когда задача ушла в архив)
-    // - обновить всю доску (например, при переключении фильтра)
 
     switch (updateType) {
       case UpdateType.MINOR:
-        console.log('MINOR');
-        // - обновить часть списка (например, когда поменялось описание)
+        // - обновить часть списка
         this._pointsObserver[data.id].init(data);
         break;
       case UpdateType.MAJOR:
-        console.log('MAJOR');
-        // - обновить список (например, когда задача ушла в архив)
-        this._clearTaskList(true);
+        // - обновить список
+        this._clearTaskList();
         this._renderListEvents(this._getPoints());
         break;
     }
