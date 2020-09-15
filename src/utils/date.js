@@ -1,4 +1,5 @@
 import moment from 'moment';
+import {FilterType} from "../utils/const.js";
 
 // 11 Aug
 export const getDayMonthStamp = (event) => {
@@ -36,4 +37,8 @@ export const durationTime = (endDate, startDate) => {
   }
 
   return `${duration.hours}H ${duration.minutes}M`;
+};
+
+export const isFutureOrPast = (date, time) => {
+  return time === FilterType.FUTURE ? moment(date).isAfter() : moment(date).isBefore();
 };

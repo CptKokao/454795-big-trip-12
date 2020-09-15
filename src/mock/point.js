@@ -4,11 +4,11 @@ import {getRandomInteger} from "../utils/common.js";
 // в "продуктовом" коде, а для моков самое то.
 // Для "продуктового" кода используйте что-то понадежнее,
 // вроде nanoid - https://github.com/ai/nanoid
-const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
+export const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
 
 // Генерирует случайный тип маршрута
 const generateType = () => {
-  const type = [`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Drive`, `Flight`, `Check`, `Sightseeing`, `Restaurant`];
+  const type = [`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Drive`, `Flight`, `Check-in`, `Sightseeing`, `Restaurant`];
   const randomIndex = getRandomInteger(0, type.length - 1);
 
   return type[randomIndex];
@@ -32,7 +32,7 @@ export const generateDescription = () => {
 };
 
 // Генерирует случайное фото
-const generatePhoto = () => {
+export const generatePhoto = () => {
   const min = 1;
   const max = 5;
   const arrPhoto = [];
@@ -59,11 +59,115 @@ const generateDate = () => {
   return eventData;
 };
 
-// Генерирует доп. предложение
-export const generateOffers = () => {
-  const countOffers = getRandomInteger(0, 5);
-  const titles = [`Order Uber`, `Add luggage`, `Rent a car`, `Add breakfast`, `Book tickets`, `Lunch in city`, `Switch to comfort`];
-  const offers = new Array(countOffers).fill().map(() => ({title: titles[getRandomInteger(0, titles.length - 1)], cost: getRandomInteger(5, 100), isChecked: getRandomInteger(0, 1)}));
+export const Offer = {
+  taxi: [
+    {
+      title: `Order Uber`,
+      cost: getRandomInteger(5, 100),
+      isChecked: getRandomInteger(0, 1)
+    },
+    {
+      title: `Switch to comfort`,
+      cost: getRandomInteger(5, 100),
+      isChecked: getRandomInteger(0, 1)
+    },
+  ],
+  flight: [
+    {
+      title: `Add luggage`,
+      cost: getRandomInteger(5, 100),
+      isChecked: getRandomInteger(0, 1)
+    },
+    {
+      title: `Switch to comfort`,
+      cost: getRandomInteger(5, 100),
+      isChecked: getRandomInteger(0, 1)
+    },
+    {
+      title: `Add meal`,
+      cost: getRandomInteger(5, 100),
+      isChecked: getRandomInteger(0, 1)
+    },
+    {
+      title: `Choose seats`,
+      cost: getRandomInteger(5, 100),
+      isChecked: getRandomInteger(0, 1)
+    }
+  ],
+  train: [
+    {
+      title: `Switch to comfort`,
+      cost: getRandomInteger(5, 100),
+      isChecked: getRandomInteger(0, 1)
+    },
+    {
+      title: `Add meal`,
+      cost: getRandomInteger(5, 100),
+      isChecked: getRandomInteger(0, 1)
+    },
+    {
+      title: `Choose seats`,
+      cost: getRandomInteger(5, 100),
+      isChecked: getRandomInteger(0, 1)
+    }
+  ],
+  ship: [
+    {
+      title: `Switch to comfort`,
+      cost: getRandomInteger(5, 100),
+      isChecked: getRandomInteger(0, 1)
+    },
+    {
+      title: `Add meal`,
+      cost: getRandomInteger(5, 100),
+      isChecked: getRandomInteger(0, 1)
+    },
+    {
+      title: `Choose seats`,
+      cost: getRandomInteger(5, 100),
+      isChecked: getRandomInteger(0, 1)
+    }
+  ],
+  drive: [
+    {
+      title: `Rent a car`,
+      cost: getRandomInteger(5, 100),
+      isChecked: getRandomInteger(0, 1)
+    }
+  ],
+  check: [
+    {
+      title: `Add breakfast`,
+      cost: getRandomInteger(5, 100),
+      isChecked: getRandomInteger(0, 1)
+    }
+  ],
+  sightseeing: [
+    {
+      title: `Book tickets`,
+      cost: getRandomInteger(5, 100),
+      isChecked: getRandomInteger(0, 1)
+    },
+    {
+      title: `Lunch in city`,
+      cost: getRandomInteger(5, 100),
+      isChecked: getRandomInteger(0, 1)
+    }
+  ]
+};
+
+export const generateOffers = (type) => {
+  let offers = [];
+
+  type = type.toLowerCase().split(`-`)[0];
+
+  if (Offer[type]) {
+    const quantity = getRandomInteger(1, Offer[type].length);
+
+    for (let i = 0; i < quantity; i++) {
+      offers.push(Offer[type][i]);
+    }
+  }
 
   return offers;
 };
@@ -82,7 +186,7 @@ export const generatePoint = () => {
     dateStart: date[0],
     dateEnd: date[1],
     cost: getRandomInteger(15, 200),
-    offers: generateOffers(),
+    offers: generateOffers(type),
     description,
     photo,
     isFavorite: Boolean(getRandomInteger(0, 1))
