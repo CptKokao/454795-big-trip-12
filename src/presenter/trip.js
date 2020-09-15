@@ -58,6 +58,17 @@ export default class Trip {
     this._renderListEvents(this._getPoints());
   }
 
+  destroy() {
+    this._clearTaskList();
+
+    this._pointsModel.removeObserver(this._handleModelEvent);
+    this._filterModel.removeObserver(this._handleModelEvent);
+  }
+
+  destroyFormNewPoint() {
+    this._newPointPresenter.destroy();
+  }
+
   // Создает новый маршрут
   createPoint() {
     // сброс сортировки
@@ -133,7 +144,6 @@ export default class Trip {
     this._daysObserver = {};
 
     remove(this._sortComponent);
-
   }
 
   _handleSortTypeChange(sortType) {
