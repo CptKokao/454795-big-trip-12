@@ -16,8 +16,6 @@ export default class Info {
     this._handleMenuClick = handleMenuClick;
 
     this._handleModelEvent = this._handleModelEvent.bind(this);
-    // this._handlePointNewForm = this._handlePointNewForm.bind(this);
-
     this._pointsModel.addObserver(this._handleModelEvent);
   }
 
@@ -34,17 +32,18 @@ export default class Info {
     this._addButtonComponent.setMenuClickHandler(this._handleMenuClick);
   }
 
-  // _handlePointNewForm() {
-  //   console.log('test');
-  //   this._tripAddButtonComponent.setMenuItem(MenuItem.ADD_NEW_EVENT);
-  // }
+  setMenuItemAddEvent() {
+    this._tabsComponent.setMenuItem(MenuItem.TABLE);
+  }
 
   setMenuItemTable() {
     this._tabsComponent.setMenuItem(MenuItem.TABLE);
+    this._addButtonComponent.activeBtn();
   }
 
   setMenuItemStats() {
     this._tabsComponent.setMenuItem(MenuItem.STATISTICS);
+    this._addButtonComponent.activeBtn();
   }
 
   // Отрисовка Info

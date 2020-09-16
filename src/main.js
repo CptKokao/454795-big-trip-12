@@ -14,7 +14,6 @@ const points = new Array(POINT_COUNT).fill().map(generatePoint);
 const pointsModel = new PointsModel();
 pointsModel.setPoints(points);
 
-const sitePageBody = document.querySelector(`.page-body`);
 const sitePageBodyContainer = document.querySelector(`.page-body__page-main .page-body__container`);
 
 const mainElement = document.querySelector(`.trip-main`);
@@ -25,7 +24,6 @@ const filterModel = new FilterModel();
 const filterPresenter = new FilterPresenter(mainElement, filterModel, pointsModel);
 filterPresenter.init();
 
-
 const handleMenuClick = (menuItem) => {
   switch (menuItem) {
     case MenuItem.ADD_NEW_EVENT:
@@ -33,7 +31,7 @@ const handleMenuClick = (menuItem) => {
       filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
       tripPresenter.init();
       tripPresenter.createPoint();
-      infoPresenter.setMenuItemTable();
+      infoPresenter.setMenuItemAddEvent();
       if (statisticsComponent !== null) {
         remove(statisticsComponent);
         statisticsComponent = null;
@@ -45,6 +43,10 @@ const handleMenuClick = (menuItem) => {
       tripPresenter.destroy();
       tripPresenter.init();
       infoPresenter.setMenuItemTable();
+      if (statisticsComponent !== null) {
+        remove(statisticsComponent);
+        statisticsComponent = null;
+      }
       break;
     case MenuItem.STATISTICS:
       tripPresenter.destroyFormNewPoint();

@@ -37,4 +37,11 @@ export default class AddButton extends AbstractView {
       button.disabled = true;
     }
   }
+
+  activeBtn() {
+    const button = this.getElement();
+    if (button.disabled) {
+      button.disabled = false;
+    }
+  }
 }
