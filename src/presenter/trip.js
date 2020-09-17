@@ -58,6 +58,17 @@ export default class Trip {
     this._renderListEvents(this._getPoints());
   }
 
+  destroy() {
+    this._clearTaskList();
+
+    this._pointsModel.removeObserver(this._handleModelEvent);
+    this._filterModel.removeObserver(this._handleModelEvent);
+  }
+
+  destroyFormNewPoint() {
+    this._newPointPresenter.destroy();
+  }
+
   // Создает новый маршрут
   createPoint() {
     // сброс сортировки
@@ -70,15 +81,15 @@ export default class Trip {
   _getPoints() {
     const filterType = this._filterModel.getFilter();
     const points = this._pointsModel.getPoints();
-    const filtredTasks = filter[filterType](points);
+    const filteredTasks = filter[filterType](points);
 
     switch (this._currentSortType) {
       case SortType.TIME:
-        return filtredTasks.sort(sortTime);
+        return filteredTasks.sort(sortTime);
       case SortType.PRICE:
-        return filtredTasks.sort(sortPrice);
+        return filteredTasks.sort(sortPrice);
     }
-    return filtredTasks;
+    return filteredTasks;
   }
 
   _handleModeChange() {
@@ -133,7 +144,6 @@ export default class Trip {
     this._daysObserver = {};
 
     remove(this._sortComponent);
-
   }
 
   _handleSortTypeChange(sortType) {

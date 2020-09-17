@@ -20,3 +20,9 @@ export const FilterType = {
   FUTURE: `future`,
   PAST: `past`
 };
+
+export const MenuItem = {
+  ADD_NEW_EVENT: `ADD_NEW_EVENT`,
+  TABLE: `TABLE`,
+  STATISTICS: `STATISTICS`
+};

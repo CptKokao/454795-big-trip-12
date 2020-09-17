@@ -16,6 +16,7 @@ export default class NewPoint {
   }
 
   init() {
+
     if (this._formComponent !== null) {
       return;
     }

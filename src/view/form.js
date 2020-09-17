@@ -213,6 +213,7 @@ export default class Form extends SmartView {
   }
 
   getTemplate() {
+
     return createFormTemplate(this._data, this._isNew);
   }
 
