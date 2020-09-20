@@ -39,7 +39,10 @@ export const generatePhoto = () => {
 
   const randomIndex = getRandomInteger(min, max);
   for (let i = 0; i < randomIndex; i++) {
-    arrPhoto.push(`http://picsum.photos/248/152?r=${Math.random()}`);
+    arrPhoto.push({
+      src: `http://picsum.photos/248/152?r=${Math.random()}`,
+      description: generateDescription()
+    });
   }
 
   return arrPhoto;

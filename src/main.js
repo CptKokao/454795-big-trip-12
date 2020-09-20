@@ -24,6 +24,7 @@ api.getPoints().then((points) => {
 
 const POINT_COUNT = 20;
 const points = new Array(POINT_COUNT).fill().map(generatePoint);
+console.log(points);
 
 const pointsModel = new PointsModel();
 pointsModel.setPoints(points);
