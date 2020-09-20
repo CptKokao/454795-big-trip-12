@@ -1,5 +1,5 @@
 import FormView from "../view/form.js";
-import {generateId} from "../mock/point.js";
+import {generateId} from "../utils/common.js";
 import {remove, render, renderPosition} from "../utils/render.js";
 import {UserAction, UpdateType} from "../utils/const.js";
 

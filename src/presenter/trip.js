@@ -187,7 +187,6 @@ export default class Trip {
 
   // Метод отрисовки дней и всех маршрутов
   _renderListEvents(pointsList) {
-
     // Отрисовка эл-т sort в верстку
     this._renderSort();
 

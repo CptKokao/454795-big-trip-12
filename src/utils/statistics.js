@@ -33,9 +33,9 @@ export const getStatsForMoney = (points) => {
   Object
     .values(points)
     .map((item) => {
-      const typePoint = item.type === `Check-in` ? `Check` : item.type;
+      const typePoint = item.type === `check-in` ? `Check` : item.type;
       return {
-        type: typePoint,
+        type: typePoint[0].toUpperCase() + typePoint.slice(1),
         cost: item.cost
       };
     })
@@ -74,7 +74,7 @@ export const getStatsForTransport = (points) => {
   Object
     .values(points)
     .map((item) => {
-      const typePoint = item.type === `Check-in` ? `Check` : item.type;
+      const typePoint = item.type === `Check-in` ? `Check` : (item.type[0].toUpperCase() + item.type.slice(1));
       for (const type of typesActivity) {
         if (typePoint === type && LabelStat[typePoint] in bank) {
           bank[LabelStat[typePoint]] += 1;
@@ -121,7 +121,7 @@ export const getStatsForTimeSpent = (points) => {
     .map((item) => {
       const typePoint = item.type === `Check-in` ? `Check` : item.type;
       return {
-        type: typePoint,
+        type: typePoint[0].toUpperCase() + typePoint.slice(1),
         duration: getDuration(item)
       };
     })
