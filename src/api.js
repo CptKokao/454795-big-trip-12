@@ -14,16 +14,16 @@ export default class Api {
     this._authorization = authorization;
   }
 
-  getTasks() {
-    return this._load({url: `tasks`})
+  getPoints() {
+    return this._load({url: `points`})
         .then(Api.toJSON);
   }
 
-  updateTask(task) {
+  updatePoint(point) {
     return this._load({
-      url: `tasks/${task.id}`,
+      url: `points/${point.id}`,
       method: Method.PUT,
-      body: JSON.stringify(task),
+      body: JSON.stringify(point),
       headers: new Headers({"Content-Type": `application/json`})
     })
         .then(Api.toJSON);
