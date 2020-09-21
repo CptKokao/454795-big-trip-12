@@ -63,7 +63,7 @@ const filterPresenter = new FilterPresenter(mainElement, filterModel, pointsMode
 // Info
 const infoPresenter = new InfoPresenter(mainElement, pointsModel, handleMenuClick);
 // Trip
-const tripPresenter = new TripPresenter(pointsModel, filterModel);
+const tripPresenter = new TripPresenter(pointsModel, filterModel, api);
 
 infoPresenter.init();
 filterPresenter.init();

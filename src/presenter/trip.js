@@ -16,7 +16,7 @@ const eventElement = document.querySelector(`.trip-events`);
 
 export default class Trip {
   // Запуск метода для отрисовки всех маршрутов
-  constructor(pointsModel, filterModel) {
+  constructor(pointsModel, filterModel, api) {
     this._pointsModel = pointsModel;
     this._filterModel = filterModel;
 
@@ -26,9 +26,9 @@ export default class Trip {
     this._dayComponent = new DayView();
     this._loadingComponent = new LoadingView();
 
-    this._isLoading = true;
-
     this._currentSortType = SortType.DEFAULT;
+    this._isLoading = true;
+    this._api = api;
 
     // Observer, содержит объект всех созданных new PointPresenter
     // для того чтобы была ссылка на них, это дает возможность всех их удалить
@@ -106,7 +106,9 @@ export default class Trip {
 
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        this._pointsModel.updatePoint(updateType, update);
+        this._api.updatePoint(update).then((response) => {
+          this._pointsModel.updatePoint(updateType, response);
+        });
         break;
       case UserAction.ADD_POINT:
         this._pointsModel.addPoint(updateType, update);
