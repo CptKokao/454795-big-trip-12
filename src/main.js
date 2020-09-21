@@ -10,20 +10,12 @@ import Api from "./api.js";
 
 const AUTHORIZATION = `Basic randomstring`;
 const END_POINT = `https://12.ecmascript.pages.academy/big-trip`;
-
 const api = new Api(END_POINT, AUTHORIZATION);
 
-const pointsModel = new PointsModel();
-
 const sitePageBodyContainer = document.querySelector(`.page-body__page-main .page-body__container`);
-
 const mainElement = document.querySelector(`.trip-main`);
-let statisticsComponent = null;
 
-// Filter
-const filterModel = new FilterModel();
-const filterPresenter = new FilterPresenter(mainElement, filterModel, pointsModel);
-filterPresenter.init();
+let statisticsComponent = null;
 
 const handleMenuClick = (menuItem) => {
   switch (menuItem) {
@@ -58,22 +50,29 @@ const handleMenuClick = (menuItem) => {
         statisticsComponent = new StatisticsView(pointsModel.getPoints());
         render(sitePageBodyContainer, statisticsComponent, renderPosition.BEFOREEND);
       }
-      // Скрыть доску
-      // Показать статистику
       break;
   }
 };
+
+// Points data
+const pointsModel = new PointsModel();
+// Filter data
+const filterModel = new FilterModel();
+// Filter
+const filterPresenter = new FilterPresenter(mainElement, filterModel, pointsModel);
 // Info
 const infoPresenter = new InfoPresenter(mainElement, pointsModel, handleMenuClick);
-
-
 // Trip
 const tripPresenter = new TripPresenter(pointsModel, filterModel);
 
+infoPresenter.init();
+filterPresenter.init();
+tripPresenter.init();
 
-api.getPoints().then((points) => {
-  pointsModel.setPoints(points);
-  console.log(points);
-  infoPresenter.init();
-  tripPresenter.init();
-});
+api.getPoints()
+  .then((points) => {
+    pointsModel.setPoints(UpdateType.INIT, points);
+  })
+  .catch(() => {
+    pointsModel.setPoints(UpdateType.INIT, []);
+  });
