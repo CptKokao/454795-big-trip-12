@@ -132,7 +132,6 @@ export default class Trip {
         this._renderListEvents(this._getPoints());
         break;
       case UpdateType.INIT:
-        console.log("INIT");
         this._isLoading = false;
         remove(this._loadingComponent);
         this._renderListEvents(this._getPoints());
@@ -203,12 +202,10 @@ export default class Trip {
 
   // Метод отрисовки дней и всех маршрутов
   _renderListEvents(pointsList) {
-    console.log("RENDER");
     if (this._isLoading) {
       this._renderLoading();
       return;
     }
-    console.log("RENDER CONT");
     // Отрисовка эл-т sort в верстку
     this._renderSort();
 

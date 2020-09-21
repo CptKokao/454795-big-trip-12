@@ -89,7 +89,6 @@ export const Offer = {
     {
       title: `Switch to comfort`,
       price: getRandomInteger(5, 100),
-      price: getRandomInteger(0, 1)
     },
     {
       title: `Add meal`,

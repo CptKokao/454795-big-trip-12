@@ -6,7 +6,6 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 const BAR_HEIGHT = 55;
 
 const renderMoneyChart = (moneyCtx, data) => {
-  console.log(data);
   const {labelsStat, valuesStat} = getStatsForMoney(data);
   moneyCtx.height = BAR_HEIGHT * labelsStat.length;
 
