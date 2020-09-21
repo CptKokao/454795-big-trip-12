@@ -1,6 +1,6 @@
 import he from "he";
+import {generateOffers, generateDescription, generatePhoto} from "../utils/common.js";
 import {getDateTime, getShortTime} from "../utils/date.js";
-import {generateOffers, generateDescription, generatePhoto} from "../mock/point.js";
 import SmartView from "./smart.js";
 import flatpickr from "flatpickr";
 
@@ -12,7 +12,10 @@ const EMPTY_POINT = {
   cost: ``,
   offers: generateOffers(`Taxi`),
   description: generateDescription(),
-  photo: generatePhoto(),
+  photo: {
+    src: generatePhoto(),
+    description: `empty`
+  },
   dateStart: new Date(),
   dateEnd: new Date(),
   isFavorite: false
@@ -94,11 +97,11 @@ const createDestinationTemplate = (photo, description) => {
 
   return `<section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-            <p class="event__destination-description">${he.encode(description.join(`&nbsp;`))}</p>
+            <p class="event__destination-description">${description}</p>
 
             <div class="event__photos-container">
               <div class="event__photos-tape">
-                ${Object.values(photo).map((element) => `<img class="event__photo" src="${element}" alt="Event photo">`).join(``)}
+                ${Object.values(photo).map((element) => `<img class="event__photo" src="${element.src}" alt="${element.description}">`).join(``)}
               </div>
             </div>
           </section>`;
@@ -117,7 +120,7 @@ const createOfferTemplate = (offers) => {
                 <label class="event__offer-label" for="event-offer-${(element.title).split(`&nbsp;`).pop()}-1">
                   <span class="event__offer-title">${(element.title)}</span>
                   &plus;
-                  &euro;&nbsp;<span class="event__offer-price">${element.cost}</span>
+                  &euro;&nbsp;<span class="event__offer-price">${element.price}</span>
                 </label>
               </div>`).join(``)}
 
@@ -137,7 +140,7 @@ const createFormTemplate = (point, isNew) => {
             <label class="event__label  event__type-output" for="event-destination-1">
               ${type} to
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city}" list="destination-list-1" required>
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(city)}" list="destination-list-1" required>
             <datalist id="destination-list-1">
               <option value="Amsterdam"></option>
               <option value="Geneva"></option>

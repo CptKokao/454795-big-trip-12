@@ -3,6 +3,7 @@ import DayView from '../view/day.js';
 import SortView from '../view/sort.js';
 import ListDays from '../view/list-days.js';
 import NoPointsView from '../view/no-points.js';
+import LoadingView from "../view/loading.js";
 import PointPresenter from "./point.js";
 import NewPointPresenter from "./new-point.js";
 import {renderPosition, render, remove} from "../utils/render.js";
@@ -15,7 +16,7 @@ const eventElement = document.querySelector(`.trip-events`);
 
 export default class Trip {
   // Запуск метода для отрисовки всех маршрутов
-  constructor(pointsModel, filterModel) {
+  constructor(pointsModel, filterModel, api) {
     this._pointsModel = pointsModel;
     this._filterModel = filterModel;
 
@@ -23,8 +24,11 @@ export default class Trip {
     this._listDaysComponent = new ListDays();
     this._noPointsComponent = new NoPointsView();
     this._dayComponent = new DayView();
+    this._loadingComponent = new LoadingView();
 
     this._currentSortType = SortType.DEFAULT;
+    this._isLoading = true;
+    this._api = api;
 
     // Observer, содержит объект всех созданных new PointPresenter
     // для того чтобы была ссылка на них, это дает возможность всех их удалить
@@ -48,14 +52,13 @@ export default class Trip {
 
   init() {
 
-    this._pointsModel.addObserver(this._handleModelEvent);
-    this._filterModel.addObserver(this._handleModelEvent);
-
     // Отрисовка эл-т trip-days в верстку
     render(eventElement, this._listDaysComponent, renderPosition.BEFOREEND);
-
     // Отрисовка дней и маршрутов
     this._renderListEvents(this._getPoints());
+
+    this._pointsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
   }
 
   destroy() {
@@ -103,7 +106,9 @@ export default class Trip {
 
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        this._pointsModel.updatePoint(updateType, update);
+        this._api.updatePoint(update).then((response) => {
+          this._pointsModel.updatePoint(updateType, response);
+        });
         break;
       case UserAction.ADD_POINT:
         this._pointsModel.addPoint(updateType, update);
@@ -126,6 +131,11 @@ export default class Trip {
         this._clearTaskList();
         this._renderListEvents(this._getPoints());
         break;
+      case UpdateType.INIT:
+        this._isLoading = false;
+        remove(this._loadingComponent);
+        this._renderListEvents(this._getPoints());
+        break;
     }
   }
 
@@ -144,6 +154,7 @@ export default class Trip {
     this._daysObserver = {};
 
     remove(this._sortComponent);
+    remove(this._loadingComponent);
   }
 
   _handleSortTypeChange(sortType) {
@@ -178,6 +189,10 @@ export default class Trip {
     render(eventElement, this._sortComponent, renderPosition.AFTERBEGIN);
   }
 
+  _renderLoading() {
+    render(eventElement, this._loadingComponent, renderPosition.AFTERBEGIN);
+  }
+
   // Метод отрисовки одного маршрутов
   _renderPoint(pointListElement, point) {
     const pointPresenter = new PointPresenter(pointListElement, this._handleViewAction, this._listDaysComponent, this._handleModeChange);
@@ -187,7 +202,10 @@ export default class Trip {
 
   // Метод отрисовки дней и всех маршрутов
   _renderListEvents(pointsList) {
-
+    if (this._isLoading) {
+      this._renderLoading();
+      return;
+    }
     // Отрисовка эл-т sort в верстку
     this._renderSort();
 

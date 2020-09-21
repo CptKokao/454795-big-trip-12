@@ -1,4 +1,3 @@
-import {generatePoint} from './mock/point.js';
 import InfoPresenter from "./presenter/info.js";
 import TripPresenter from "./presenter/trip.js";
 import FilterPresenter from "./presenter/filter.js";
@@ -7,22 +6,16 @@ import FilterModel from "./model/filter.js";
 import StatisticsView from './view/statistics.js';
 import {MenuItem, UpdateType, FilterType} from "./utils/const.js";
 import {renderPosition, render, remove} from './utils/render.js';
+import Api from "./api.js";
 
-const POINT_COUNT = 20;
-const points = new Array(POINT_COUNT).fill().map(generatePoint);
-
-const pointsModel = new PointsModel();
-pointsModel.setPoints(points);
+const AUTHORIZATION = `Basic randomstring`;
+const END_POINT = `https://12.ecmascript.pages.academy/big-trip`;
+const api = new Api(END_POINT, AUTHORIZATION);
 
 const sitePageBodyContainer = document.querySelector(`.page-body__page-main .page-body__container`);
-
 const mainElement = document.querySelector(`.trip-main`);
-let statisticsComponent = null;
 
-// Filter
-const filterModel = new FilterModel();
-const filterPresenter = new FilterPresenter(mainElement, filterModel, pointsModel);
-filterPresenter.init();
+let statisticsComponent = null;
 
 const handleMenuClick = (menuItem) => {
   switch (menuItem) {
@@ -57,15 +50,29 @@ const handleMenuClick = (menuItem) => {
         statisticsComponent = new StatisticsView(pointsModel.getPoints());
         render(sitePageBodyContainer, statisticsComponent, renderPosition.BEFOREEND);
       }
-      // Скрыть доску
-      // Показать статистику
       break;
   }
 };
+
+// Points data
+const pointsModel = new PointsModel();
+// Filter data
+const filterModel = new FilterModel();
+// Filter
+const filterPresenter = new FilterPresenter(mainElement, filterModel, pointsModel);
 // Info
 const infoPresenter = new InfoPresenter(mainElement, pointsModel, handleMenuClick);
-infoPresenter.init();
-
 // Trip
-const tripPresenter = new TripPresenter(pointsModel, filterModel);
+const tripPresenter = new TripPresenter(pointsModel, filterModel, api);
+
+infoPresenter.init();
+filterPresenter.init();
 tripPresenter.init();
+
+api.getPoints()
+  .then((points) => {
+    pointsModel.setPoints(UpdateType.INIT, points);
+  })
+  .catch(() => {
+    pointsModel.setPoints(UpdateType.INIT, []);
+  });
