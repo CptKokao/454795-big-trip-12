@@ -178,8 +178,8 @@ const createFormTemplate = (point, isNew) => {
             <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${he.encode(cost.toString())}" ${isDisabled ? `disabled` : ``} required>
           </div>
 
-          <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? `disabled` : ``}>${isNew ? `Cancel` : `${isSaving ? `Saving...` : `Save`}`}</button>
-          <button class="event__reset-btn" type="reset" ${isDisabled ? `disabled` : ``}>${isDeleting ? `Deleting...` : `Delete`}</button>
+          <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? `disabled` : ``}>${isSaving ? `Saving...` : `Save`}</button>
+          <button class="event__reset-btn" type="reset" ${isDisabled ? `disabled` : ``}>${isNew ? `Cancel` : `${isDeleting ? `Deleting...` : `Delete`}`}</button>
 
           <input id="event-favorite" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
           <label class="event__favorite-btn" for="event-favorite">

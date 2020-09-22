@@ -101,7 +101,6 @@ export default class Point {
         });
         break;
       case State.ABORTING:
-        console.log('snake');
         this._formComponent.shake(resetFormState);
         this._formComponent.shake(resetFormState);
         break;
