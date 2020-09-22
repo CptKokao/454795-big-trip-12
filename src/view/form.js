@@ -7,15 +7,12 @@ import flatpickr from "flatpickr";
 import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 
 const EMPTY_POINT = {
-  type: `Taxi`,
+  type: `taxi`,
   city: ``,
   cost: ``,
   offers: generateOffers(`Taxi`),
   description: generateDescription(),
-  photo: {
-    src: generatePhoto(),
-    description: `empty`
-  },
+  photo: generatePhoto(),
   dateStart: new Date(),
   dateEnd: new Date(),
   isFavorite: false

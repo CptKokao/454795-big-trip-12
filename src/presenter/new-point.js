@@ -1,5 +1,4 @@
 import FormView from "../view/form.js";
-import {generateId} from "../utils/common.js";
 import {remove, render, renderPosition} from "../utils/render.js";
 import {UserAction, UpdateType} from "../utils/const.js";
 
@@ -47,7 +46,7 @@ export default class NewPoint {
         UpdateType.MAJOR,
         // Пока у нас нет сервера, который бы после сохранения
         // выдывал честный id задачи, нам нужно позаботиться об этом самим
-        Object.assign({id: generateId()}, point)
+        Object.assign(point)
     );
     this.destroy();
   }

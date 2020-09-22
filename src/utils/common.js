@@ -10,19 +10,12 @@ export const types = {
   transfer: [`Check`, `Sightseeing`, `Restaurant`]
 };
 
-// Date.now() и Math.random() - плохие решения для генерации id
-// в "продуктовом" коде, а для моков самое то.
-// Для "продуктового" кода используйте что-то понадежнее,
-// вроде nanoid - https://github.com/ai/nanoid
-export const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
-
 // Генерирует случайное количество предложений из текста
 export const generateDescription = () => {
   const text = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`;
   const arrText = text.split(`. `);
   const randomIndex = getRandomInteger(1, arrText.length - 1);
-
-  return arrText.splice(0, randomIndex);
+  return arrText.splice(0, randomIndex).join(`. `);
 };
 
 // Генерирует случайное фото
