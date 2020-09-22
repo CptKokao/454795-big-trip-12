@@ -105,7 +105,7 @@ const createDestinationTemplate = (photo, description) => {
 };
 
 // Шаблон для доп.предложений
-const createOfferTemplate = (offers) => {
+const createOfferTemplate = (offers, isDisabled) => {
 
   return `<section class="event__section  event__section--offers">
             <h3 class="event__section-title  event__section-title--offers">Offers</h3>
@@ -113,7 +113,7 @@ const createOfferTemplate = (offers) => {
             <div class="event__available-offers">
 
             ${Object.values(offers).map((element) => `<div class="event__offer-selector">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-${(element.title).split(`&nbsp;`).pop()}-1" type="checkbox" name="event-offer-${(element.title).split(`&nbsp;`).pop()}" ${element.isChecked ? `checked` : ``}>
+                <input class="event__offer-checkbox  visually-hidden" id="event-offer-${(element.title).split(`&nbsp;`).pop()}-1" type="checkbox" name="event-offer-${(element.title).split(`&nbsp;`).pop()}" ${element.isChecked ? `checked` : ``} ${isDisabled ? `disabled` : ``}>
                 <label class="event__offer-label" for="event-offer-${(element.title).split(`&nbsp;`).pop()}-1">
                   <span class="event__offer-title">${(element.title)}</span>
                   &plus;
@@ -126,7 +126,19 @@ const createOfferTemplate = (offers) => {
 
 
 const createFormTemplate = (point, isNew) => {
-  const {type, city, dateStart, dateEnd, cost, offers, photo, description, isFavorite} = point;
+  const {
+    type,
+    city,
+    dateStart,
+    dateEnd,
+    cost,
+    offers,
+    photo,
+    description,
+    isFavorite,
+    isDisabled,
+    isSaving,
+    isDeleting} = point;
 
   return (
     `<form class="trip-events__item  event  event--edit" action="#" method="post">
@@ -137,7 +149,7 @@ const createFormTemplate = (point, isNew) => {
             <label class="event__label  event__type-output" for="event-destination-1">
               ${type} to
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(city)}" list="destination-list-1" required>
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(city)}" list="destination-list-1" ${isDisabled ? `disabled` : ``} required>
             <datalist id="destination-list-1">
               <option value="Amsterdam"></option>
               <option value="Geneva"></option>
@@ -150,12 +162,12 @@ const createFormTemplate = (point, isNew) => {
             <label class="visually-hidden" for="event-start-time-1">
               From
             </label>
-            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${getDateTime(dateStart)} ${getShortTime(dateStart)}">
+            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${getDateTime(dateStart)} ${getShortTime(dateStart)}" ${isDisabled ? `disabled` : ``}>
             &mdash;
             <label class="visually-hidden" for="event-end-time-1">
               To
             </label>
-            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${getDateTime(dateEnd)} ${getShortTime(dateEnd)}">
+            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${getDateTime(dateEnd)} ${getShortTime(dateEnd)}" ${isDisabled ? `disabled` : ``}>
           </div>
 
           <div class="event__field-group  event__field-group--price">
@@ -163,11 +175,11 @@ const createFormTemplate = (point, isNew) => {
               <span class="visually-hidden">${cost}</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${he.encode(cost.toString())}" required>
+            <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${he.encode(cost.toString())}" ${isDisabled ? `disabled` : ``} required>
           </div>
 
-          <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">${!isNew ? `Delete` : `Cancel`}</button>
+          <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? `disabled` : ``}>${isSaving ? `saving...` : `save`}</button>
+          <button class="event__reset-btn" type="reset" ${isDisabled ? `disabled` : ``}>${isDeleting ? `deleting...` : `delete`}</button>
 
           <input id="event-favorite" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
           <label class="event__favorite-btn" for="event-favorite">
@@ -377,11 +389,23 @@ export default class Form extends SmartView {
   }
 
   static parsePointToData(point) {
-    return Object.assign({}, point);
+    return Object.assign(
+        {},
+        point,
+        {
+          isDisabled: false,
+          isSaving: false,
+          isDeleting: false
+        }
+    );
   }
 
   static parseDataToPoint(data) {
     data = Object.assign({}, data);
+
+    delete data.isDisabled;
+    delete data.isSaving;
+    delete data.isDeleting;
 
     return data;
   }
