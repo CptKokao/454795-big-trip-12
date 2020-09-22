@@ -11,7 +11,8 @@ const Mode = {
 
 export const State = {
   SAVING: `SAVING`,
-  DELETING: `DELETING`
+  DELETING: `DELETING`,
+  ABORTING: `ABORTING`
 };
 
 export default class Point {
@@ -77,6 +78,15 @@ export default class Point {
   }
 
   setViewState(state) {
+
+    const resetFormState = () => {
+      this._formComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false
+      });
+    };
+
     switch (state) {
       case State.SAVING:
         this._formComponent.updateData({
@@ -89,6 +99,11 @@ export default class Point {
           isDisabled: true,
           isDeleting: true
         });
+        break;
+      case State.ABORTING:
+        console.log('snake');
+        this._formComponent.shake(resetFormState);
+        this._formComponent.shake(resetFormState);
         break;
     }
   }
