@@ -18,14 +18,14 @@ const EMPTY_POINT = {
   isFavorite: false
 };
 
-const createTypeTemplate = (type) => {
+const createTypeTemplate = (type, isDisabled) => {
 
   return `<div class="event__type-wrapper">
             <label class="event__type  event__type-btn" for="event-type-toggle-1">
               <span class="visually-hidden">Choose event type</span>
               <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
             </label>
-            <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+            <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" ${isDisabled ? `disabled` : ``}>
 
             <div class="event__type-list">
               <fieldset class="event__type-group">
@@ -178,8 +178,8 @@ const createFormTemplate = (point, isNew) => {
             <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${he.encode(cost.toString())}" ${isDisabled ? `disabled` : ``} required>
           </div>
 
-          <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? `disabled` : ``}>${isSaving ? `saving...` : `save`}</button>
-          <button class="event__reset-btn" type="reset" ${isDisabled ? `disabled` : ``}>${isDeleting ? `deleting...` : `delete`}</button>
+          <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? `disabled` : ``}>${isNew ? `Cancel` : `${isSaving ? `Saving...` : `Save`}`}</button>
+          <button class="event__reset-btn" type="reset" ${isDisabled ? `disabled` : ``}>${isDeleting ? `Deleting...` : `Delete`}</button>
 
           <input id="event-favorite" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
           <label class="event__favorite-btn" for="event-favorite">
@@ -188,7 +188,7 @@ const createFormTemplate = (point, isNew) => {
               <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"/>
             </svg>
           </label>
-          ${!isNew ? `<button class="event__rollup-btn" type="button">` : ``}
+          ${!isNew ? `<button class="event__rollup-btn" type="button" ${isDisabled ? `disabled` : ``}>` : ``}
             <span class="visually-hidden">Open event</span>
           </button>
         </header>
