@@ -40,6 +40,13 @@ export default class NewPoint {
     document.removeEventListener(`keydown`, this._escKeyDownHandler);
   }
 
+  setSaving() {
+    this._formComponent.updateData({
+      isDisabled: true,
+      isSaving: true
+    });
+  }
+
   _handleFormSubmit(point) {
     this._changeData(
         UserAction.ADD_POINT,
@@ -48,7 +55,7 @@ export default class NewPoint {
         // выдывал честный id задачи, нам нужно позаботиться об этом самим
         Object.assign(point)
     );
-    this.destroy();
+    // this.destroy();
   }
 
   _handleDeleteClick() {

@@ -9,6 +9,11 @@ const Mode = {
   EDITING: `EDITING`
 };
 
+export const State = {
+  SAVING: `SAVING`,
+  DELETING: `DELETING`
+};
+
 export default class Point {
   constructor(pointListElement, viewAction, listDaysComponent, changeMode) {
 
@@ -71,6 +76,23 @@ export default class Point {
     remove(prevPointEditComponent);
   }
 
+  setViewState(state) {
+    switch (state) {
+      case State.SAVING:
+        this._formComponent.updateData({
+          isDisabled: true,
+          isSaving: true
+        });
+        break;
+      case State.DELETING:
+        this._formComponent.updateData({
+          isDisabled: true,
+          isDeleting: true
+        });
+        break;
+    }
+  }
+
   resetView() {
     if (this._mode !== Mode.DEFAULT) {
       this._replaceFormToCard();
@@ -126,9 +148,7 @@ export default class Point {
         point
     );
 
-    this._replaceFormToCard();
-
-    // document.addEventListener(`keydown`, this._onEscKeyDown);
+    // this._replaceFormToCard();
   }
 
   // Метод закрытие формы по нажатию Esc
