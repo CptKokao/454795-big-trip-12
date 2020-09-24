@@ -6,8 +6,17 @@ export const getRandomInteger = (a = 1, b = 0) => {
 };
 
 export const types = {
-  activity: [`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Drive`, `Flight`],
-  transfer: [`Check`, `Sightseeing`, `Restaurant`]
+  transport: [`taxi`, `bus`, `train`, `ship`, `transport`, `drive`, `flight`],
+  transfer: [`check`, `sightseeing`, `restaurant`]
+};
+
+// Первая буква заглавная
+export const upperFirst = (str) => {
+  if (!str) {
+    return str;
+  }
+
+  return str[0].toUpperCase() + str.slice(1);
 };
 
 // Генерирует случайное количество предложений из текста

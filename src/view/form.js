@@ -1,5 +1,5 @@
 import he from "he";
-import {generateOffers, generateDescription, generatePhoto} from "../utils/common.js";
+import {generateOffers, generateDescription, generatePhoto, upperFirst, types} from "../utils/common.js";
 import {getDateTime, getShortTime} from "../utils/date.js";
 import SmartView from "./smart.js";
 import flatpickr from "flatpickr";
@@ -18,78 +18,36 @@ const EMPTY_POINT = {
   isFavorite: false
 };
 
-const createTypeTemplate = (type, isDisabled) => {
 
-  return `<div class="event__type-wrapper">
-            <label class="event__type  event__type-btn" for="event-type-toggle-1">
-              <span class="visually-hidden">Choose event type</span>
-              <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
-            </label>
-            <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" ${isDisabled ? `disabled` : ``}>
-
-            <div class="event__type-list">
-              <fieldset class="event__type-group">
-                <legend class="visually-hidden">Transfer</legend>
-
-                <div class="event__type-item">
-                  <input id="event-type-taxi-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="taxi">
-                  <label class="event__type-label  event__type-label--taxi" for="event-type-taxi-1">Taxi</label>
-                </div>
-
-                <div class="event__type-item">
-                  <input id="event-type-bus-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="bus">
-                  <label class="event__type-label  event__type-label--bus" for="event-type-bus-1">Bus</label>
-                </div>
-
-                <div class="event__type-item">
-                  <input id="event-type-train-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="train">
-                  <label class="event__type-label  event__type-label--train" for="event-type-train-1">Train</label>
-                </div>
-
-                <div class="event__type-item">
-                  <input id="event-type-ship-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="ship">
-                  <label class="event__type-label  event__type-label--ship" for="event-type-ship-1">Ship</label>
-                </div>
-
-                <div class="event__type-item">
-                  <input id="event-type-transport-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="transport">
-                  <label class="event__type-label  event__type-label--transport" for="event-type-transport-1">Transport</label>
-                </div>
-
-                <div class="event__type-item">
-                  <input id="event-type-drive-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="drive">
-                  <label class="event__type-label  event__type-label--drive" for="event-type-drive-1">Drive</label>
-                </div>
-
-                <div class="event__type-item">
-                  <input id="event-type-flight-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="flight" checked>
-                  <label class="event__type-label  event__type-label--flight" for="event-type-flight-1">Flight</label>
-                </div>
-              </fieldset>
-
-              <fieldset class="event__type-group">
-                <legend class="visually-hidden">Activity</legend>
-
-                <div class="event__type-item">
-                  <input id="event-type-check-in-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="check-in">
-                  <label class="event__type-label  event__type-label--check-in" for="event-type-check-in-1">Check-in</label>
-                </div>
-
-                <div class="event__type-item">
-                  <input id="event-type-sightseeing-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="sightseeing">
-                  <label class="event__type-label  event__type-label--sightseeing" for="event-type-sightseeing-1">Sightseeing</label>
-                </div>
-
-                <div class="event__type-item">
-                  <input id="event-type-restaurant-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="restaurant">
-                  <label class="event__type-label  event__type-label--restaurant" for="event-type-restaurant-1">Restaurant</label>
-                </div>
-              </fieldset>
-            </div>
-          </div>`;
+const createTypeActivityTemplate = (data) => {
+  return (Object
+    .values(types.transport)
+    .map((activity) => {
+      return (
+        `<div class="event__type-item">
+          <input id="event-type-${activity}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${activity}" ${data.type.toLowerCase() === activity ? `checked` : ``} ${data.isDisabled ? `disabled` : ``}>
+          <label class="event__type-label  event__type-label--${activity}" for="event-type-${activity}-1">${upperFirst(activity)}</label>
+        </div>`
+      );
+    })
+  ).join(``);
 };
 
-// Шаблон для фото и описания
+const createTypeTransferTemplate = (data) => {
+  return (Object
+    .values(types.transfer)
+    .map((transfer) => {
+      const type = transfer === `check` ? `check-in` : transfer;
+      return (
+        `<div class="event__type-item">
+          <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${data.type === transfer ? `checked` : ``} ${data.isDisabled ? `disabled` : ``}>
+          <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${upperFirst(type)}</label>
+        </div>`
+      );
+    })
+  ).join(``);
+};
+
 const createDestinationTemplate = (photo, description) => {
 
   return `<section class="event__section  event__section--destination">
@@ -140,21 +98,39 @@ const createFormTemplate = (point, isNew) => {
     isSaving,
     isDeleting} = point;
 
+  const typeActivityTemplate = createTypeActivityTemplate(point);
+  const typeTransferTemplate = createTypeTransferTemplate(point);
+
   return (
     `<form class="trip-events__item  event  event--edit" action="#" method="post">
         <header class="event__header">
-          ${createTypeTemplate(type)}
+          <div class="event__type-wrapper">
+
+            <label class="event__type  event__type-btn" for="event-type-toggle-1">
+              <span class="visually-hidden">Choose event type</span>
+              <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
+            </label>
+            <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" ${isDisabled ? `disabled` : ``}>
+
+            <div class="event__type-list">
+              <fieldset class="event__type-group">
+                <legend class="visually-hidden">Transfer</legend>
+                ${typeActivityTemplate}
+              </fieldset>
+              <fieldset class="event__type-group">
+                <legend class="visually-hidden">Activity</legend>
+                ${typeTransferTemplate}
+              </fieldset>
+            </div>
+          </div>
 
           <div class="event__field-group  event__field-group--destination">
             <label class="event__label  event__type-output" for="event-destination-1">
-              ${type} to
+              ${upperFirst(type)} to
             </label>
             <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(city)}" list="destination-list-1" ${isDisabled ? `disabled` : ``} required>
             <datalist id="destination-list-1">
-              <option value="Amsterdam"></option>
-              <option value="Geneva"></option>
-              <option value="Chamonix"></option>
-              <option value="Saint Petersburg"></option>
+
             </datalist>
           </div>
 

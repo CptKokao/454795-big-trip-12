@@ -154,15 +154,13 @@ export default class Point {
   }
 
   _setSubmitHandler(point) {
-    // Вызывает this.init(), для отрисовки изменения
-    // this._viewAction(point);
     this._viewAction(
         UserAction.UPDATE_POINT,
         UpdateType.MINOR,
         point
     );
 
-    // this._replaceFormToCard();
+    this._replaceFormToCard();
   }
 
   // Метод закрытие формы по нажатию Esc
