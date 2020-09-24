@@ -8,7 +8,7 @@ import {MenuItem, UpdateType, FilterType} from "./utils/const.js";
 import {renderPosition, render, remove} from './utils/render.js';
 import Api from "./api.js";
 
-const AUTHORIZATION = `Basic randomstring`;
+const AUTHORIZATION = `Basic random_string123`;
 const END_POINT = `https://12.ecmascript.pages.academy/big-trip`;
 const api = new Api(END_POINT, AUTHORIZATION);
 

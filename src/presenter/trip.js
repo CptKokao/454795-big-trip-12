@@ -4,7 +4,7 @@ import SortView from '../view/sort.js';
 import ListDays from '../view/list-days.js';
 import NoPointsView from '../view/no-points.js';
 import LoadingView from "../view/loading.js";
-import PointPresenter from "./point.js";
+import PointPresenter, {State as PointViewState} from "./point.js";
 import NewPointPresenter from "./new-point.js";
 import {renderPosition, render, remove} from "../utils/render.js";
 import {getDateTime} from "../utils/date.js";
@@ -99,22 +99,46 @@ export default class Trip {
     this._newPointPresenter.destroy();
     Object
       .values(this._pointsObserver)
-      .forEach((pointObserver) => pointObserver.resetView());
+      .forEach((pointsObserver) => pointsObserver.resetView());
   }
 
   _handleViewAction(actionType, updateType, update) {
 
     switch (actionType) {
+
+      // Обновление
       case UserAction.UPDATE_POINT:
-        this._api.updatePoint(update).then((response) => {
+        this._pointsObserver[update.id].setViewState(PointViewState.SAVING);
+        this._api.updatePoint(update)
+        .then((response) => {
           this._pointsModel.updatePoint(updateType, response);
+        })
+        .catch(() => {
+          this._pointsObserver[update.id].setViewState(PointViewState.ABORTING);
         });
         break;
+
+      // Добавление
       case UserAction.ADD_POINT:
-        this._pointsModel.addPoint(updateType, update);
+        this._api.addPoint(update)
+        .then((response) => {
+          this._pointsModel.addPoint(updateType, response);
+        })
+        .catch(() => {
+          this._newPointPresenter.setAborting();
+        });
         break;
+
+      // Удаление
       case UserAction.DELETE_POINT:
-        this._pointsModel.deletePoint(updateType, update);
+        this._pointsObserver[update.id].setViewState(PointViewState.DELETING);
+        this._api.deletePoint(update)
+        .then(() => {
+          this._pointsModel.deletePoint(updateType, update);
+        })
+        .catch(() => {
+          this._pointsObserver[update.id].setViewState(PointViewState.ABORTING);
+        });
         break;
     }
   }

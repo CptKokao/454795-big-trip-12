@@ -1,4 +1,4 @@
-import {types} from '../utils/common.js';
+import {types} from '../utils/point.js';
 import moment from 'moment';
 
 const PointType = {
