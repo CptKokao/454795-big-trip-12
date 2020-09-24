@@ -1,5 +1,6 @@
 import he from "he";
-import {generateOffers, generateDescription, generatePhoto, upperFirst, types} from "../utils/common.js";
+import {upperFirst, getConcatNameOffers} from "../utils/common.js";
+import {generateOffers, generateDescription, generatePhoto, updateOffers, types} from "../utils/point.js";
 import {getDateTime, getShortTime} from "../utils/date.js";
 import SmartView from "./smart.js";
 import flatpickr from "flatpickr";
@@ -63,25 +64,45 @@ const createDestinationTemplate = (photo, description) => {
 };
 
 // Шаблон для доп.предложений
-const createOfferTemplate = (offers, isDisabled) => {
-
-  return `<section class="event__section  event__section--offers">
-            <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-
-            <div class="event__available-offers">
-
-            ${Object.values(offers).map((element) => `<div class="event__offer-selector">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-${(element.title).split(`&nbsp;`).pop()}-1" type="checkbox" name="event-offer-${(element.title).split(`&nbsp;`).pop()}" ${element.isChecked ? `checked` : ``} ${isDisabled ? `disabled` : ``}>
-                <label class="event__offer-label" for="event-offer-${(element.title).split(`&nbsp;`).pop()}-1">
-                  <span class="event__offer-title">${(element.title)}</span>
+const createOffers = (data) => {
+  if (data) {
+    return (Object
+      .values(data.offers)
+      .map((item) => {
+        const nameForAttr = getConcatNameOffers(item.title);
+        return (
+          `<div class="event__offer-selector">
+            <input class="event__offer-checkbox visually-hidden" id="${nameForAttr}-1" type="checkbox" name="${item.title}" ${item.isEnabled ? `checked` : ``} disaled=${item.isDisabled ? `true` : `false`}>
+              <label class="event__offer-label" for="${nameForAttr}-1">
+                <span class="event__offer-title">${item.title}</span>
                   &plus;
-                  &euro;&nbsp;<span class="event__offer-price">${element.price}</span>
-                </label>
-              </div>`).join(``)}
+                  &euro;&nbsp;<span class="event__offer-price">${item.price}
+                </span>
+            </label>
+          </div>`
+        );
+      }).join(``)
+    );
+  }
 
-          </section>`;
+  return ``;
 };
 
+const createOffersTemplate = (data = {}) => {
+  const offers = createOffers(data);
+  if (offers) {
+    return (
+      `<section class="event__section  event__section--offers">
+        <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+        <div class="event__available-offers">
+          ${offers}
+        </div>
+      </section>`
+    );
+  }
+
+  return ``;
+};
 
 const createFormTemplate = (point, isNew) => {
   const {
@@ -90,7 +111,6 @@ const createFormTemplate = (point, isNew) => {
     dateStart,
     dateEnd,
     cost,
-    offers,
     photo,
     description,
     isFavorite,
@@ -100,6 +120,7 @@ const createFormTemplate = (point, isNew) => {
 
   const typeActivityTemplate = createTypeActivityTemplate(point);
   const typeTransferTemplate = createTypeTransferTemplate(point);
+  const offertsTemplate = createOffersTemplate(point);
 
   return (
     `<form class="trip-events__item  event  event--edit" action="#" method="post">
@@ -164,12 +185,12 @@ const createFormTemplate = (point, isNew) => {
               <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"/>
             </svg>
           </label>
-          ${!isNew ? `<button class="event__rollup-btn" type="button" ${isDisabled ? `disabled` : ``}>` : ``}
+          ${!isNew ? `<button class="event__rollup-btn" type="button" ${isDisabled ? `disabled` : ``}>` : `<button class="event__rollup-btn" type="button" style="display: none"`}
             <span class="visually-hidden">Open event</span>
           </button>
         </header>
         <section class="event__details">
-          ${createOfferTemplate(offers)}
+          ${offertsTemplate}
           ${!isNew ? createDestinationTemplate(photo, description) : ``}
         </section>`
   );
@@ -194,6 +215,7 @@ export default class Form extends SmartView {
     this._startDateChangeHandler = this._startDateChangeHandler.bind(this);
     this._endDateChangeHandler = this._endDateChangeHandler.bind(this);
     this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
+    this._offerChangeHandler = this._offerChangeHandler.bind(this);
 
     this._setInnerHandlers();
     this._setStartDatepicker();
@@ -289,6 +311,15 @@ export default class Form extends SmartView {
     this._callback.close();
   }
 
+
+  // Вызывыется из point.js при нажатии на submit в форме
+  setFormSubmitHandler(callback) {
+    // callback - эта функция которая записывается в объект this._callback
+    // для того чтобы осталась ссылка на нее, это дает возможность удалить addEventListener
+    this._callback.formSubmit = callback;
+    this.getElement().addEventListener(`submit`, this._formSubmitHandler);
+  }
+
   // Вызывыется из point.js при нажатии на submit в форме
   setFormSubmitHandler(callback) {
     // callback - эта функция которая записывается в объект this._callback
@@ -337,6 +368,27 @@ export default class Form extends SmartView {
     }, true);
   }
 
+  _offerChangeHandler(e) {
+    e.preventDefault();
+
+    let nameInput;
+
+    if (e.target.tagName === `LABEL`) {
+      nameInput = e.target.previousElementSibling.name;
+    } else if (e.target.tagName === `SPAN`) {
+      nameInput = e.target.parentElement.previousElementSibling.name;
+    } else {
+      return;
+    }
+
+    const allOffers = Object.values(this._data.offers);
+    const newOffers = updateOffers(allOffers, nameInput);
+
+    this.updateData({
+      offers: newOffers
+    });
+  }
+
   // Хранятся локальные обработчики
   _setInnerHandlers() {
     // Обработчик на favorite
@@ -352,6 +404,11 @@ export default class Form extends SmartView {
     const typeContainers = this.getElement().querySelectorAll(`.event__type-input`);
     for (const container of typeContainers) {
       container.addEventListener(`input`, this._typeChangeHandler);
+    }
+
+    const offers = this.getElement().querySelectorAll(`.event__offer-selector`);
+    for (const offer of offers) {
+      offer.addEventListener(`click`, this._offerChangeHandler);
     }
   }
 
