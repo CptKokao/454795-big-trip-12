@@ -6,7 +6,7 @@ import FilterModel from "./model/filter.js";
 import StatisticsView from './view/statistics.js';
 import {MenuItem, UpdateType, FilterType} from "./utils/const.js";
 import {renderPosition, render, remove} from './utils/render.js';
-import Api from "./api.js";
+import Api from "./api/index.js";
 
 const AUTHORIZATION = `Basic random_string123`;
 const END_POINT = `https://12.ecmascript.pages.academy/big-trip`;
