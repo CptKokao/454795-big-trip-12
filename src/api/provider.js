@@ -80,7 +80,6 @@ export default class Provider {
   }
 
   sync() {
-    debugger
     if (Provider.isOnline()) {
       const storePoints = Object.values(this._store.getItems());
 

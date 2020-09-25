@@ -86,7 +86,6 @@ apiWithProvider.getPoints()
   });
 
 window.addEventListener(`load`, () => {
-  console.log('test');
   navigator.serviceWorker.register(`/sw.js`)
     .then(() => {
       // Действие, в случае успешной регистрации ServiceWorker
@@ -98,12 +97,10 @@ window.addEventListener(`load`, () => {
 });
 
 window.addEventListener(`online`, () => {
-  console.log(`online`);
   document.title = document.title.replace(` [offline]`, ``);
   apiWithProvider.sync();
 });
 
 window.addEventListener(`offline`, () => {
-  console.log(`offline`);
   document.title += ` [offline]`;
 });
