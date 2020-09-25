@@ -7,7 +7,6 @@ const RESPONSE_SAFE_TYPE = `basic`;
 
 // install - добавляет в кэш
 self.addEventListener(`install`, (e) => {
-  console.log('install');
   e.waitUntil(
       caches.open(CACHE_NAME)
         .then((cache) => {
@@ -41,7 +40,6 @@ self.addEventListener(`install`, (e) => {
 
 // activate - удаляет с компьютера пользователя устаревшие кэши
 self.addEventListener(`activate`, (e) => {
-  console.log('activate');
   e.waitUntil(
       // Получаем все названия кэшей
       caches.keys()
@@ -67,7 +65,6 @@ self.addEventListener(`activate`, (e) => {
 });
 
 const handleFetch = (e) => {
-  console.log('fetch');
   const {request} = e;
 
 

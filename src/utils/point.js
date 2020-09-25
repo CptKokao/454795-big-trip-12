@@ -6,7 +6,7 @@ export const getRandomInteger = (a = 1, b = 0) => {
 };
 
 export const types = {
-  transport: [`taxi`, `bus`, `train`, `ship`, `transport`, `drive`, `flight`],
+  activity: [`taxi`, `bus`, `train`, `ship`, `transport`, `drive`, `flight`],
   transfer: [`check`, `sightseeing`, `restaurant`]
 };
 

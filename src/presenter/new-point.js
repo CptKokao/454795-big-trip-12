@@ -6,7 +6,6 @@ export default class NewPoint {
   constructor(listDaysComponent, changeData) {
     this._listDaysComponent = listDaysComponent;
     this._changeData = changeData;
-
     this._formComponent = null;
 
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
@@ -24,8 +23,8 @@ export default class NewPoint {
     this._formComponent.setDeleteClickHandler(this._handleDeleteClick);
 
     render(this._listDaysComponent, this._formComponent, renderPosition.AFTERBEGIN);
-    document.querySelector(`.trip-main__event-add-btn`).disabled = true;
 
+    document.querySelector(`.trip-main__event-add-btn`).disabled = true;
     document.addEventListener(`keydown`, this._escKeyDownHandler);
   }
 
@@ -63,11 +62,8 @@ export default class NewPoint {
     this._changeData(
         UserAction.ADD_POINT,
         UpdateType.MAJOR,
-        // Пока у нас нет сервера, который бы после сохранения
-        // выдывал честный id задачи, нам нужно позаботиться об этом самим
         Object.assign(point)
     );
-    // this.destroy();
   }
 
   _handleDeleteClick() {

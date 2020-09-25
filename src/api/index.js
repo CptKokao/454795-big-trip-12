@@ -48,7 +48,7 @@ export default class Api {
 
   deletePoint(point) {
     return this._load({
-      url: `point/${point.id}`,
+      url: `points/${point.id}`,
       method: Method.DELETE
     });
   }

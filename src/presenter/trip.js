@@ -15,12 +15,10 @@ import {SortType, UpdateType, UserAction, FilterType} from '../utils/const.js';
 const eventElement = document.querySelector(`.trip-events`);
 
 export default class Trip {
-  // Запуск метода для отрисовки всех маршрутов
   constructor(pointsModel, filterModel, api) {
     this._pointsModel = pointsModel;
     this._filterModel = filterModel;
 
-    // this._sortComponent = new SortView();
     this._listDaysComponent = new ListDays();
     this._noPointsComponent = new NoPointsView();
     this._dayComponent = new DayView();
@@ -30,31 +28,18 @@ export default class Trip {
     this._isLoading = true;
     this._api = api;
 
-    // Observer, содержит объект всех созданных new PointPresenter
-    // для того чтобы была ссылка на них, это дает возможность всех их удалить
-    // Формат id : {new PointPresenter}
     this._pointsObserver = {};
     this._daysObserver = {};
 
-    // Обработчик сортировки
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
-
     this._handleModeChange = this._handleModeChange.bind(this);
-
-    // Обработчик изменения View
     this._handleViewAction = this._handleViewAction.bind(this);
-
-    // Обработчик изменения Model
     this._handleModelEvent = this._handleModelEvent.bind(this);
-
     this._newPointPresenter = new NewPointPresenter(this._listDaysComponent, this._handleViewAction);
   }
 
   init() {
-
-    // Отрисовка эл-т trip-days в верстку
     render(eventElement, this._listDaysComponent, renderPosition.BEFOREEND);
-    // Отрисовка дней и маршрутов
     this._renderListEvents(this._getPoints());
 
     this._pointsModel.addObserver(this._handleModelEvent);
@@ -72,11 +57,8 @@ export default class Trip {
     this._newPointPresenter.destroy();
   }
 
-  // Создает новый маршрут
   createPoint() {
-    // сброс сортировки
     this._currentSortType = SortType.DEFAULT;
-    // сброс фильтрации
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this._newPointPresenter.init();
   }
