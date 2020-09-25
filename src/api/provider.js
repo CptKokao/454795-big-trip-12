@@ -20,7 +20,7 @@ export default class Provider {
     this._store = store;
   }
 
-  getTasks() {
+  getPoints() {
     if (Provider.isOnline()) {
       return this._api.getPoints()
         .then((points) => {
@@ -35,7 +35,7 @@ export default class Provider {
     return Promise.resolve(storePoints.map(TasksModel.adaptToClient));
   }
 
-  updateTask(point) {
+  updatePoint(point) {
     if (Provider.isOnline()) {
       return this._api.updateTask(point)
         .then((updatePoint) => {
@@ -80,6 +80,7 @@ export default class Provider {
   }
 
   sync() {
+    debugger
     if (Provider.isOnline()) {
       const storePoints = Object.values(this._store.getItems());
 

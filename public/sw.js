@@ -1,4 +1,4 @@
-const CACHE_PREFIX = `taskmanager-cache`;
+const CACHE_PREFIX = `big-trip-cache`;
 const CACHE_VER = `v12`;
 const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VER}`;
 
@@ -7,6 +7,7 @@ const RESPONSE_SAFE_TYPE = `basic`;
 
 // install - добавляет в кэш
 self.addEventListener(`install`, (e) => {
+  console.log('install');
   e.waitUntil(
       caches.open(CACHE_NAME)
         .then((cache) => {
@@ -33,15 +34,14 @@ self.addEventListener(`install`, (e) => {
             `/img/photos/5.jpg`,
             `/img/header-bg.png`,
             `/img/header-bg@2x.png`,
-            `/img/logo.png`,
-            `/img/plug.png`
-          ]);
+            `/img/logo.png`          ]);
         })
   );
 });
 
 // activate - удаляет с компьютера пользователя устаревшие кэши
 self.addEventListener(`activate`, (e) => {
+  console.log('activate');
   e.waitUntil(
       // Получаем все названия кэшей
       caches.keys()
@@ -67,7 +67,9 @@ self.addEventListener(`activate`, (e) => {
 });
 
 const handleFetch = (e) => {
+  console.log('fetch');
   const {request} = e;
+
 
   e.respondWith(
       caches.match(request)
