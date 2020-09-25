@@ -53,6 +53,17 @@ export default class Api {
     });
   }
 
+  sync(point) {
+    return this._load({
+      url: `point/sync`,
+      method: Method.POST,
+      body: JSON.stringify(point),
+      headers: new Headers({"Content-Type": `application/json`})
+    })
+      .then(Api.toJSON);
+  }
+
+
   _load({
     url,
     method = Method.GET,
