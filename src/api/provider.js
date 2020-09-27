@@ -37,7 +37,7 @@ export default class Provider {
 
   updatePoint(point) {
     if (Provider.isOnline()) {
-      return this._api.updateTask(point)
+      return this._api.updatePoint(point)
         .then((updatePoint) => {
           this._store.setItem(updatePoint.id, TasksModel.adaptToServer(updatePoint));
           return updatePoint;
