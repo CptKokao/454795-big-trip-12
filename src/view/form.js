@@ -22,7 +22,7 @@ const EMPTY_POINT = {
 
 const createTypeActivityTemplate = (data) => {
   return (Object
-    .values(types.transport)
+    .values(types.activity)
     .map((activity) => {
       return (
         `<div class="event__type-item">
@@ -334,7 +334,6 @@ export default class Form extends SmartView {
     this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._clickCloseHandler);
   }
 
-  // Метод вызывается при изменения типа транспорта
   _typeChangeHandler(e) {
     e.preventDefault();
     this.updateData({
@@ -344,7 +343,6 @@ export default class Form extends SmartView {
     });
   }
 
-  // Метод вызывается при изменения favorite
   _favoriteClickHandler(e) {
     e.preventDefault();
     this.updateData({
@@ -352,7 +350,6 @@ export default class Form extends SmartView {
     });
   }
 
-  // Метод вызывается при изменения price
   _costClickHandler(e) {
     e.preventDefault();
     this.updateData({
@@ -360,7 +357,6 @@ export default class Form extends SmartView {
     }, true);
   }
 
-  // Метод вызывается при изменения destination(city)
   _destinationInputHandler(e) {
     e.preventDefault();
     this.updateData({
@@ -389,18 +385,11 @@ export default class Form extends SmartView {
     });
   }
 
-  // Хранятся локальные обработчики
   _setInnerHandlers() {
-    // Обработчик на favorite
     this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, this._favoriteClickHandler);
-
-    // Обработчик на price
     this.getElement().querySelector(`.event__input--price`).addEventListener(`input`, this._costClickHandler);
-
-    // Обработчик на destination(city)
     this.getElement().querySelector(`.event__input--destination`).addEventListener(`input`, this._destinationInputHandler);
 
-    // Обработчик на type(тип транспорта)
     const typeContainers = this.getElement().querySelectorAll(`.event__type-input`);
     for (const container of typeContainers) {
       container.addEventListener(`input`, this._typeChangeHandler);

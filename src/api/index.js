@@ -1,4 +1,4 @@
-import PointsModel from "./model/points.js";
+import PointsModel from "../model/points.js";
 
 const Method = {
   GET: `GET`,
@@ -48,10 +48,21 @@ export default class Api {
 
   deletePoint(point) {
     return this._load({
-      url: `point/${point.id}`,
+      url: `points/${point.id}`,
       method: Method.DELETE
     });
   }
+
+  sync(point) {
+    return this._load({
+      url: `points/sync`,
+      method: Method.POST,
+      body: JSON.stringify(point),
+      headers: new Headers({"Content-Type": `application/json`})
+    })
+      .then(Api.toJSON);
+  }
+
 
   _load({
     url,

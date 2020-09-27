@@ -150,6 +150,7 @@ export default class Point {
 
   _setClickHandler() {
     this._replaceCardToForm();
+    document.querySelector(`.trip-main__event-add-btn`).disabled = false;
     document.addEventListener(`keydown`, this._onEscKeyDown);
   }
 

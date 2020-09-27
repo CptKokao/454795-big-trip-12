@@ -1,4 +1,5 @@
 import {types} from '../utils/point.js';
+import {upperFirst} from '../utils/common.js';
 import moment from 'moment';
 
 const PointType = {
@@ -76,9 +77,9 @@ export const getStatsForTransport = (points) => {
     .map((item) => {
       const typePoint = item.type === `check-in` ? `Check` : (item.type[0].toUpperCase() + item.type.slice(1));
       for (const type of typesActivity) {
-        if (typePoint === type && LabelStat[typePoint] in bank) {
+        if (typePoint === upperFirst(type) && LabelStat[typePoint] in bank) {
           bank[LabelStat[typePoint]] += 1;
-        } else if (typePoint === type) {
+        } else if (typePoint === upperFirst(type)) {
           bank[LabelStat[typePoint]] = 1;
         }
       }
