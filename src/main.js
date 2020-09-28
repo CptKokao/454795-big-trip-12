@@ -3,6 +3,7 @@ import TripPresenter from "./presenter/trip.js";
 import FilterPresenter from "./presenter/filter.js";
 import PointsModel from "./model/points.js";
 import FilterModel from "./model/filter.js";
+import ExtraModel from "./model/extra.js";
 import StatisticsView from './view/statistics.js';
 import {MenuItem, UpdateType, FilterType} from "./utils/const.js";
 import {renderPosition, render, remove} from './utils/render.js';
@@ -66,6 +67,8 @@ const handleMenuClick = (menuItem) => {
 const pointsModel = new PointsModel();
 // Filter data
 const filterModel = new FilterModel();
+// Extra data
+const extraModel = new ExtraModel();
 // Filter
 const filterPresenter = new FilterPresenter(mainElement, filterModel, pointsModel);
 // Info
@@ -77,9 +80,15 @@ infoPresenter.init();
 filterPresenter.init();
 tripPresenter.init();
 
-apiWithProvider.getPoints()
-  .then((points) => {
-    pointsModel.setPoints(UpdateType.INIT, points);
+Promise.all([
+  apiWithProvider.getOffers(),
+  apiWithProvider.getDestinations(),
+  apiWithProvider.getPoints()
+])
+  .then((response) => {
+    extraModel.setOffers(response[0]);
+    extraModel.setDestinations(response[1]);
+    pointsModel.setPoints(UpdateType.INIT, response[2]);
   })
   .catch(() => {
     pointsModel.setPoints(UpdateType.INIT, []);

@@ -15,15 +15,15 @@ export default class Store {
   }
 
   // Записывает данные из LocalStorage
-  setItems(items) {
+  setItems(key, items) {
     this._storage.setItem(
-        this._storeKey,
+        key,
         JSON.stringify(items)
     );
   }
 
   setItem(key, value) {
-    const store = this.getItems();
+    const store = this.getItems(`bigtrip-localstorage-points`);
 
     this._storage.setItem(
         this._storeKey,
@@ -34,7 +34,6 @@ export default class Store {
         )
     );
   }
-
   // Удаляет данные из LocalStorage
   removeItem(key) {
     const store = this.getItems();

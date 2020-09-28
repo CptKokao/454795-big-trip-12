@@ -14,10 +14,46 @@ const createStoreStructure = (items) => {
   }, {});
 };
 
+const createStoreStructureExtra = (additions) => {
+  return additions.reduce((acc, current) => {
+    return Object.assign({}, acc, {
+      [current.type || current.name]: current
+    });
+  }, {});
+};
+
 export default class Provider {
   constructor(api, store) {
     this._api = api;
     this._store = store;
+  }
+
+  getOffers() {
+    if (Provider.isOnline()) {
+      return this._api.getOffers()
+        .then((offers) => {
+          const items = createStoreStructureExtra(offers);
+          this._store.setItem(`bigtrip-localstorage-offers`, items);
+          return offers;
+        });
+    }
+
+    const storeOffers = Object.values(this._store.getItems(`bigtrip-localstorage-offers`));
+    return Promise.resolve(storeOffers);
+  }
+
+  getDestinations() {
+    if (Provider.isOnline()) {
+      return this._api.getDestinations()
+        .then((destinations) => {
+          const items = createStoreStructureExtra(destinations);
+          this._store.setItem(`bigtrip-localstorage-destinations`, items);
+          return destinations;
+        });
+    }
+
+    const storeDestinations = Object.values(this._store.getItems(`bigtrip-localstorage-destinations`));
+    return Promise.resolve(storeDestinations);
   }
 
   getPoints() {
@@ -25,13 +61,12 @@ export default class Provider {
       return this._api.getPoints()
         .then((points) => {
           const items = createStoreStructure(points.map(TasksModel.adaptToServer));
-          this._store.setItems(items);
+          this._store.setItem(`bigtrip-localstorage-points`, items);
           return points;
         });
     }
 
-    const storePoints = Object.values(this._store.getItems());
-
+    const storePoints = Object.values(this._store.getItems(`bigtrip-localstorage-points`, true));
     return Promise.resolve(storePoints.map(TasksModel.adaptToClient));
   }
 

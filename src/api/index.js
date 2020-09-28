@@ -18,6 +18,16 @@ export default class Api {
     this._authorization = authorization;
   }
 
+  getOffers() {
+    return this._load({url: `offers`})
+      .then(Api.toJSON);
+  }
+
+  getDestinations() {
+    return this._load({url: `destinations`})
+      .then(Api.toJSON);
+  }
+
   getPoints() {
     return this._load({url: `points`})
         .then(Api.toJSON)

@@ -27,6 +27,8 @@ export default class Trip {
     this._currentSortType = SortType.DEFAULT;
     this._isLoading = true;
     this._api = api;
+    this._offers = null;
+    this._destinations = null;
 
     this._pointsObserver = {};
     this._daysObserver = {};
@@ -61,6 +63,14 @@ export default class Trip {
     this._currentSortType = SortType.DEFAULT;
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this._newPointPresenter.init();
+  }
+
+  _getOffers() {
+    this._offers = this._extraModel.getOffers();
+  }
+
+  _getDestinations() {
+    this._destinations = this._extraModel.getDestinations();
   }
 
   _getPoints() {
