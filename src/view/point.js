@@ -40,7 +40,7 @@ const createOfferTemplate = (offers) => {
               <span class="event__offer-title">${element.title}</span>
               &plus;
               &euro;&nbsp;<span class="event__offer-price">${element.price}</span>
-            </li>`).slice(-2).join(``)}
+            </li>`).slice(-3).join(``)}
 
           </ul>
           <button class="event__rollup-btn" type="button">
