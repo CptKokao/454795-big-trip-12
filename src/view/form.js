@@ -172,7 +172,7 @@ const createFormTemplate = (point, isNew) => {
               <span class="visually-hidden">${cost}</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${he.encode(cost.toString())}" ${isDisabled ? `disabled` : ``} required>
+            <input class="event__input  event__input--price" id="event-price-1" type="number" min="0" name="event-price" value="${he.encode(cost.toString())}" ${isDisabled ? `disabled` : ``} required>
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? `disabled` : ``}>${isSaving ? `Saving...` : `Save`}</button>
@@ -320,14 +320,6 @@ export default class Form extends SmartView {
     this.getElement().addEventListener(`submit`, this._formSubmitHandler);
   }
 
-  // Вызывыется из point.js при нажатии на submit в форме
-  setFormSubmitHandler(callback) {
-    // callback - эта функция которая записывается в объект this._callback
-    // для того чтобы осталась ссылка на нее, это дает возможность удалить addEventListener
-    this._callback.formSubmit = callback;
-    this.getElement().addEventListener(`submit`, this._formSubmitHandler);
-  }
-
   // Вызывыется из point.js при нажатии на ^ в форме
   setFormClickCloseHandler(callback) {
     this._callback.close = callback;
@@ -431,4 +423,9 @@ export default class Form extends SmartView {
 
     return data;
   }
+
+  reset(point) {
+    this.updateData(Form.parsePointToData(point));
+  }
 }
+
