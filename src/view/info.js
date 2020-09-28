@@ -12,12 +12,32 @@ const createInfoTemplate = (points) => {
       </section>`
     );
   } else {
-    const destinations = new Array(points.length).fill().map((element, index) => points[index].city).join(`,`).replace(/,/g, ` — `);
+    // Максимальное кол-во городов без ...
+    const MAX_CITY = 3;
+
+    // Массив городов
+    const destinations = new Array(points.length).fill().map((element, index) => points[index].city);
+
+    const getCitiesForInfo = (cities) => {
+      let citiesForInfo = [];
+
+      if (cities.length > MAX_CITY) {
+
+        citiesForInfo.push(cities[0]);
+        citiesForInfo.push(`...`);
+        citiesForInfo.push(cities[cities.length - 1]);
+        citiesForInfo = citiesForInfo.join(`,`).replace(/,/g, ` — `);
+      } else {
+
+        citiesForInfo = destinations.join(`,`).replace(/,/g, ` — `);
+      }
+      return citiesForInfo;
+    };
 
     return (
       `<section class="trip-main__trip-info  trip-info">
         <div class="trip-info__main">
-          <h1 class="trip-info__title">${he.encode(destinations)}</h1>
+          <h1 class="trip-info__title">${he.encode(getCitiesForInfo(destinations))}</h1>
 
           <p class="trip-info__dates">${getFormatDate(points[0].dateStart)}&nbsp;&mdash;&nbsp;${getFormatDate(points[points.length - 1].dateEnd)}</p>
         </div>
