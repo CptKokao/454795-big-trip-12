@@ -13,12 +13,16 @@ export default class NewPoint {
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
   }
 
-  init() {
+  init(destinations, offers) {
 
     if (this._formComponent !== null) {
       return;
     }
-    this._formComponent = new FormView(true);
+
+    this._destinations = destinations;
+    this._offers = offers;
+
+    this._formComponent = new FormView(this._destinations, this._offers);
     this._formComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._formComponent.setDeleteClickHandler(this._handleDeleteClick);
 

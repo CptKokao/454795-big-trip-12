@@ -35,6 +35,7 @@ export default class Trip {
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
+
     this._newPointPresenter = new NewPointPresenter(this._listDaysComponent, this._handleViewAction);
   }
 
@@ -60,7 +61,7 @@ export default class Trip {
   createPoint() {
     this._currentSortType = SortType.DEFAULT;
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this._newPointPresenter.init();
+    this._newPointPresenter.init(this._pointsModel.getDestinations(), this._pointsModel.getOffers());
   }
 
   _getPoints() {

@@ -7,7 +7,7 @@ import flatpickr from "flatpickr";
 
 import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 
-const BLANK_EVENT = {
+const BLANK_POINT = {
   isFavorite: false,
   price: ``,
   dateFrom: new Date(),
@@ -214,12 +214,18 @@ const createEditEventTemplate = (destinations, offers, point, isNew) => {
 };
 
 export default class Form extends SmartView {
-  constructor(isNew, point = BLANK_EVENT, destinations, offers) {
+  constructor(destinations, offers, point) {
     super();
+
+    if (!point) {
+      point = BLANK_POINT;
+      this._isNew = true;
+    }
+
     this._data = Form.parsePointToData(point);
     this._callback = {};
+    this._isNew = false;
 
-    this._isNew = isNew;
     this._destinations = destinations;
     this._offers = offers;
 
@@ -278,7 +284,7 @@ export default class Form extends SmartView {
           dateFormat: `d/m/y H:i`,
           enableTime: true,
           time24hr: true,
-          defaultDate: this._data.dateStart,
+          defaultDate: this._data.dateFrom,
           onChange: this._startDateChangeHandler
         }
     );
@@ -295,8 +301,8 @@ export default class Form extends SmartView {
           dateFormat: `d/m/y H:i`,
           enableTime: true,
           time24hr: true,
-          defaultDate: this._data.dateEnd,
-          minDate: this._data.dateStart,
+          defaultDate: this._data.dateTo,
+          minDate: this._data.dateFrom,
           onChange: this._endDateChangeHandler
         }
     );
@@ -305,21 +311,20 @@ export default class Form extends SmartView {
   _startDateChangeHandler(selectedDates) {
     this.updateData({
 
-      dateStart: new Date(selectedDates[0])
+      dateFrom: new Date(selectedDates[0])
     }, true);
   }
 
   _endDateChangeHandler(selectedDates) {
     this.updateData({
-      dateEnd: new Date(selectedDates[0])
+      dateTo: new Date(selectedDates[0])
     }, true);
   }
 
   // Метод вызывается при нажатии submit в форме
   _formSubmitHandler(e) {
     e.preventDefault();
-    this._callback.formSubmit(this._data);
-    // this._callback.formSubmit(Form.parseDataToPoint(this._data));
+    this._callback.formSubmit(Form.parseDataToPoint(this._data));
     document.querySelector(`.trip-main__event-add-btn`).disabled = false;
   }
 
@@ -327,15 +332,6 @@ export default class Form extends SmartView {
   _clickCloseHandler(e) {
     e.preventDefault();
     this._callback.close();
-  }
-
-
-  // Вызывыется из point.js при нажатии на submit в форме
-  setFormSubmitHandler(callback) {
-    // callback - эта функция которая записывается в объект this._callback
-    // для того чтобы осталась ссылка на нее, это дает возможность удалить addEventListener
-    this._callback.formSubmit = callback;
-    this.getElement().addEventListener(`submit`, this._formSubmitHandler);
   }
 
   // Вызывыется из point.js при нажатии на submit в форме

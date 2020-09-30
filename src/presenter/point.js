@@ -46,7 +46,7 @@ export default class Point {
     const prevFormComponent = this._formComponent;
     const prevPointEditComponent = this._pointComponent;
 
-    this._formComponent = new FormView(false, this._point, this._destinations, this._offers);
+    this._formComponent = new FormView(this._destinations, this._offers, this._point);
     this._pointComponent = new PointView(this._point);
 
     // Событие клик по кнопки маршрута
@@ -160,7 +160,7 @@ export default class Point {
   _setSubmitHandler(point) {
     this._viewAction(
         UserAction.UPDATE_POINT,
-        UpdateType.MINOR,
+        UpdateType.MAJOR,
         point
     );
 

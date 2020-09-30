@@ -33,7 +33,7 @@ const createPriceTemplate = (points) => {
 
 // Шаблон для доп.предложений
 const createOfferTemplate = (offers) => {
-  const pathOffers = offers.slice();
+  const pathOffers = offers.slice(-3);
 
   return `<h4 class="visually-hidden">Offers:</h4>
           <ul class="event__selected-offers">

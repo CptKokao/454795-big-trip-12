@@ -108,7 +108,6 @@ export default class Points extends Observer {
         {
           "base_price": point.price,
           "is_favorite": point.isFavorite,
-          "type": point.eventType,
           "date_from": point.dateFrom instanceof Date ? point.dateFrom.toISOString() : null,
           "date_to": point.dateTo instanceof Date ? point.dateTo.toISOString() : null,
         }

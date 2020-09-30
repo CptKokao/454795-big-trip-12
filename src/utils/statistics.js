@@ -30,6 +30,8 @@ const LabelStat = {
 
 // Считает общюю стоимость для каждого типа маршрута
 export const getStatsForMoney = (points) => {
+  console.log(points);
+  debugger
   let bank = {};
   Object
     .values(points)
@@ -37,14 +39,14 @@ export const getStatsForMoney = (points) => {
       const typePoint = item.type === `check-in` ? `Check` : item.type;
       return {
         type: typePoint[0].toUpperCase() + typePoint.slice(1),
-        cost: item.cost
+        price: item.price
       };
     })
     .reduce((_, value) => {
       if ([LabelStat[value.type]] in bank) {
         bank[LabelStat[value.type]] += value.cost;
       } else {
-        bank[LabelStat[value.type]] = value.cost;
+        bank[LabelStat[value.type]] = value.price;
       }
     }, 0);
 
