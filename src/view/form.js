@@ -59,7 +59,7 @@ const createPhotoTeplate = (pictures) => {
 
 const getDestinationsList = (destinations) => {
 
-  return new Array(destinations.length).fill().map((element, index) => `<option value="${destinations[index].name}"></option>`).join(`,`);
+  return new Array(destinations.length).fill().map((element, index) => `<option value="${destinations[index].name}"></option>`).join();
 };
 
 const getDescriptionDestinationTemplate = (description, pictures) => {
@@ -247,10 +247,8 @@ export default class Form extends SmartView {
     return createEditEventTemplate(this._destinations, this._offers, this._data, this._isNew);
   }
 
-  reset() {
-    this.updateData(
-        Form.parsePointToData(this._data)
-    );
+  reset(point) {
+    this.updateData(Form.parsePointToData(point));
   }
 
   _formDeleteClickHandler(e) {
@@ -377,32 +375,52 @@ export default class Form extends SmartView {
     }, true);
   }
 
-  _destinationInputHandler(e) {
-    e.preventDefault();
-    this.updateData({
-      city: e.target.value
-    }, true);
+  // _destinationInputHandler(e) {
+  //   e.preventDefault();
+  //   console.log('test');
+  //   this.updateData({
+  //     city: e.target.value
+  //   }, true);
+  // }
+
+  _destinationInputHandler(evt) {
+    if (this._destinations.some((destination) => destination.name === evt.target.value)) {
+      this.updateData(
+          {
+            destination: {
+              name: evt.target.value,
+              description: this._destinations.find((destination) => destination.name === evt.target.value).description,
+              pictures: this._destinations.find((destination) => destination.name === evt.target.value).pictures
+            },
+            isDisabled: false
+          });
+    }
   }
 
-  _offerChangeHandler(e) {
-    e.preventDefault();
+  _offerChangeHandler(evt) {
 
-    let nameInput;
-
-    if (e.target.tagName === `LABEL`) {
-      nameInput = e.target.previousElementSibling.name;
-    } else if (e.target.tagName === `SPAN`) {
-      nameInput = e.target.parentElement.previousElementSibling.name;
-    } else {
+    if (evt.target.nodeName !== `INPUT`) {
       return;
     }
 
-    const allOffers = Object.values(this._data.offers);
-    const newOffers = updateOffers(allOffers, nameInput);
+    const offers = this._data.offers.map((offer) => Object.assign({}, offer));
+    const offerIndex = offers.findIndex((it) => it.title === evt.target.name);
 
-    this.updateData({
-      offers: newOffers
-    });
+    if (offerIndex < 0) {
+      const templateOffers = this._offers.find((offer) => offer.type === this._data.type.toLowerCase()).offers;
+      const newOffer = templateOffers.find((it) => it.title === evt.target.name);
+      if (newOffer) {
+        offers.push(newOffer);
+      }
+    } else {
+      offers.splice(offerIndex, 1);
+    }
+
+    this.updateData(
+        {
+          offers,
+          isDisabled: false
+        });
   }
 
   _setInnerHandlers() {

@@ -3,7 +3,7 @@ import {remove} from "../utils/render.js";
 import Abstract from './abstract.js';
 
 const createDayTemplate = (events, index) => {
-  debugger
+
   return (
     `<li class="trip-days__item  day">
       <div class="day__info">

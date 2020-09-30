@@ -33,14 +33,16 @@ const createPriceTemplate = (points) => {
 
 // Шаблон для доп.предложений
 const createOfferTemplate = (offers) => {
+  const pathOffers = offers.slice();
+
   return `<h4 class="visually-hidden">Offers:</h4>
           <ul class="event__selected-offers">
 
-          ${Object.values(offers).map((element) => `<li class="event__offer">
+          ${Object.values(pathOffers).map((element) => `<li class="event__offer">
               <span class="event__offer-title">${element.title}</span>
               &plus;
               &euro;&nbsp;<span class="event__offer-price">${element.price}</span>
-            </li>`).slice(-2).join(``)}
+            </li>`).join(``)}
 
           </ul>
           <button class="event__rollup-btn" type="button">
