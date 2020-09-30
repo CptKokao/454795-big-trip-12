@@ -75,7 +75,6 @@ export default class Provider {
     }
 
     this._store.removeItem(point.id);
-
     return Promise.resolve();
   }
 

@@ -77,13 +77,12 @@ infoPresenter.init();
 filterPresenter.init();
 tripPresenter.init();
 
-apiWithProvider.getPoints()
-  .then((points) => {
-    pointsModel.setPoints(UpdateType.INIT, points);
-  })
-  .catch(() => {
-    pointsModel.setPoints(UpdateType.INIT, []);
-  });
+Promise.all([apiWithProvider.getAddDestinations(), apiWithProvider.getAddOffers(), apiWithProvider.getEvents()])
+.then(([offers, destinations, events]) => {
+  pointsModel.setAddDestinations(offers);
+  pointsModel.setAddOffers(destinations);
+  pointsModel.setEvents(UpdateType.INIT, events);
+});
 
 window.addEventListener(`load`, () => {
   navigator.serviceWorker.register(`/sw.js`)
