@@ -13,14 +13,14 @@ const createTypeTemplate = (type, city) => {
 };
 
 // Шаблон для даты
-const createDateTemplate = (dateStart, dateEnd) => {
+const createDateTemplate = (dateFrom, dateTo) => {
   return `<div class="event__schedule">
             <p class="event__time">
-              <time class="event__start-time" datetime="2019-03-18T10:30">${getShortTime(dateStart)}</time>
+              <time class="event__start-time" datetime="2019-03-18T10:30">${getShortTime(dateFrom)}</time>
               &mdash;
-              <time class="event__end-time" datetime="2019-03-18T11:00">${getShortTime(dateEnd)}</time>
+              <time class="event__end-time" datetime="2019-03-18T11:00">${getShortTime(dateTo)}</time>
             </p>
-            <p class="event__duration">${durationTime(dateEnd, dateStart)}</p>
+            <p class="event__duration">${durationTime(dateTo, dateFrom)}</p>
           </div>`;
 };
 
@@ -49,13 +49,21 @@ const createOfferTemplate = (offers) => {
 };
 
 export const createPointsTemplate = (points) => {
-  const {type, city, offers, dateStart, dateEnd} = points;
+  const {
+    type,
+    offers,
+    dateFrom,
+    dateTo,
+    destination: {
+      name
+    },
+  } = points;
 
   return `<ul class="trip-events__list">
             <li class="trip-events__item">
               <div class="event">
-                ${createTypeTemplate(type, city)}
-                ${createDateTemplate(dateStart, dateEnd)}
+                ${createTypeTemplate(type, name)}
+                ${createDateTemplate(dateFrom, dateTo)}
                 ${createPriceTemplate(points)}
                 ${createOfferTemplate(offers)}
               </div>

@@ -85,23 +85,18 @@ export default class Points extends Observer {
         {},
         point,
         {
-          city: point.destination.name,
-          cost: point.base_price,
-          dateStart: point.date_from !== null ? new Date(point.date_from) : point.date_from, // На клиенте дата хранится как экземпляр Date
-          dateEnd: point.date_to !== null ? new Date(point.date_to) : point.date_to,
-          description: point.destination.description,
+          price: point.base_price,
           isFavorite: point.is_favorite,
-          photo: point.destination.pictures,
-          offers: point.offers
+          dateFrom: point.date_from !== null ? new Date(point.date_from) : point.date_from,
+          dateTo: point.date_to !== null ? new Date(point.date_to) : point.date_to,
         }
     );
 
     // Ненужные ключи мы удаляем
-    delete adaptedPoint.destination;
     delete adaptedPoint.base_price;
+    delete adaptedPoint.is_favorite;
     delete adaptedPoint.date_from;
     delete adaptedPoint.date_to;
-    delete adaptedPoint.is_favorite;
 
     return adaptedPoint;
   }
@@ -111,26 +106,20 @@ export default class Points extends Observer {
         {},
         point,
         {
-          "destination": {
-            "name": point.city,
-            "description": point.description,
-            "pictures": point.photo
-          },
-          "base_price": point.cost,
-          "date_from": point.dateStart instanceof Date ? point.dateStart.toISOString() : null,
-          "date_to": point.dateEnd instanceof Date ? point.dateEnd.toISOString() : null,
-          "is_favorite": point.isFavorite
+          "base_price": point.price,
+          "is_favorite": point.isFavorite,
+          "type": point.eventType,
+          "date_from": point.dateFrom instanceof Date ? point.dateFrom.toISOString() : null,
+          "date_to": point.dateTo instanceof Date ? point.dateTo.toISOString() : null,
         }
     );
 
     // Ненужные ключи мы удаляем
-    delete adaptedPoint.city;
-    delete adaptedPoint.description;
-    delete adaptedPoint.photo;
-    delete adaptedPoint.cost;
-    delete adaptedPoint.dateStart;
-    delete adaptedPoint.dateEnd;
+    delete adaptedPoint.price;
     delete adaptedPoint.isFavorite;
+    delete adaptedPoint.eventType;
+    delete adaptedPoint.dateFrom;
+    delete adaptedPoint.dateTo;
 
     return adaptedPoint;
   }

@@ -1,9 +1,9 @@
 export const getSumPoint = (point) => {
-  const pointCost = +point.cost;
+  const pointCost = +point.price;
   const offerCost = Object
     .values(point.offers)
     .map((it) => {
-      return it.isChecked ? it.cost : 0;
+      return it.isChecked ? it.price : 0;
     })
     .reduce((total, value) => {
       return total + value;

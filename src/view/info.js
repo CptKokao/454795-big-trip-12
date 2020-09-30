@@ -2,7 +2,7 @@ import he from "he";
 import {getFormatDate} from "../utils/date.js";
 import Abstract from './abstract.js';
 
-const createInfoTemplate = (points) => {
+const createInfoTemplate = (points, sortPoints) => {
   if (points.length === 0) {
     return (
       `<section class="trip-main__trip-info  trip-info">
@@ -16,7 +16,7 @@ const createInfoTemplate = (points) => {
     const MAX_CITY = 3;
 
     // Массив городов
-    const destinations = new Array(points.length).fill().map((element, index) => points[index].city);
+    const destinations = new Array(points.length).fill().map((element, index) => points[index].destination.name);
 
     const getCitiesForInfo = (cities) => {
       let citiesForInfo = [];
@@ -39,11 +39,11 @@ const createInfoTemplate = (points) => {
         <div class="trip-info__main">
           <h1 class="trip-info__title">${he.encode(getCitiesForInfo(destinations))}</h1>
 
-          <p class="trip-info__dates">${getFormatDate(points[0].dateStart)}&nbsp;&mdash;&nbsp;${getFormatDate(points[points.length - 1].dateEnd)}</p>
+          <p class="trip-info__dates">${getFormatDate(sortPoints[0].dateFrom)}&nbsp;&mdash;&nbsp;${getFormatDate(sortPoints[sortPoints.length - 1].dateTo)}</p>
         </div>
 
         <p class="trip-info__cost">
-          Total: &euro;&nbsp;<span class="trip-info__cost-value">${Object.values(points).map((element) => element.cost).reduce((acc, el) => acc + el)}</span>
+          Total: &euro;&nbsp;<span class="trip-info__cost-value">${Object.values(points).map((element) => element.price).reduce((acc, el) => acc + el)}</span>
         </p>
       </section>`
     );
@@ -53,11 +53,12 @@ const createInfoTemplate = (points) => {
 export default class Info extends Abstract {
   constructor(points) {
     super();
-    this._points = this.getDayPointArr(points);
+    this._points = points;
+    this._sortPoints = this.getDayPointArr(points);
   }
 
   getTemplate() {
-    return createInfoTemplate(this._points);
+    return createInfoTemplate(this._points, this._sortPoints);
   }
 
   // Получает из общего массива уникальные маршруты для каждого дня
@@ -65,10 +66,10 @@ export default class Info extends Abstract {
   getDayPointArr(points) {
     let newArr = points.filter((el, index, arr) =>
       index === arr.findIndex((t) => (
-        t.dateStart.getDate() === el.dateStart.getDate()
+        t.dateFrom.getDate() === el.dateTo.getDate()
       ))
     );
-    return newArr.sort((a, b) => a.dateStart.getDate() - b.dateStart.getDate());
+    return newArr.sort();
   }
 }
 

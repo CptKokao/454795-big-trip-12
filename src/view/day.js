@@ -3,11 +3,12 @@ import {remove} from "../utils/render.js";
 import Abstract from './abstract.js';
 
 const createDayTemplate = (events, index) => {
+  debugger
   return (
     `<li class="trip-days__item  day">
       <div class="day__info">
         <span class="day__counter">${events ? index + 1 : ``}</span>
-        <time class="day__date" datetime="${events ? getDateTime(events.dateStart) : ``}">${events ? getFormatDate(events.dateStart, true) : ``}</time>
+        <time class="day__date" datetime="${events ? getDateTime(events.dateFrom) : ``}">${events ? getFormatDate(events.dateFrom, true) : ``}</time>
       </div>
       <ul class="trip-events__list"></ul>
     </li>`);

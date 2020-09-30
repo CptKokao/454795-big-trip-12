@@ -1,203 +1,220 @@
 import he from "he";
-import {upperFirst, getConcatNameOffers} from "../utils/common.js";
+import {Transports} from "../utils/const.js";
 import {generateOffers, generateDescription, generatePhoto, updateOffers, types} from "../utils/point.js";
-import {getDateTime, getShortTime} from "../utils/date.js";
+import {getDayMonthStamp, getDateTime, getShortTime} from "../utils/date.js";
 import SmartView from "./smart.js";
 import flatpickr from "flatpickr";
 
 import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 
-const EMPTY_POINT = {
-  type: `taxi`,
-  city: ``,
-  cost: ``,
-  offers: generateOffers(`Taxi`),
-  description: generateDescription(),
-  photo: generatePhoto(),
-  dateStart: new Date(),
-  dateEnd: new Date(),
-  isFavorite: false
+const BLANK_EVENT = {
+  isFavorite: false,
+  price: ``,
+  dateFrom: new Date(),
+  dateTo: new Date(),
+  type: Transports.TAXI,
+  destination: {
+    name: ``,
+    description: ``,
+    pictures: false
+  },
+  offers: []
 };
 
+const isChecked = (teplateElement, eventOffers) => {
+  const checked = eventOffers.some((el) => el.title === teplateElement);
 
-const createTypeActivityTemplate = (data) => {
-  return (Object
-    .values(types.activity)
-    .map((activity) => {
-      return (
-        `<div class="event__type-item">
-          <input id="event-type-${activity}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${activity}" ${data.type.toLowerCase() === activity ? `checked` : ``} ${data.isDisabled ? `disabled` : ``}>
-          <label class="event__type-label  event__type-label--${activity}" for="event-type-${activity}-1">${upperFirst(activity)}</label>
-        </div>`
-      );
-    })
-  ).join(``);
-};
-
-const createTypeTransferTemplate = (data) => {
-  return (Object
-    .values(types.transfer)
-    .map((transfer) => {
-      const type = transfer === `check` ? `check-in` : transfer;
-      return (
-        `<div class="event__type-item">
-          <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${data.type === transfer ? `checked` : ``} ${data.isDisabled ? `disabled` : ``}>
-          <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${upperFirst(type)}</label>
-        </div>`
-      );
-    })
-  ).join(``);
-};
-
-const createDestinationTemplate = (photo, description) => {
-
-  return `<section class="event__section  event__section--destination">
-            <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-            <p class="event__destination-description">${description}</p>
-
-            <div class="event__photos-container">
-              <div class="event__photos-tape">
-                ${Object.values(photo).map((element) => `<img class="event__photo" src="${element.src}" alt="${element.description}">`).join(``)}
-              </div>
-            </div>
-          </section>`;
-};
-
-// Шаблон для доп.предложений
-const createOffers = (data) => {
-  if (data) {
-    return (Object
-      .values(data.offers)
-      .map((item) => {
-        const nameForAttr = getConcatNameOffers(item.title);
-        return (
-          `<div class="event__offer-selector">
-            <input class="event__offer-checkbox visually-hidden" id="${nameForAttr}-1" type="checkbox" name="${item.title}" ${item.isEnabled ? `checked` : ``} disaled=${item.isDisabled ? `true` : `false`}>
-              <label class="event__offer-label" for="${nameForAttr}-1">
-                <span class="event__offer-title">${item.title}</span>
-                  &plus;
-                  &euro;&nbsp;<span class="event__offer-price">${item.price}
-                </span>
-            </label>
-          </div>`
-        );
-      }).join(``)
-    );
+  if (!checked) {
+    return ``;
   }
 
-  return ``;
+  return `checked`;
 };
 
-const createOffersTemplate = (data = {}) => {
-  const offers = createOffers(data);
-  if (offers) {
-    return (
-      `<section class="event__section  event__section--offers">
-        <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-        <div class="event__available-offers">
-          ${offers}
-        </div>
-      </section>`
-    );
+const getOffersList = (eventOffers, templateOffers) => {
+
+  return new Array(templateOffers.length).fill().map((element, index) =>
+    `<div class="event__offer-selector">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${(templateOffers[index].title).toLowerCase().replace(/ /g, `-`)}" type="checkbox" name="${templateOffers[index].title}" ${isChecked(templateOffers[index].title, eventOffers)}>
+      <label class="event__offer-label" for="event-offer-${(templateOffers[index].title).toLowerCase().replace(/ /g, `-`)}">
+        <span class="event__offer-title">${templateOffers[index].title}</span>
+        &plus;&euro;&nbsp;
+        <span class="event__offer-price">${templateOffers[index].price}</span>
+      </label>
+    </div>`).join(` `);
+};
+
+const createPhotoTeplate = (pictures) => {
+  if (!pictures) {
+    return ``;
   }
 
-  return ``;
+  return (
+    `<div class="event__photos-container">
+      <div class="event__photos-tape">
+       ${new Array(pictures.length).fill().map((element, index) => `<img class="event__photo" src="${pictures[index].src}" alt="${pictures[index].description}">`).join(`,`)}
+      </div>
+    </div>`);
 };
 
-const createFormTemplate = (point, isNew) => {
+const getDestinationsList = (destinations) => {
+
+  return new Array(destinations.length).fill().map((element, index) => `<option value="${destinations[index].name}"></option>`).join(`,`);
+};
+
+const getDescriptionDestinationTemplate = (description, pictures) => {
+  if (!description || !pictures) {
+    return ``;
+  }
+
+  return (`
+        <section class="event__section  event__section--destination">
+          <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+           <p class="event__destination-description">${description}</p>
+            ${createPhotoTeplate(pictures)}
+        </section>`
+  );
+};
+
+
+const createFavoriteTemplate = (isFavorite) => {
+
+  return (`
+          <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
+          <label class="event__favorite-btn" for="event-favorite-1">
+            <span class="visually-hidden">Add to favorite</span>
+              <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
+                <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"/>
+              </svg>
+          </label>`
+  );
+};
+
+const createTypesList = (offers, typeSelected) => {
+  const transportTypes = [];
+  const activityTypes = [];
+
+  for (const offer of offers) {
+    if (offer.type.toUpperCase() in Transports) {
+      transportTypes.push(`
+        <div class="event__type-item">
+          <input id="event-type-${offer.type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type"  value="${offer.type}" ${typeSelected === offer.type ? `checked` : ``}>
+          <label class="event__type-label  event__type-label--${offer.type}" for="event-type-${offer.type}-1">${offer.type.slice(0, 1).toUpperCase() + offer.type.slice(1)}</label>
+        </div>`
+      );
+    } else {
+      activityTypes.push(`
+        <div class="event__type-item">
+          <input id="event-type-${offer.type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${offer.type}" ${typeSelected === offer.type ? `checked` : ``}>
+          <label class="event__type-label  event__type-label--${offer.type}" for="event-type-${offer.type}-1">${offer.type.slice(0, 1).toUpperCase() + offer.type.slice(1)}</label>
+        </div>`
+      );
+    }
+  }
+
+
+  return (`
+  <fieldset class="event__type-group">
+    <legend class="visually-hidden">Transfer</legend>
+    ${transportTypes.join(``)}
+    </fieldset>
+    <fieldset class="event__type-group">
+      <legend class="visually-hidden">Activity</legend>
+        ${activityTypes.join(``)}
+    </fieldset>`
+  );
+};
+
+const createEditEventTemplate = (destinations, offers, point, isNew) => {
   const {
-    type,
-    city,
-    dateStart,
-    dateEnd,
-    cost,
-    photo,
-    description,
     isFavorite,
+    price,
+    dateFrom,
+    dateTo,
+    type,
+    destination: {
+      name,
+      description,
+      pictures
+    },
+    offers: eventOffers,
     isDisabled,
     isSaving,
-    isDeleting} = point;
+    isDeleting
+  } = point;
 
-  const typeActivityTemplate = createTypeActivityTemplate(point);
-  const typeTransferTemplate = createTypeTransferTemplate(point);
-  const offertsTemplate = createOffersTemplate(point);
+  const action = isDeleting ? `Deleting...` : `Delete`;
+
+  const templateOffers = offers.find((offer) => offer.type === type.toLowerCase()).offers;
+
+  const isChecktype = Object.values(Transports).some((el) => el === type);
+
+  const startTime = getDayMonthStamp(dateFrom).replace(`,`, ``);
+  const endTime = getDayMonthStamp(dateTo).replace(`,`, ``);
 
   return (
     `<form class="trip-events__item  event  event--edit" action="#" method="post">
         <header class="event__header">
           <div class="event__type-wrapper">
-
             <label class="event__type  event__type-btn" for="event-type-toggle-1">
               <span class="visually-hidden">Choose event type</span>
               <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
             </label>
-            <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" ${isDisabled ? `disabled` : ``}>
-
-            <div class="event__type-list">
-              <fieldset class="event__type-group">
-                <legend class="visually-hidden">Transfer</legend>
-                ${typeActivityTemplate}
-              </fieldset>
-              <fieldset class="event__type-group">
-                <legend class="visually-hidden">Activity</legend>
-                ${typeTransferTemplate}
-              </fieldset>
-            </div>
+            <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+              <div class="event__type-list">
+                ${createTypesList(offers, type)}
+              </div>
           </div>
-
           <div class="event__field-group  event__field-group--destination">
             <label class="event__label  event__type-output" for="event-destination-1">
-              ${upperFirst(type)} to
+              ${type[0].toUpperCase() + type.slice(1)}
+              ${isChecktype ? `to` : `in`}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(city)}" list="destination-list-1" ${isDisabled ? `disabled` : ``} required>
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(name)}" list="destination-list-1" autocomplete="off">
             <datalist id="destination-list-1">
-
+              ${getDestinationsList(destinations)}
             </datalist>
           </div>
-
           <div class="event__field-group  event__field-group--time">
             <label class="visually-hidden" for="event-start-time-1">
               From
             </label>
-            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${getDateTime(dateStart)} ${getShortTime(dateStart)}" ${isDisabled ? `disabled` : ``}>
+            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startTime}" readonly>
             &mdash;
             <label class="visually-hidden" for="event-end-time-1">
               To
             </label>
-            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${getDateTime(dateEnd)} ${getShortTime(dateEnd)}" ${isDisabled ? `disabled` : ``}>
+            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${endTime}" readonly>
           </div>
-
           <div class="event__field-group  event__field-group--price">
             <label class="event__label" for="event-price-1">
-              <span class="visually-hidden">${cost}</span>
+              <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${he.encode(cost.toString())}" ${isDisabled ? `disabled` : ``} required>
+              <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price"  step="1" min="1" autocomplete="off" value="${price}">
           </div>
-
-          <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? `disabled` : ``}>${isSaving ? `Saving...` : `Save`}</button>
-          <button class="event__reset-btn" type="reset" ${isDisabled ? `disabled` : ``}>${isNew ? `Cancel` : `${isDeleting ? `Deleting...` : `Delete`}`}</button>
-
-          <input id="event-favorite" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
-          <label class="event__favorite-btn" for="event-favorite">
-            <span class="visually-hidden">Add to favorite</span>
-            <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
-              <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"/>
-            </svg>
-          </label>
+          <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? `disabled` : ``}> ${isSaving ? `Saving...` : `Save`}</button>
+          <button class="event__reset-btn" type="reset">${isNew ? `Cancel` : action}</button>
+          ${createFavoriteTemplate(isFavorite)}
           ${!isNew ? `<button class="event__rollup-btn" type="button" ${isDisabled ? `disabled` : ``}>` : `<button class="event__rollup-btn" type="button" style="display: none"`}
             <span class="visually-hidden">Open event</span>
           </button>
         </header>
-        <section class="event__details">
-          ${offertsTemplate}
-          ${!isNew ? createDestinationTemplate(photo, description) : ``}
-        </section>`
+          <section class="event__details">
+            <section class="event__section  event__section--offers">
+              <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+               <div class="event__available-offers">
+                  ${getOffersList(eventOffers, templateOffers)}
+               </div>
+            </section>
+              ${getDescriptionDestinationTemplate(description, pictures)}
+          </section>
+          </form>`
   );
 };
 
 export default class Form extends SmartView {
-  constructor(isNew, point = EMPTY_POINT, destinations, offers) {
+  constructor(isNew, point = BLANK_EVENT, destinations, offers) {
     super();
     this._data = Form.parsePointToData(point);
     this._callback = {};
@@ -205,8 +222,6 @@ export default class Form extends SmartView {
     this._isNew = isNew;
     this._destinations = destinations;
     this._offers = offers;
-    console.log(this._destinations);
-    console.log(this._offers);
 
     this._startDatepicker = null;
     this._endDatepicker = null;
@@ -229,7 +244,7 @@ export default class Form extends SmartView {
 
   getTemplate() {
 
-    return createFormTemplate(this._data, this._isNew);
+    return createEditEventTemplate(this._destinations, this._offers, this._data, this._isNew);
   }
 
   reset() {
@@ -358,7 +373,7 @@ export default class Form extends SmartView {
   _costClickHandler(e) {
     e.preventDefault();
     this.updateData({
-      cost: Number(e.target.value)
+      price: Number(e.target.value)
     }, true);
   }
 

@@ -27,3 +27,14 @@ export const MenuItem = {
   TABLE: `TABLE`,
   STATISTICS: `STATISTICS`
 };
+
+
+export const Transports = {
+  TAXI: `taxi`,
+  BUS: `bus`,
+  SHIP: `ship`,
+  TRANSPORT: `transport`,
+  DRIVE: `drive`,
+  FLIGHT: `flight`,
+  TRAIN: `train`,
+};

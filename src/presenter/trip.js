@@ -225,12 +225,12 @@ export default class Trip {
     // чтобы отрисовать количество дней
     let newArr = pointsList.filter((el, index, arr) =>
       index === arr.findIndex((t) => (
-        t.dateStart.getDate() === el.dateStart.getDate()
+        t.dateFrom.getDate() === el.dateFrom.getDate()
       ))
     );
 
     // Сортирует массив дней по возрастанию
-    newArr.sort((a, b) => a.dateStart.getDate() - b.dateStart.getDate());
+    newArr.sort();
 
     // Отрисовка дней
     newArr.forEach((el, index) => {
@@ -246,7 +246,7 @@ export default class Trip {
     const days = eventElement.querySelectorAll(`.trip-days__item`);
     for (let i = 0; i < days.length; i++) {
       for (let j = 0; j < pointsList.length; j++) {
-        if (days[i].querySelector(`.day__date`).getAttribute(`datetime`) === getDateTime(pointsList[j].dateStart)) {
+        if (days[i].querySelector(`.day__date`).getAttribute(`datetime`) === getDateTime(pointsList[j].dateFrom)) {
           this._renderPoint(days[i].querySelector(`.trip-events__list`), pointsList[j]);
         }
       }
