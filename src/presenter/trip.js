@@ -89,6 +89,18 @@ export default class Trip {
 
     switch (actionType) {
 
+      // Избранное
+      case UserAction.FAVORITE:
+        this._pointsObserver[update.id].setViewState(PointViewState.SAVING);
+        this._api.updatePoint(update)
+        .then((response) => {
+          this._pointsModel.updatePoint(updateType, response);
+        })
+          .catch(() => {
+            this._pointsObserver[update.id].setViewState(PointViewState.ABORTING);
+          });
+        break;
+
       // Обновление
       case UserAction.UPDATE_POINT:
         this._pointsObserver[update.id].setViewState(PointViewState.SAVING);

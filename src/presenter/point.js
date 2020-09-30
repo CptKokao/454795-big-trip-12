@@ -36,7 +36,7 @@ export default class Point {
     this._setClickHandler = this._setClickHandler.bind(this);
     this._setSubmitHandler = this._setSubmitHandler.bind(this);
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
-
+    this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
   }
 
   // Запуск метода для отрисовки всех маршрутов
@@ -60,6 +60,9 @@ export default class Point {
 
     // Событие click на кнопки Delete в форме редактирования
     this._formComponent.setDeleteClickHandler(this._handleDeleteClick);
+
+    // Событие click на кнопки Delete в форме редактирования
+    this._formComponent.setFavoriteClickHandler(this._handleFavoriteClick);
 
     if (prevFormComponent === null || prevPointEditComponent === null) {
       this._renderPoint(point);
@@ -119,6 +122,14 @@ export default class Point {
   _handleDeleteClick(point) {
     this._viewAction(
         UserAction.DELETE_POINT,
+        UpdateType.MAJOR,
+        point
+    );
+  }
+
+  _handleFavoriteClick(point) {
+    this._viewAction(
+        UserAction.FAVORITE,
         UpdateType.MAJOR,
         point
     );

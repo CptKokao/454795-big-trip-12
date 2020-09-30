@@ -250,7 +250,6 @@ export default class Form extends SmartView {
   }
 
   getTemplate() {
-    console.log(this._isNew);
     return createEditEventTemplate(this._destinations, this._offers, this._data, this._isNew);
   }
 
@@ -349,6 +348,10 @@ export default class Form extends SmartView {
     this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._clickCloseHandler);
   }
 
+  setFavoriteClickHandler(callback) {
+    this._callback.favoriteClick = callback;
+  }
+
   _typeChangeHandler(e) {
     e.preventDefault();
     this.updateData({
@@ -360,9 +363,11 @@ export default class Form extends SmartView {
 
   _favoriteClickHandler(e) {
     e.preventDefault();
-    this.updateData({
-      isFavorite: !this._data.isFavorite
-    });
+    this.updateData(
+        {
+          isFavorite: !this._data.isFavorite,
+        });
+    this._callback.favoriteClick(Form.parseDataToPoint(this._data));
   }
 
   _costClickHandler(e) {
@@ -371,14 +376,6 @@ export default class Form extends SmartView {
       price: Number(e.target.value)
     }, true);
   }
-
-  // _destinationInputHandler(e) {
-  //   e.preventDefault();
-  //   console.log('test');
-  //   this.updateData({
-  //     city: e.target.value
-  //   }, true);
-  // }
 
   _destinationInputHandler(evt) {
     if (this._destinations.some((destination) => destination.name === evt.target.value)) {
@@ -421,9 +418,11 @@ export default class Form extends SmartView {
   }
 
   _setInnerHandlers() {
-    this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, this._favoriteClickHandler);
     this.getElement().querySelector(`.event__input--price`).addEventListener(`input`, this._costClickHandler);
     this.getElement().querySelector(`.event__input--destination`).addEventListener(`input`, this._destinationInputHandler);
+    if (!this._isNew) {
+      this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, this._favoriteClickHandler);
+    }
 
     const typeContainers = this.getElement().querySelectorAll(`.event__type-input`);
     for (const container of typeContainers) {
