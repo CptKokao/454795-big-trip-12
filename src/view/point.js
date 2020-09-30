@@ -33,6 +33,7 @@ const createPriceTemplate = (points) => {
 
 // Шаблон для доп.предложений
 const createOfferTemplate = (offers) => {
+  debugger
   return `<h4 class="visually-hidden">Offers:</h4>
           <ul class="event__selected-offers">
 
@@ -49,6 +50,7 @@ const createOfferTemplate = (offers) => {
 };
 
 export const createPointsTemplate = (points) => {
+
   const {type, city, offers, dateStart, dateEnd} = points;
 
   return `<ul class="trip-events__list">
@@ -66,12 +68,13 @@ export const createPointsTemplate = (points) => {
 export default class Point extends Abstract {
   constructor(points) {
     super();
-    this._points = points;
+    this._data = Point.parsePointToData(points);
+
     this._clickHandler = this._clickHandler.bind(this);
   }
 
   getTemplate() {
-    return createPointsTemplate(this._points);
+    return createPointsTemplate(this._data);
   }
 
   _clickHandler(e) {
@@ -82,5 +85,27 @@ export default class Point extends Abstract {
   setClickHandler(callback) {
     this._callback.formSubmit = callback;
     this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._clickHandler);
+  }
+
+  static parsePointToData(point) {
+    return Object.assign(
+        {},
+        point,
+        {
+          isDisabled: false,
+          isSaving: false,
+          isDeleting: false
+        }
+    );
+  }
+
+  static parseDataToPoint(data) {
+    data = Object.assign({}, data);
+
+    delete data.isDisabled;
+    delete data.isSaving;
+    delete data.isDeleting;
+
+    return data;
   }
 }

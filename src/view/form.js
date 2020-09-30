@@ -89,6 +89,7 @@ const createOffers = (data) => {
 };
 
 const createOffersTemplate = (data = {}) => {
+  console.log(data);
   const offers = createOffers(data);
   if (offers) {
     return (
@@ -200,6 +201,7 @@ export default class Form extends SmartView {
   constructor(isNew, point = EMPTY_POINT) {
     super();
     this._data = Form.parsePointToData(point);
+    console.log(this._data);
     this._callback = {};
     this._isNew = isNew;
 

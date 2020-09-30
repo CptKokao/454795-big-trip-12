@@ -14,14 +14,6 @@ const createStoreStructure = (items) => {
   }, {});
 };
 
-const createStoreStructureExtra = (additions) => {
-  return additions.reduce((acc, current) => {
-    return Object.assign({}, acc, {
-      [current.type || current.name]: current
-    });
-  }, {});
-};
-
 export default class Provider {
   constructor(api, store) {
     this._api = api;
@@ -32,13 +24,11 @@ export default class Provider {
     if (Provider.isOnline()) {
       return this._api.getOffers()
         .then((offers) => {
-          const items = createStoreStructureExtra(offers);
-          this._store.setItem(`bigtrip-localstorage-offers`, items);
           return offers;
         });
     }
 
-    const storeOffers = Object.values(this._store.getItems(`bigtrip-localstorage-offers`));
+    const storeOffers = Object.values(this._store.getItems());
     return Promise.resolve(storeOffers);
   }
 
@@ -46,13 +36,11 @@ export default class Provider {
     if (Provider.isOnline()) {
       return this._api.getDestinations()
         .then((destinations) => {
-          const items = createStoreStructureExtra(destinations);
-          this._store.setItem(`bigtrip-localstorage-destinations`, items);
           return destinations;
         });
     }
 
-    const storeDestinations = Object.values(this._store.getItems(`bigtrip-localstorage-destinations`));
+    const storeDestinations = Object.values(this._store.getItems());
     return Promise.resolve(storeDestinations);
   }
 
@@ -61,12 +49,13 @@ export default class Provider {
       return this._api.getPoints()
         .then((points) => {
           const items = createStoreStructure(points.map(TasksModel.adaptToServer));
-          this._store.setItem(`bigtrip-localstorage-points`, items);
+          this._store.setItems(items);
           return points;
         });
     }
 
-    const storePoints = Object.values(this._store.getItems(`bigtrip-localstorage-points`, true));
+    const storePoints = Object.values(this._store.getItems());
+
     return Promise.resolve(storePoints.map(TasksModel.adaptToClient));
   }
 
