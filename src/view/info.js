@@ -2,7 +2,7 @@ import he from "he";
 import {getFormatDate} from "../utils/date.js";
 import Abstract from './abstract.js';
 
-const createInfoTemplate = (points, sortPoints) => {
+const createInfoTemplate = (points) => {
   if (points.length === 0) {
     return (
       `<section class="trip-main__trip-info  trip-info">
@@ -34,12 +34,15 @@ const createInfoTemplate = (points, sortPoints) => {
       return citiesForInfo;
     };
 
+    // Сортирует массив дней по возрастанию
+    const sortPoints = points.sort((a, b) => new Date(a.dateFrom) - new Date(b.dateFrom));
+
     return (
       `<section class="trip-main__trip-info  trip-info">
         <div class="trip-info__main">
           <h1 class="trip-info__title">${he.encode(getCitiesForInfo(destinations))}</h1>
 
-          <p class="trip-info__dates">${getFormatDate(sortPoints[0].dateFrom)}&nbsp;&mdash;&nbsp;${getFormatDate(sortPoints[sortPoints.length - 1].dateTo)}</p>
+          <p class="trip-info__dates">${getFormatDate(sortPoints[0].dateFrom)}&nbsp;&mdash;&nbsp;${getFormatDate(sortPoints[sortPoints.length - 1].dateFrom)}</p>
         </div>
 
         <p class="trip-info__cost">

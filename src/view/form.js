@@ -217,6 +217,8 @@ export default class Form extends SmartView {
   constructor(destinations, offers, point) {
     super();
 
+    this._isNew = false;
+
     if (!point) {
       point = BLANK_POINT;
       this._isNew = true;
@@ -224,7 +226,6 @@ export default class Form extends SmartView {
 
     this._data = Form.parsePointToData(point);
     this._callback = {};
-    this._isNew = false;
 
     this._destinations = destinations;
     this._offers = offers;
@@ -249,7 +250,7 @@ export default class Form extends SmartView {
   }
 
   getTemplate() {
-
+    console.log(this._isNew);
     return createEditEventTemplate(this._destinations, this._offers, this._data, this._isNew);
   }
 
