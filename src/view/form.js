@@ -197,11 +197,16 @@ const createFormTemplate = (point, isNew) => {
 };
 
 export default class Form extends SmartView {
-  constructor(isNew, point = EMPTY_POINT) {
+  constructor(isNew, point = EMPTY_POINT, destinations, offers) {
     super();
     this._data = Form.parsePointToData(point);
     this._callback = {};
+
     this._isNew = isNew;
+    this._destinations = destinations;
+    this._offers = offers;
+    console.log(this._destinations);
+    console.log(this._offers);
 
     this._startDatepicker = null;
     this._endDatepicker = null;

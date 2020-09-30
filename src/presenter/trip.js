@@ -201,7 +201,7 @@ export default class Trip {
 
   // Метод отрисовки одного маршрутов
   _renderPoint(pointListElement, point) {
-    const pointPresenter = new PointPresenter(pointListElement, this._handleViewAction, this._listDaysComponent, this._handleModeChange);
+    const pointPresenter = new PointPresenter(pointListElement, this._handleViewAction, this._listDaysComponent, this._handleModeChange, this._pointsModel.getDestinations(), this._pointsModel.getOffers());
     pointPresenter.init(point);
     this._pointsObserver[point.id] = pointPresenter;
   }

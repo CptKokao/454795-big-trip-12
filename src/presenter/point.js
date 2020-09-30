@@ -16,10 +16,13 @@ export const State = {
 };
 
 export default class Point {
-  constructor(pointListElement, viewAction, listDaysComponent, changeMode) {
+  constructor(pointListElement, viewAction, listDaysComponent, changeMode, destinations, offers) {
 
     this._viewAction = viewAction;
     this._changeMode = changeMode;
+
+    this._offers = offers;
+    this._destinations = destinations;
 
     this._formComponent = null;
     this._pointComponent = null;
@@ -43,7 +46,7 @@ export default class Point {
     const prevFormComponent = this._formComponent;
     const prevPointEditComponent = this._pointComponent;
 
-    this._formComponent = new FormView(false, this._point);
+    this._formComponent = new FormView(false, this._point, this._destinations, this._offers);
     this._pointComponent = new PointView(this._point);
 
     // Событие клик по кнопки маршрута

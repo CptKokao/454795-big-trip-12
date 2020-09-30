@@ -1,6 +1,11 @@
 import {nanoid} from "nanoid";
 import TasksModel from "../model/points.js";
 
+const StoreTitle = {
+  OFFERS: `Offers`,
+  DESTINATIONS: `Destinations`,
+};
+
 const getSyncedPoints = (items) => {
   return items.filter(({success}) => success)
     .map(({payload}) => payload.task);
@@ -33,6 +38,34 @@ export default class Provider {
     const storePoints = Object.values(this._store.getItems());
 
     return Promise.resolve(storePoints.map(TasksModel.adaptToClient));
+  }
+
+  getDestinations() {
+    if (Provider.isOnline()) {
+      return this._api.getDestinations()
+        .then((destination) => {
+          this._store.setStaticDataByKey(StoreTitle.DESTINATIONS, destination);
+          return destination;
+        });
+    }
+
+    return Promise.resolve(
+        this._store.getStaticDataByKey(StoreTitle.DESTINATIONS)
+    );
+  }
+
+  getOffers() {
+    if (Provider.isOnline()) {
+      return this._api.getOffers()
+        .then((offers) => {
+          this._store.setStaticDataByKey(StoreTitle.OFFERS, offers);
+          return offers;
+        });
+    }
+
+    return Promise.resolve(
+        this._store.getStaticDataByKey(StoreTitle.OFFERS)
+    );
   }
 
   updatePoint(point) {
