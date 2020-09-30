@@ -231,7 +231,8 @@ export default class Trip {
     );
 
     // Сортирует массив дней по возрастанию
-    newArr.sort();
+    newArr.sort((a, b) => new Date(a.dateFrom) - new Date(b.dateFrom));
+    console.log(newArr);
 
     // Отрисовка дней
     newArr.forEach((el, index) => {

@@ -312,13 +312,13 @@ export default class Form extends SmartView {
     this.updateData({
 
       dateFrom: new Date(selectedDates[0])
-    }, true);
+    });
   }
 
   _endDateChangeHandler(selectedDates) {
     this.updateData({
       dateTo: new Date(selectedDates[0])
-    }, true);
+    });
   }
 
   // Метод вызывается при нажатии submit в форме

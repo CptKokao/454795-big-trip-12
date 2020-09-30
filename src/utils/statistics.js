@@ -30,7 +30,6 @@ const LabelStat = {
 
 // Считает общюю стоимость для каждого типа маршрута
 export const getStatsForMoney = (points) => {
-  console.log(points);
   debugger
   let bank = {};
   Object
@@ -44,7 +43,7 @@ export const getStatsForMoney = (points) => {
     })
     .reduce((_, value) => {
       if ([LabelStat[value.type]] in bank) {
-        bank[LabelStat[value.type]] += value.cost;
+        bank[LabelStat[value.type]] += value.price;
       } else {
         bank[LabelStat[value.type]] = value.price;
       }
@@ -109,8 +108,8 @@ export const getStatsForTransport = (points) => {
 
 
 const getDuration = (point) => {
-  const startDate = point.dateStart;
-  const endDate = point.dateEnd;
+  const startDate = point.dateFrom;
+  const endDate = point.dateTo;
 
   const duration = moment.duration(moment(endDate).diff(startDate)).asHours();
   return Math.round(duration);
