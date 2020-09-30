@@ -30,7 +30,6 @@ const LabelStat = {
 
 // Считает общюю стоимость для каждого типа маршрута
 export const getStatsForMoney = (points) => {
-  debugger
   let bank = {};
   Object
     .values(points)

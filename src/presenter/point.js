@@ -190,6 +190,8 @@ export default class Point {
 
   // Метод закрытие формы по нажатию кнопку закрытия ^
   _onCloseForm() {
+    // Сброс при выходе
+    this._formComponent.reset(this._point);
     this._replaceFormToCard();
   }
 }

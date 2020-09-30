@@ -2,8 +2,8 @@ import {nanoid} from "nanoid";
 import TasksModel from "../model/points.js";
 
 const StoreTitle = {
-  OFFERS: `Offers`,
-  DESTINATIONS: `Destinations`,
+  OFFERS: `offers`,
+  DESTINATIONS: `destinations`,
 };
 
 const getSyncedPoints = (items) => {

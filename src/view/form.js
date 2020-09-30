@@ -1,7 +1,7 @@
 import he from "he";
 import {Transports} from "../utils/const.js";
-import {generateOffers, generateDescription, generatePhoto, updateOffers, types} from "../utils/point.js";
-import {getDayMonthStamp, getDateTime, getShortTime} from "../utils/date.js";
+import {generateOffers, generateDescription} from "../utils/point.js";
+import {getDayMonthStamp} from "../utils/date.js";
 import SmartView from "./smart.js";
 import flatpickr from "flatpickr";
 
@@ -195,7 +195,7 @@ const createEditEventTemplate = (destinations, offers, point, isNew) => {
           </div>
           <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? `disabled` : ``}> ${isSaving ? `Saving...` : `Save`}</button>
           <button class="event__reset-btn" type="reset">${isNew ? `Cancel` : action}</button>
-          ${createFavoriteTemplate(isFavorite)}
+          ${!isNew ? createFavoriteTemplate(isFavorite) : ``}
           ${!isNew ? `<button class="event__rollup-btn" type="button" ${isDisabled ? `disabled` : ``}>` : `<button class="event__rollup-btn" type="button" style="display: none"`}
             <span class="visually-hidden">Open event</span>
           </button>

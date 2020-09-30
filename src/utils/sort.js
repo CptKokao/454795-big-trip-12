@@ -12,8 +12,8 @@ export const getSumPoint = (point) => {
 };
 
 export const sortTime = (a, b) => {
-  const timeA = new Date(a.dateEnd).getTime() - new Date(a.dateStart).getTime();
-  const timeB = new Date(b.dateEnd).getTime() - new Date(b.dateStart).getTime();
+  const timeA = new Date(a.dateTo).getTime() - new Date(a.dateFrom).getTime();
+  const timeB = new Date(b.dateTo).getTime() - new Date(b.dateFrom).getTime();
 
   if (timeA < timeB) {
     return 1;
