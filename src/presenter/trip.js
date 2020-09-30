@@ -236,7 +236,7 @@ export default class Trip {
 
     // Новый массив содержащий уникальные объекты с датами
     // чтобы отрисовать количество дней
-    let newArr = pointsList.filter((el, index, arr) =>
+    const newArr = pointsList.filter((el, index, arr) =>
       index === arr.findIndex((t) => (
         t.dateFrom.getDate() === el.dateFrom.getDate()
       ))

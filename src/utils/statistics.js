@@ -30,7 +30,7 @@ const LabelStat = {
 
 // Считает общюю стоимость для каждого типа маршрута
 export const getStatsForMoney = (points) => {
-  let bank = {};
+  const bank = {};
   Object
     .values(points)
     .map((item) => {
@@ -48,7 +48,7 @@ export const getStatsForMoney = (points) => {
       }
     }, 0);
 
-  let sortable = [];
+  const sortable = [];
 
   for (const type in bank) {
     if (bank.hasOwnProperty(type)) {
@@ -57,8 +57,8 @@ export const getStatsForMoney = (points) => {
   }
   sortable.sort((a, b) => b[1] - a[1]);
 
-  let labels = [];
-  let prices = [];
+  const labels = [];
+  const prices = [];
   sortable.forEach((value) => labels.push(value[0]));
   sortable.forEach((value) => prices.push(value[1]));
 
@@ -71,7 +71,7 @@ export const getStatsForMoney = (points) => {
 // Считает общее кол-во транспорта для каждого типа маршрута
 export const getStatsForTransport = (points) => {
   const typesActivity = types.activity;
-  let bank = {};
+  const bank = {};
   Object
     .values(points)
     .map((item) => {
@@ -85,7 +85,7 @@ export const getStatsForTransport = (points) => {
       }
     });
 
-  let sortable = [];
+  const sortable = [];
 
   for (const type in bank) {
     if (bank.hasOwnProperty(type)) {
@@ -94,8 +94,8 @@ export const getStatsForTransport = (points) => {
   }
   sortable.sort((a, b) => b[1] - a[1]);
 
-  let labels = [];
-  let count = [];
+  const labels = [];
+  const count = [];
   sortable.forEach((value) => labels.push(value[0]));
   sortable.forEach((value) => count.push(value[1]));
 
@@ -116,7 +116,7 @@ const getDuration = (point) => {
 
 // Считает общее время для каждого типа маршрута
 export const getStatsForTimeSpent = (points) => {
-  let bank = {};
+  const bank = {};
   Object
     .values(points)
     .map((item) => {
@@ -134,7 +134,7 @@ export const getStatsForTimeSpent = (points) => {
       }
     }, 0);
 
-  let sortable = [];
+  const sortable = [];
 
   for (const type in bank) {
     if (bank.hasOwnProperty(type)) {
@@ -143,8 +143,8 @@ export const getStatsForTimeSpent = (points) => {
   }
   sortable.sort((a, b) => b[1] - a[1]);
 
-  let labels = [];
-  let diff = [];
+  const labels = [];
+  const diff = [];
   sortable.forEach((value) => labels.push(value[0]));
   sortable.forEach((value) => diff.push(value[1]));
 

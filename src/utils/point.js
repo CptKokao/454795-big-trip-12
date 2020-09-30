@@ -142,7 +142,7 @@ export const Offer = {
 };
 
 export const generateOffers = (type) => {
-  let offers = [];
+  const offers = [];
 
   type = type.toLowerCase().split(`-`)[0];
 

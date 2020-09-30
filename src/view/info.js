@@ -67,7 +67,7 @@ export default class Info extends Abstract {
   // Получает из общего массива уникальные маршруты для каждого дня
   // чтобы отрисовать их в trip-info__title
   getDayPointArr(points) {
-    let newArr = points.filter((el, index, arr) =>
+    const newArr = points.filter((el, index, arr) =>
       index === arr.findIndex((t) => (
         t.dateFrom.getDate() === el.dateTo.getDate()
       ))
